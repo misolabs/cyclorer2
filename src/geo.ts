@@ -1,5 +1,13 @@
 import type { Feature, FeatureCollection, MultiLineString, Point, LineString } from 'geojson';
 
+// Stats and config
+export interface StatsJson{
+    bbox: GeoJsonBBox
+    areas: number
+    entrypoints: number
+    total_length: number
+}
+
 // Bounding box in GeoJSON
 export type GeoJsonBBox = [minLon: number, minLat: number, maxLon: number, maxLat: number];
 
