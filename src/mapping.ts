@@ -1,0 +1,35 @@
+import { type GeoJsonBBox, type GeoJsonRouting } from "./geo";
+import { type Edge, type LatLon, type BoundingBox } from "./models";
+
+
+export function mapBBox(bbox: GeoJsonBBox): BoundingBox {
+  // tuple destructuring
+  const [minLon, minLat, maxLon, maxLat] = bbox;
+
+  return {
+    min: { lat: minLat, lon: minLon },
+    max: { lat: maxLat, lon: maxLon }
+  };
+}
+
+export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
+  const coordinates: LatLon[] = feature.geometry.coordinates.map(
+    ([lng, lat]) => ({ lat, lon: lng })
+  );
+
+  return {
+    osmid: feature.properties.osmid,
+    u: feature.properties.u,
+    v: feature.properties.v,
+    name: feature.properties.name,
+    
+    deadend: feature.properties.deadend,
+    ride_count: feature.properties.ride_count,
+
+    highway: feature.properties.highway,
+    length: feature.properties.length,
+
+    coordinates,
+    bbox: mapBBox(feature.properties.bbox)
+  };
+}

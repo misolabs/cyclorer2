@@ -1,0 +1,45 @@
+import type { Feature, FeatureCollection, MultiLineString, Point, LineString } from 'geojson';
+
+// Bounding box in GeoJSON
+export type GeoJsonBBox = [minLon: number, minLat: number, maxLon: number, maxLat: number];
+
+export interface  AreaProperties{
+    area_id: number;
+
+    length?: number;
+    total_length: number
+    bbox: GeoJsonBBox
+
+    edge_count: number;
+}
+
+
+// Routing edge properties we care about
+export interface RoutingEdgeProperties {
+    // u,v, deadend, highway, osmid, ride_count
+    osmid: string|string[]
+    u: number;
+    v: number;
+    name?: string|string[]
+
+    deadend: boolean
+    highway: string | string[]
+    ride_count: number
+
+    length: number;
+    bbox: GeoJsonBBox
+}
+
+export interface EntrypointProperties {
+    area_id: number;
+    osmid: string
+}
+
+export type GeoJsonRouting = Feature<LineString, RoutingEdgeProperties>;
+export type GeoJsonRoutingollection = FeatureCollection<LineString, RoutingEdgeProperties>
+
+export type GeoJsonArea = Feature<MultiLineString, AreaProperties>;
+export type GeoJsonAreaCollection = FeatureCollection<MultiLineString, AreaProperties>
+
+export type GeoJsonEntrypoint = Feature<Point, EntrypointProperties>;
+export type GeoJsonEntrypointCollection = FeatureCollection<Point, EntrypointProperties>
