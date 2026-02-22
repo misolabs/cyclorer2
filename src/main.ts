@@ -5,6 +5,7 @@ import { EdgeGrid } from './gridindex'
 import type { BoundingBox, Edge, Cartesian } from './models'
 import { mapGeoJsonRoutingEdge, mapBBox } from './mapping'
 import { CartesianProjection, logError } from './helpers'
+import { TrackingMap } from './maps/trackingmap'
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
@@ -18,12 +19,9 @@ var routingEdges: Edge[] = []
 var areaBBox: BoundingBox
 var edgeGridIndex: EdgeGrid
 
-const map = L.map('map').setView(ellergronnGPS, 13)
-
-// Base map tiles from OSM
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map)
+const trackingMap: TrackingMap = new TrackingMap("map")
+trackingMap.initBaseLayer(ellergronnGPS, 13)
+trackingMap.addPositionMarker(ellergronnGPS)
 
 async function loadStats(url: string) {
   try {
@@ -49,30 +47,6 @@ async function loadAreas(url: string) {
     if (!response.ok) throw new Error("Network error");
     areaData = await response.json();
     console.log("Areas", areaData.features.length)
-
-    // Draw bounding box for each area
-    const features: GeoJsonArea[] = areaData.features
-    for(let i=0; i < areaData.features.length;i++){
-      const [minLon, minLat, maxLon, maxLat] = features[i].properties.bbox
-      const bounds = L.latLngBounds(
-        [minLat, minLon],
-        [maxLat, maxLon]
-      );
-      
-      L.rectangle(bounds,{weight:1, color: (features[i].properties.total_length > 200 ? "Purple": "Blue")})
-        .bindPopup(`${features[i].properties.total_length.toFixed(0)}`)
-        .addTo(map)
-//        .on("mouseover", (e:L.LeafletMouseEvent) => {e.target.setStyle({color: "white"})})
-    }
-
-    L.geoJSON(areaData.features,
-      {
-      style: {
-        color: "red",
-        weight: 2,
-        opacity: 0.7
-      }
-    }).addTo(map)
   } catch (err:unknown) {
     logError(err, "Failed to load areas:");
   }
@@ -85,30 +59,9 @@ async function loadEntrypoints(url: string) {
     if (!response.ok) throw new Error("Network error");
     entrypointsData = await response.json();
     console.log("Entrypoints", entrypointsData.features.length)
-
-    // Simply draw entrypoints as markers
-    L.geoJSON(entrypointsData.features,{
-      pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng, {color: "red", radius: 2, opacity:1})
-      }
-    }).addTo(map)
   } catch (err: unknown) {
     logError(err, "Error loading entry points")
   }
-}
-
-function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
-  const html = `<table>
-  <tr>
-  <td>classification</td>
-  <td><b>${feature.properties.highway}</b></td>
-  </tr>
-  <tr>
-  <td>length</td>
-  <td><b>${feature.properties.length.toFixed(0)}m</b></td>
-  </tr>
-  </table>`
-  layer.bindPopup(html)
 }
 
 async function loadRoutingEdges(url: string) {
@@ -147,12 +100,8 @@ async function loadRoutingEdges(url: string) {
       // todo
     }
 
-
-    // Simply draw entrypoints as markers
-    L.geoJSON(routingGeoData.features, {
-      onEachFeature: popupRoutingEdge,
-      style: {color: "grey", weight: 2}
-    }).addTo(map)
+    // Draw edges on map
+    trackingMap.addRoutingLayer(routingGeoData)
   } catch (err: unknown) {
     logError(err, "Failed to load entrypoints:");
   }
@@ -170,17 +119,11 @@ async function loadData(){
     loadAreas("data/unvisited_areas.geojson"),
     loadEntrypoints("data/unvisited_junctions.geojson")
   ])
+  // Add a layer to the tracking map
+  trackingMap.addAreaLayer(areaData, entrypointsData)
 
   console.log("All data loaded")
 }
 
-
-// Draggable marker with coords popup
-function moveListener(e: L.DragEndEvent){
-  e.target.bindPopup(`Coordinates: <br/><b>${e.target.getLatLng().lat}<br/>${e.target.getLatLng().lng}</b>`)
-}
-
-const myPos = L.marker(ellergronnGPS, {draggable: true}).addTo(map)
-myPos.addEventListener("dragend", moveListener)
-
-loadData()
+//  Load all application data
+await loadData()

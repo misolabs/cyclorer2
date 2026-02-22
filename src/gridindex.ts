@@ -1,6 +1,6 @@
 import type { BoundingBox, CellIndex, LatLon, Edge } from "./models";
 
-export class GridIndex<T>{
+export abstract class GridIndex<T>{
     resolution: number
 
     gridMinLon: number
@@ -38,7 +38,11 @@ export class GridIndex<T>{
     return { x, y };
     }
 
-    addFeature(feature: T, bbox: BoundingBox){
+    abstract addFeature(feature: T, bbox: BoundingBox): boolean
+}
+
+export class EdgeGrid extends GridIndex<Edge>{
+    addFeature(feature: Edge, bbox: BoundingBox): boolean{
         // Get the corner grid cells indices from bbox
         const minC = this.latlonToCell(bbox.min)
         const maxC = this.latlonToCell(bbox.max)
@@ -52,9 +56,6 @@ export class GridIndex<T>{
                 this.grid[i].push(feature);
             }
         }
+        return true
     }
-}
-
-export class EdgeGrid extends GridIndex<Edge>{
-
 }
