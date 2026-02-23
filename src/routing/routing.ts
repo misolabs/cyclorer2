@@ -1,11 +1,10 @@
 import {EdgeGrid} from "./gridindex.ts";
-import type {AdjacencyInfo, BoundingBox, Cartesian, Edge, EdgeIntersection, LatLon} from "./models.ts";
-import {mapGeoJsonRoutingEdge} from "./mapping.ts";
-import {CartesianProjection, logError} from "./helpers.ts";
-import type {GeoJsonRoutingollection} from "./geo.ts";
-import {bbCenter} from "./latlonmath.ts";
-import {LineUtil} from "leaflet";
-import {pointToSegmentDistance} from "./cartesian.ts";
+import type {AdjacencyInfo, BoundingBox, Cartesian, Edge, EdgeIntersection, LatLon} from "../models/models.ts";
+import {mapGeoJsonRoutingEdge} from "../models/mapping.ts";
+import {CartesianProjection, logError} from "../helpers.ts";
+import type {GeoJsonRoutingollection} from "../models/geo.ts";
+import {bbCenter} from "../crs/latlonmath.ts";
+import {pointToSegmentDistance} from "../crs/cartesian.ts";
 
 export class RoutingEngine{
     regionBB: BoundingBox

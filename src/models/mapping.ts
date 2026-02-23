@@ -1,5 +1,5 @@
-import {type GeoJsonArea, type GeoJsonBBox, type GeoJsonEntrypoint, type GeoJsonRouting} from "./geo";
-import {type Edge, type LatLon, type BoundingBox, type AreaNode} from "./models";
+import {type GeoJsonArea, type GeoJsonBBox, type GeoJsonEntrypoint, type GeoJsonRouting} from "./geo.ts";
+import {type Edge, type LatLon, type BoundingBox, type AreaNode} from "./models.ts";
 
 
 export function mapBBox(bbox: GeoJsonBBox): BoundingBox {

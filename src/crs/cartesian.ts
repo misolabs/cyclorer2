@@ -1,4 +1,4 @@
-import type {Cartesian, SegmentDistance} from "./models.ts";
+import type {Cartesian, SegmentDistance} from "../models/models.ts";
 
 export function pointToSegmentDistance(P: Cartesian, A: Cartesian, B: Cartesian): SegmentDistance {
     const ABx = B.x - A.x;

@@ -1,8 +1,8 @@
-import {logError} from "./helpers.ts";
-import type {GeoJsonAreaCollection, GeoJsonEntrypoint, GeoJsonEntrypointCollection} from "./geo.ts";
+import {logError} from "../helpers.ts";
+import type {GeoJsonAreaCollection, GeoJsonEntrypoint, GeoJsonEntrypointCollection} from "../models/geo.ts";
 import {GridIndex, NodeGrid} from "./gridindex.ts";
-import type {AreaNode, BoundingBox, LatLon} from "./models.ts";
-import {mapGeoAreaNode} from "./mapping.ts";
+import type {AreaNode, BoundingBox, LatLon} from "../models/models.ts";
+import {mapGeoAreaNode} from "../models/mapping.ts";
 
 export class AreaFinder{
     areaGeoData!: GeoJsonAreaCollection

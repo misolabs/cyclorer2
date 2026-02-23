@@ -1,4 +1,4 @@
-import type {BoundingBox, LatLon} from "./models";
+import type {BoundingBox, LatLon} from "../models/models.ts";
 import * as L from "leaflet";
 
 function toRad(deg: number): number {

@@ -1,12 +1,12 @@
 import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
-import type {  StatsJson } from './geo'
-import type {BoundingBox, LatLon} from './models'
-import { mapBBox } from './mapping'
+import type {  StatsJson } from './models/geo.ts'
+import type {BoundingBox, LatLon} from './models/models.ts'
+import { mapBBox } from './models/mapping.ts'
 import { TrackingMap } from './maps/trackingmap'
-import {AreaFinder} from "./areafinder.ts";
-import {RoutingEngine} from "./routing.ts";
-import {geoToLatLon} from "./latlonmath.ts";
+import {AreaFinder} from "./routing/areafinder.ts";
+import {RoutingEngine} from "./routing/routing.ts";
+import {geoToLatLon} from "./crs/latlonmath.ts";
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)

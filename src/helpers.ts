@@ -1,4 +1,4 @@
-import type { Cartesian, LatLon } from "./models";
+import type { Cartesian, LatLon } from "./models/models.ts";
 
 export class CartesianProjection{
   static R = 6371000; // meters

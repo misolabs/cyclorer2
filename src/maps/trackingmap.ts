@@ -1,6 +1,6 @@
-import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../geo"
+import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 import * as L from 'leaflet'
-import type {AreaNode, LatLon} from "../models.ts";
+import type {AreaNode, LatLon} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){

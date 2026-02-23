@@ -1,4 +1,4 @@
-import type {BoundingBox, CellIndex, LatLon, Edge, AreaNode, Node} from "./models";
+import type {BoundingBox, CellIndex, LatLon, Edge, AreaNode, Node} from "../models/models.ts";
 
 export abstract class GridIndex<T>{
     resolution: number
