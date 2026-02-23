@@ -98,13 +98,13 @@ export class RoutingEngine{
 
         const candidates = this.edgeGridIndex.findNeighbours(pos)
         for(const e of candidates){
-            console.log("Candidate", e.osmid)
+            //console.log("Candidate", e.osmid)
             const pointsXY = e.cartesian
 
             if(pointsXY) {
                 // geometry is in order lon, lat
                 let pLast = pointsXY[0]
-                console.log("Edge segments", pointsXY.length - 1)
+                //console.log("Edge segments", pointsXY.length - 1)
                 for (let i = 1; i < pointsXY.length; i++) {
                     const {distance: distanceToSegment, t} = pointToSegmentDistance(pTracking, pointsXY[i], pLast)
                     if (distanceToSegment < minDist && t >= 0 && t <= 1) {
@@ -112,9 +112,9 @@ export class RoutingEngine{
                         closestEdge = e
                         segmentIndex = i - 1
                         segmentT = t
-                        console.log("Closest point", minDist)
-                        console.log("Segment index", segmentIndex)
-                        console.log("Segement t", segmentT)
+                        //console.log("Closest point", minDist)
+                        //console.log("Segment index", segmentIndex)
+                        //console.log("Segement t", segmentT)
                     }
                     pLast = pointsXY[i]
                 }

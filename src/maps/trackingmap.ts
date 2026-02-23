@@ -1,6 +1,6 @@
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../geo"
 import * as L from 'leaflet'
-import type {AreaNode} from "../models.ts";
+import type {AreaNode, LatLon} from "../models.ts";
 import {LatLng} from "leaflet";
 
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
@@ -20,11 +20,12 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
 export class TrackingMap{
     map: L.Map
     positionMarker: L.Marker|null = null
-
     neighbourMarker: L.CircleMarker[] = []
+    snappedEdge: L.Polyline
 
     constructor(elName: string){
         this.map = L.map(elName)
+        this.snappedEdge = L.polyline([], {color: "#ff7f00"}).addTo(this.map)
     }
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
@@ -109,5 +110,10 @@ export class TrackingMap{
         for(let i=0; i < areas.length; i++){
             this.neighbourMarker[i].setLatLng(new LatLng(areas[i].position.lat, areas[i].position.lon))
         }
+    }
+
+    setSnappedEdge(poly: LatLon[]){
+        const lfPoly = poly.map(e => new L.LatLng(e.lat, e.lon))
+        this.snappedEdge.setLatLngs(lfPoly)
     }
 }

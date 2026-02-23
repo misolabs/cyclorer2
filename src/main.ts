@@ -30,10 +30,13 @@ function moveListener(e: L.DragEndEvent){
   trackingMap.setAreaMarker(areas)
 
   const closestEdge = routingEngine.findClosestEdge(pos)
-  if(closestEdge)
+  if(closestEdge) {
     console.log("Snapped to edge:", closestEdge)
-  else
+    trackingMap.setSnappedEdge(closestEdge.edge.coordinates)
+  }else {
     console.log("No trail close to current position")
+    trackingMap.setSnappedEdge([])
+  }
 }
 
 async function loadStats(url: string) {
