@@ -1,5 +1,5 @@
-import { type GeoJsonBBox, type GeoJsonRouting } from "./geo";
-import { type Edge, type LatLon, type BoundingBox } from "./models";
+import {type GeoJsonArea, type GeoJsonBBox, type GeoJsonEntrypoint, type GeoJsonRouting} from "./geo";
+import {type Edge, type LatLon, type BoundingBox, type AreaNode} from "./models";
 
 
 export function mapBBox(bbox: GeoJsonBBox): BoundingBox {
@@ -32,4 +32,12 @@ export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
     coordinates,
     bbox: mapBBox(feature.properties.bbox)
   };
+}
+
+export function mapGeoAreaNode(feature: GeoJsonEntrypoint): AreaNode{
+  return {
+    osmid: Number(feature.properties.osmid),
+    area_id: feature.properties.area_id,
+    position: {lon: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1]}
+  }
 }

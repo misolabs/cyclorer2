@@ -6,18 +6,19 @@ import type { BoundingBox, Edge, Cartesian } from './models'
 import { mapGeoJsonRoutingEdge, mapBBox } from './mapping'
 import { CartesianProjection, logError } from './helpers'
 import { TrackingMap } from './maps/trackingmap'
+import {AreaFinder} from "./areafinder.ts";
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 
 var statsData: StatsJson
-var areaData: GeoJsonAreaCollection
-var entrypointsData: GeoJsonEntrypointCollection
+
 var routingGeoData: GeoJsonRoutingollection
 var routingEdges: Edge[] = []
 
-var areaBBox: BoundingBox
+var regionBBox: BoundingBox
 var edgeGridIndex: EdgeGrid
+var areaFinder: AreaFinder
 
 const trackingMap: TrackingMap = new TrackingMap("map")
 trackingMap.initBaseLayer(ellergronnGPS, 13)
@@ -30,37 +31,13 @@ async function loadStats(url: string) {
     statsData = await response.json();
     
     // bbox format: minLon, minLat, maxLon, maxLat
-    areaBBox = mapBBox(statsData.bbox)
+    regionBBox = mapBBox(statsData.bbox)
 
     //uiUpdateStats(statsData["total_length"], statsData["areas"])
     //document.getElementById("stats-total-length").classList.add("fadein-slow")
     //document.getElementById("stats-areas-count").classList.add("fadein-slow")
   } catch (err) {
     console.error("Failed to load Stats json:", err);
-  }
-}
-
-async function loadAreas(url: string) {
-  try {
-    // Fetch area network data
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Network error");
-    areaData = await response.json();
-    console.log("Areas", areaData.features.length)
-  } catch (err:unknown) {
-    logError(err, "Failed to load areas:");
-  }
-}
-
-async function loadEntrypoints(url: string) {
-  try {
-    // Fetch area network data
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Network error");
-    entrypointsData = await response.json();
-    console.log("Entrypoints", entrypointsData.features.length)
-  } catch (err: unknown) {
-    logError(err, "Error loading entry points")
   }
 }
 
@@ -73,7 +50,7 @@ async function loadRoutingEdges(url: string) {
     console.log("Routing edges", routingGeoData.features.length)
 
     // Create grid
-    edgeGridIndex  = new EdgeGrid(areaBBox)
+    edgeGridIndex  = new EdgeGrid(regionBBox)
 
     // Add edges to grid index
     for(const geoEdge of routingGeoData.features){
@@ -82,8 +59,8 @@ async function loadRoutingEdges(url: string) {
 
       // Precompute cartesian coordinates
       const center = {
-        lat: (areaBBox.min.lat + areaBBox.max.lat)/ 2, 
-        lon: (areaBBox.min.lon + areaBBox.max.lon)/ 2}
+        lat: (regionBBox.min.lat + regionBBox.max.lat)/ 2,
+        lon: (regionBBox.min.lon + regionBBox.max.lon)/ 2}
       const projector = new CartesianProjection(center)
       const cartesian: Cartesian[] = []
       for(const p of edge.coordinates){
@@ -95,7 +72,7 @@ async function loadRoutingEdges(url: string) {
       // Add to edge list
       routingEdges.push(edge)
       // Add to spatial grid index for fast lookup
-      edgeGridIndex.addFeature(edge, edge.bbox)
+      edgeGridIndex.addFeature(edge)
       // Add to adjacency graph
       // todo
     }
@@ -115,12 +92,11 @@ async function loadData(){
   await loadRoutingEdges("data/routing_edges.geojson")
 
   // Areas and entrypoints
-  await Promise.all([
-    loadAreas("data/unvisited_areas.geojson"),
-    loadEntrypoints("data/unvisited_junctions.geojson")
-  ])
+  areaFinder = new AreaFinder(regionBBox)
+  await areaFinder.init()
+
   // Add a layer to the tracking map
-  trackingMap.addAreaLayer(areaData, entrypointsData)
+  trackingMap.addAreaLayer(areaFinder.areaData, areaFinder.entrypointsData)
 
   console.log("All data loaded")
 }

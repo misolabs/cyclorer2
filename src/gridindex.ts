@@ -1,4 +1,4 @@
-import type { BoundingBox, CellIndex, LatLon, Edge } from "./models";
+import type {BoundingBox, CellIndex, LatLon, Edge, AreaNode, Node} from "./models";
 
 export abstract class GridIndex<T>{
     resolution: number
@@ -38,14 +38,30 @@ export abstract class GridIndex<T>{
     return { x, y };
     }
 
-    abstract addFeature(feature: T, bbox: BoundingBox): boolean
+    abstract addFeature(feature: T): boolean
+
+    findNeighbours(pos: LatLon, depth:number=1): T[]{
+        const {x, y} = this.latlonToCell(pos)
+        const result: T[] = [];
+
+        for (let dx = -depth; dx <= depth; dx++) {
+            for (let dy = -depth; dy <= depth; dy++) {
+                const key = this.cellToIndex({x:x+dx, y:y+dy});
+                if (this.grid[key] != undefined) {
+                    result.push(...this.grid[key]);
+                }
+            }
+        }
+        return result;
+
+    }
 }
 
 export class EdgeGrid extends GridIndex<Edge>{
-    addFeature(feature: Edge, bbox: BoundingBox): boolean{
+    addFeature(feature: Edge): boolean{
         // Get the corner grid cells indices from bbox
-        const minC = this.latlonToCell(bbox.min)
-        const maxC = this.latlonToCell(bbox.max)
+        const minC = this.latlonToCell(feature.bbox.min)
+        const maxC = this.latlonToCell(feature.bbox.max)
 
         // Register edge in every bbox cell that may be touched
         for (let x = minC.x; x <= maxC.x; x++) {
@@ -56,6 +72,20 @@ export class EdgeGrid extends GridIndex<Edge>{
                 this.grid[i].push(feature);
             }
         }
+        return true
+    }
+}
+
+export class NodeGrid extends GridIndex<Node>{
+    addFeature(feature: Node): boolean{
+        // Get the corner grid cells indices from bbox
+        const c = this.latlonToCell(feature.position)
+        const i = this.cellToIndex(c);
+
+        if (!this.grid[i])
+            this.grid[i] = [];
+        this.grid[i].push(feature);
+
         return true
     }
 }

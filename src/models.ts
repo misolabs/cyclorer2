@@ -35,3 +35,12 @@ export interface Edge {
   highway?: string|string[];
   name?: string|string[];
 }
+
+export interface Node{
+  osmid: number
+  position: LatLon
+}
+
+export interface AreaNode extends Node{
+  area_id: number
+}
