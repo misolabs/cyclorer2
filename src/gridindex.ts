@@ -76,8 +76,8 @@ export class EdgeGrid extends GridIndex<Edge>{
     }
 }
 
-export class NodeGrid extends GridIndex<Node>{
-    addFeature(feature: Node): boolean{
+export class NodeGrid<T extends Node> extends GridIndex<T>{
+    addFeature(feature: T): boolean{
         // Get the corner grid cells indices from bbox
         const c = this.latlonToCell(feature.position)
         const i = this.cellToIndex(c);

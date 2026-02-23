@@ -1,5 +1,7 @@
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../geo"
 import * as L from 'leaflet'
+import type {AreaNode} from "../models.ts";
+import {LatLng} from "leaflet";
 
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   const html = `<table>
@@ -15,14 +17,11 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   layer.bindPopup(html)
 }
 
-// Draggable marker with coords popup
-function moveListener(e: L.DragEndEvent){
-    e.target.bindPopup(`Coordinates: <br/><b>${e.target.getLatLng().lat}<br/>${e.target.getLatLng().lng}</b>`)
-}
-
 export class TrackingMap{
     map: L.Map
     positionMarker: L.Marker|null = null
+
+    neighbourMarker: L.CircleMarker[] = []
 
     constructor(elName: string){
         this.map = L.map(elName)
@@ -55,7 +54,7 @@ export class TrackingMap{
             );
             
             L.rectangle(bounds,{weight:1, color: (features[i].properties.total_length > 200 ? "Purple": "Blue")})
-            .bindPopup(`${features[i].properties.total_length.toFixed(0)}`)
+            .bindPopup(`area: <b>${features[i].properties.area_id}</b>`)
             .addTo(this.map)
     //        .on("mouseover", (e:L.LeafletMouseEvent) => {e.target.setStyle({color: "white"})})
         }
@@ -73,13 +72,42 @@ export class TrackingMap{
         // Draw entrypoints
         L.geoJSON(entrypointsData.features,{
             pointToLayer: (feature, latlng) => {
-            return L.circleMarker(latlng, {color: "red", radius: 2, opacity:1})
+            return L.circleMarker(latlng, {color: "red", radius: 2, opacity:1}).bindPopup(`nodeid: <b>${feature.properties.osmid}</b>`)
             }
         }).addTo(this.map)        
     }
 
-    addPositionMarker(startPos: L.LatLng){
+    addPositionMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
         this.positionMarker = L.marker(startPos, {draggable: true}).addTo(this.map)
-        this.positionMarker.addEventListener("dragend", moveListener)
+        this.positionMarker.addEventListener("dragend", listener)
+    }
+
+    setAreaMarker(areas: AreaNode[]): void{
+        // If we need more markers, add them
+        if(this.neighbourMarker.length < areas.length){
+            for(let i = 0; i <= areas.length - this.neighbourMarker.length; i++){
+                const marker = L.circleMarker(
+                    new LatLng(0,0),
+                    {
+                        radius: 7,
+                        color:"green",
+                        fillColor:"#fc8d59",
+                        fillOpacity: 1,
+                        opacity: 1
+                    })
+                this.map.addLayer(marker)
+                this.neighbourMarker.push(marker)
+
+            }
+        // If there are too many remove some
+        }else if(this.neighbourMarker.length > areas.length){
+            const marker = this.neighbourMarker.pop()
+            if(marker)
+                this.map.removeLayer(marker)
+        }
+        // Update position
+        for(let i=0; i < areas.length; i++){
+            this.neighbourMarker[i].setLatLng(new LatLng(areas[i].position.lat, areas[i].position.lon))
+        }
     }
 }

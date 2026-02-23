@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import type { AreaProperties, GeoJsonArea, GeoJsonAreaCollection, GeoJsonEntrypoint, GeoJsonEntrypointCollection, GeoJsonRouting, GeoJsonRoutingollection, RoutingEdgeProperties, StatsJson } from './geo'
 import { EdgeGrid } from './gridindex'
-import type { BoundingBox, Edge, Cartesian } from './models'
+import type {BoundingBox, Edge, Cartesian, LatLon} from './models'
 import { mapGeoJsonRoutingEdge, mapBBox } from './mapping'
 import { CartesianProjection, logError } from './helpers'
 import { TrackingMap } from './maps/trackingmap'
@@ -22,7 +22,18 @@ var areaFinder: AreaFinder
 
 const trackingMap: TrackingMap = new TrackingMap("map")
 trackingMap.initBaseLayer(ellergronnGPS, 13)
-trackingMap.addPositionMarker(ellergronnGPS)
+trackingMap.addPositionMarker(ellergronnGPS, moveListener)
+
+function geoToLatLon(pGeo: L.LatLng): LatLon{
+  return {lat: pGeo.lat, lon: pGeo.lng}
+}
+
+function moveListener(e: L.DragEndEvent){
+  e.target.bindPopup(`Coordinates: <br/><b>${e.target.getLatLng().lat}<br/>${e.target.getLatLng().lng}</b>`)
+  const areas = areaFinder.findNeighbours(geoToLatLon(e.target.getLatLng()))
+  console.log(areas)
+  trackingMap.setAreaMarker(areas)
+}
 
 async function loadStats(url: string) {
   try {
@@ -96,7 +107,7 @@ async function loadData(){
   await areaFinder.init()
 
   // Add a layer to the tracking map
-  trackingMap.addAreaLayer(areaFinder.areaData, areaFinder.entrypointsData)
+  trackingMap.addAreaLayer(areaFinder.areaGeoData, areaFinder.entrypointsGeoData)
 
   console.log("All data loaded")
 }
