@@ -44,3 +44,9 @@ export interface Node{
 export interface AreaNode extends Node{
   area_id: number
 }
+
+export interface AdjacencyInfo {
+  node: number
+  distance: number
+  edge: Edge
+}

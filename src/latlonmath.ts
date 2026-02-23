@@ -1,4 +1,5 @@
-import type { LatLon } from "./models";
+import type {BoundingBox, LatLon} from "./models";
+import * as L from "leaflet";
 
 function toRad(deg: number): number {
   return deg * Math.PI / 180;
@@ -21,4 +22,15 @@ export function haversineDistance(ll1: LatLon, ll2: LatLon){
     const a = Math.min(1, Math.sin(dphi/2)**2 + Math.cos(phi1)*Math.cos(phi2)* Math.sin(dlambda/2)**2)
 
     return 2*R*Math.asin(Math.sqrt(a))
+}
+
+export function geoToLatLon(pGeo: L.LatLng): LatLon{
+    return {lat: pGeo.lat, lon: pGeo.lng}
+}
+
+export function bbCenter(bbox: BoundingBox): LatLon{
+    return {
+        lat: (bbox.min.lat + bbox.max.lat)/ 2,
+        lon: (bbox.min.lon + bbox.max.lon)/ 2
+    }
 }

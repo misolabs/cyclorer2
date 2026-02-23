@@ -5,8 +5,8 @@ import type {AreaNode, BoundingBox, LatLon} from "./models.ts";
 import {mapGeoAreaNode} from "./mapping.ts";
 
 export class AreaFinder{
-    areaGeoData: GeoJsonAreaCollection|null = null
-    entrypointsGeoData: GeoJsonEntrypointCollection|null = null
+    areaGeoData!: GeoJsonAreaCollection
+    entrypointsGeoData!: GeoJsonEntrypointCollection
 
     grid: NodeGrid<AreaNode>
 
