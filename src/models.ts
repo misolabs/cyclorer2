@@ -50,3 +50,15 @@ export interface AdjacencyInfo {
   distance: number
   edge: Edge
 }
+
+export interface SegmentDistance{
+  distance: number
+  t: number
+}
+
+export interface EdgeIntersection{
+  edge: Edge
+  distance: number
+  segmentIndex: number
+  t: number
+}

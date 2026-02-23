@@ -1,6 +1,6 @@
-import type {Cartesian} from "./models.ts";
+import type {Cartesian, SegmentDistance} from "./models.ts";
 
-export function pointToSegmentDistance(P: Cartesian, A: Cartesian, B: Cartesian): XXX {
+export function pointToSegmentDistance(P: Cartesian, A: Cartesian, B: Cartesian): SegmentDistance {
     const ABx = B.x - A.x;
     const ABy = B.y - A.y;
     const APx = P.x - A.x;
@@ -21,7 +21,7 @@ export function pointToSegmentDistance(P: Cartesian, A: Cartesian, B: Cartesian)
     const dy = P.y - closestY;
 
     return {
-        distanceToSegment: Math.sqrt(dx * dx + dy * dy),
+        distance: Math.sqrt(dx * dx + dy * dy),
         t: t,
     }
 }
