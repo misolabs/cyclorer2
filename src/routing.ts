@@ -1,20 +1,27 @@
 import {EdgeGrid} from "./gridindex.ts";
-import type {AdjacencyInfo, BoundingBox, Cartesian, Edge} from "./models.ts";
+import type {AdjacencyInfo, BoundingBox, Cartesian, Edge, LatLon} from "./models.ts";
 import {mapGeoJsonRoutingEdge} from "./mapping.ts";
 import {CartesianProjection, logError} from "./helpers.ts";
 import type {GeoJsonRoutingollection} from "./geo.ts";
 import {bbCenter} from "./latlonmath.ts";
+import {LineUtil} from "leaflet";
+import {pointToSegmentDistance} from "./cartesian.ts";
 
 export class RoutingEngine{
     regionBB: BoundingBox
+    projection: CartesianProjection
 
     edgeGridIndex!: EdgeGrid
     routingGeoData!: GeoJsonRoutingollection
     routingEdges: Edge[] = []
     nodesAdjacency: Map<number, AdjacencyInfo[]> = new Map()
 
+    // Initialisation
+    //===============
+
     constructor(regionBB: BoundingBox) {
         this.regionBB = regionBB
+        this.projection = new CartesianProjection(bbCenter(regionBB))
     }
 
     addToAdjacency(edge: Edge):void{
@@ -76,5 +83,48 @@ export class RoutingEngine{
     async init(){
         await this.loadRoutingEdges("data/routing_edges.geojson")
         this.buildDataStructures()
+    }
+
+    // Find closest edge
+    //==================
+
+    findClosestEdge(pos: LatLon){
+        const pTracking = this.projection.fromLatlon(pos)
+
+        let closestEdge = null
+        let minDist = Infinity
+        let segmentIndex = undefined
+        let segmentT = undefined
+
+        const candidates = this.edgeGridIndex.findNeighbours(pos)
+        for(const e of candidates){
+            console.log("Candidate", e.osmid)
+            const pointsXY = e.cartesian
+
+            if(pointsXY) {
+                // geometry is in order lon, lat
+                let pLast = pointsXY[0]
+                console.log("Edge segments", pointsXY.length - 1)
+                for (let i = 1; i < pointsXY.length; i++) {
+                    const {distanceToSegment, t} = pointToSegmentDistance(pTracking, pointsXY[i], pLast)
+                    if (distanceToSegment < minDist && t >= 0 && t <= 1) {
+                        minDist = distanceToSegment
+                        closestEdge = e
+                        segmentIndex = i - 1
+                        segmentT = t
+                    }
+                    pLast = pointsXY[i]
+                }
+            }
+            console.log("Closest point", minDist)
+            console.log("Segment index", segmentIndex)
+            console.log("Segement t", segmentT)
+        }
+        return {
+            edge:closestEdge,
+            segmentIndex: segmentIndex,
+            segmentT: segmentT,
+            distanceToEdge: minDist,
+        }
     }
 }

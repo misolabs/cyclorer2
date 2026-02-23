@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import type {  StatsJson } from './geo'
-import type {BoundingBox} from './models'
+import type {BoundingBox, LatLon} from './models'
 import { mapBBox } from './mapping'
 import { TrackingMap } from './maps/trackingmap'
 import {AreaFinder} from "./areafinder.ts";
@@ -22,10 +22,14 @@ trackingMap.initBaseLayer(ellergronnGPS, 15)
 trackingMap.addPositionMarker(ellergronnGPS, moveListener)
 
 function moveListener(e: L.DragEndEvent){
-  e.target.bindPopup(`Coordinates: <br/><b>${e.target.getLatLng().lat}<br/>${e.target.getLatLng().lng}</b>`)
-  const areas = areaFinder.findNeighbours(geoToLatLon(e.target.getLatLng()))
+  const pos: LatLon = geoToLatLon(e.target.getLatLng())
+
+  e.target.bindPopup(`Coordinates: <br/><b>${pos.lat}<br/>${pos.lon}</b>`)
+  const areas = areaFinder.findNeighbours(pos)
   console.log(areas)
   trackingMap.setAreaMarker(areas)
+
+  routingEngine.findClosestEdge(pos)
 }
 
 async function loadStats(url: string) {
