@@ -1,9 +1,9 @@
 import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
-import type {  StatsJson } from './models/geo.ts'
-import type {BoundingBox, LatLon} from './models/models.ts'
-import { mapBBox } from './models/mapping.ts'
-import { TrackingMap } from './maps/trackingmap'
+import type {StatsJson} from './models/geo.ts'
+import {type BoundingBox, type LatLon, NodeId, TravelDirection} from './models/models.ts'
+import {mapBBox} from './models/mapping.ts'
+import {TrackingMap} from './maps/trackingmap'
 import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
 import {geoToLatLon} from "./crs/latlonmath.ts";
@@ -20,6 +20,12 @@ var areaFinder!: AreaFinder
 const trackingMap: TrackingMap = new TrackingMap("map")
 trackingMap.initBaseLayer(ellergronnGPS, 15)
 trackingMap.addPositionMarker(ellergronnGPS, moveListener)
+trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
+
+let headingLatLon: LatLon
+function headingMarkerListener(e: L.DragEndEvent){
+  headingLatLon = geoToLatLon(e.target.getLatLng())
+}
 
 function moveListener(e: L.DragEndEvent){
   const pos: LatLon = geoToLatLon(e.target.getLatLng())
@@ -32,7 +38,28 @@ function moveListener(e: L.DragEndEvent){
   const closestEdge = routingEngine.findClosestEdge(pos)
   if(closestEdge) {
     console.log("Snapped to edge:", closestEdge)
-    trackingMap.setSnappedEdge(closestEdge.edge.coordinates)
+    //trackingMap.setSnappedEdge(closestEdge.edge.coordinates)
+
+    const edgeDirection = routingEngine.travelDirection(pos, headingLatLon, closestEdge)
+    let startNode: NodeId
+    if(edgeDirection == TravelDirection.U_TO_V){
+      trackingMap.setSnappedEdge(closestEdge.edge.coordinates.slice(closestEdge.segmentIndex))
+      startNode = NodeId(closestEdge.edge.v)
+    }else{ // u
+      trackingMap.setSnappedEdge(closestEdge.edge.coordinates.slice(0, closestEdge.segmentIndex))
+      startNode = NodeId(closestEdge.edge.u)
+    }
+
+    if(areas.length > 0){
+      console.log("Dijkstra from ", startNode, " to ", NodeId(areas[0].osmid))
+      const routeNodes = routingEngine.dijkstra(startNode, NodeId(areas[0].osmid))
+      console.log("Route nodes:", routeNodes)
+      if(routeNodes) {
+        const route = routingEngine.nodes_to_edges(routeNodes)
+        if(route) trackingMap.setRoute(route)
+        else trackingMap.clearRoute()
+      }
+    }
   }else {
     console.log("No trail close to current position")
     trackingMap.setSnappedEdge([])

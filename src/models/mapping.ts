@@ -30,6 +30,7 @@ export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
     length: feature.properties.length,
 
     coordinates,
+    cartesian: [],
     bbox: mapBBox(feature.properties.bbox)
   };
 }

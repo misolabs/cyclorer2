@@ -1,5 +1,14 @@
 import {EdgeGrid} from "./gridindex.ts";
-import type {AdjacencyInfo, BoundingBox, Cartesian, Edge, EdgeIntersection, LatLon} from "../models/models.ts";
+import {
+    type AdjacencyInfo,
+    type BoundingBox,
+    type Cartesian,
+    type Edge,
+    type EdgeIntersection,
+    type LatLon, NodeId, type Route,
+    TravelDirection
+} from "../models/models.ts";
+
 import {mapGeoJsonRoutingEdge} from "../models/mapping.ts";
 import {CartesianProjection, logError} from "../helpers.ts";
 import type {GeoJsonRoutingollection} from "../models/geo.ts";
@@ -13,7 +22,7 @@ export class RoutingEngine{
     edgeGridIndex!: EdgeGrid
     routingGeoData!: GeoJsonRoutingollection
     routingEdges: Edge[] = []
-    nodesAdjacency: Map<number, AdjacencyInfo[]> = new Map()
+    nodesAdjacency: Map<NodeId, AdjacencyInfo[]> = new Map()
 
     // Initialisation
     //===============
@@ -25,8 +34,8 @@ export class RoutingEngine{
 
     addToAdjacency(edge: Edge):void{
         // Add edge to adjacency map
-        const u = edge.u
-        const v = edge.v
+        const u = NodeId(edge.u)
+        const v = NodeId(edge.v)
 
         if(!this.nodesAdjacency.get(u))
             this.nodesAdjacency.set(u, [])
@@ -51,7 +60,7 @@ export class RoutingEngine{
 
     buildDataStructures(){
         // Create grid
-        this.edgeGridIndex  = new EdgeGrid(this.regionBB)
+        this.edgeGridIndex  = new EdgeGrid(this.regionBB, 0.001)
 
         // Add edges to grid index
         for(const geoEdge of this.routingGeoData.features){
@@ -128,4 +137,134 @@ export class RoutingEngine{
             distance: minDist,
         }
     }
+
+    travelDirection(pos: LatLon, headingPos: LatLon, closestEdge: EdgeIntersection):TravelDirection{
+        // Dot product of direction of travel and current edge segment from u to v
+        // positive = same general direction
+        const pXY = this.projection.fromLatlon(pos)
+        const pHeading = this.projection.fromLatlon(headingPos)
+        const vH: Cartesian = {x: pHeading.x - pXY.x, y: pHeading.y - pXY.y}
+        const lH = Math.sqrt(vH.x * vH.x + vH.y * vH.y)
+
+
+        const su = closestEdge.edge.cartesian[closestEdge.segmentIndex]
+        const sv = closestEdge.edge.cartesian[closestEdge.segmentIndex + 1]
+        const vUV: Cartesian = {x: sv.x -su.x, y: sv.y - su.y}
+
+        const dot = (vH.x * vUV.x + vH.y * vUV.y) / lH
+        return dot > 0 ? TravelDirection.U_TO_V : TravelDirection.V_TO_U
+    }
+
+    // Dijkstra route finding
+    //=======================
+
+    // Use Map of "Best predecessor for x" to walk back to starting node from target
+    // Result is a list of node ids
+    reconstructPath(prev: Map<NodeId, NodeId>, target: NodeId): NodeId[]|null {
+        const path = [];
+        let current: NodeId|undefined = target;
+
+        // If target was never reached
+        if (!prev.has(current)) {
+            //console.log("Target not reached", prev.keys())
+            return null; // or []
+        }
+
+        while (current !== undefined) {
+            path.push(current);
+            current = prev.get(current);
+        }
+
+        path.reverse();
+        //console.log("Reconstructed path", path)
+        return path;
+    }
+
+    dijkstra(start: NodeId, target: NodeId): NodeId[]|null {
+        const dist = new Map<NodeId, number>(); // Distances from starting node to node x
+        const prev = new Map<NodeId, NodeId>(); // Best predecessor for node x
+        const visited = new Set<NodeId>();
+
+        // Init: Put starting node in queue
+        dist.set(start, 0);
+        const queue = [start];
+
+        while (queue.length > 0) {
+
+            // Find node u in queue with smallest distance
+            let u = null;
+            let best = Infinity;
+
+            for (const n of queue) {
+                const d = dist.get(n)
+                if (d != undefined && d < best) {
+                    best = d;
+                    u = n;
+                }
+            }
+
+            if(u != null) {
+                //console.log("Candidate", u)
+                // Remove best candidate u from queue
+                queue.splice(queue.indexOf(u), 1);
+
+                if (u === target) {
+                    break;
+                }
+
+                visited.add(u);
+
+                // Find all neighbours of u that we haven't visited yet
+                const neighbours = this.nodesAdjacency.get(u)
+                if(neighbours) {
+                    for (const {node: v, distance} of neighbours) {
+                        // Skip if we have been here before (avoid loops)
+                        if (visited.has(v)) continue;
+
+                        // Is this a better way to get to v?
+                        const dv = dist.get(v)
+                        const du = dist.get(u)
+                        const alt = (du === undefined ? 0 : du) + distance;
+
+                        if (dv === undefined || alt < dv) {
+                            dist.set(v, alt);
+                            prev.set(v, u);
+
+                            if (!queue.includes(v))
+                                queue.push(v);
+                        }
+                    }
+                }
+            }
+        }
+
+        return this.reconstructPath(prev, target);
+    }
+
+    nodes_to_edges(routeNodes: NodeId[]): Route{
+        // Collect edges and length
+        let lastN = routeNodes[0]
+        let totalLength = 0
+        const routeEdges: Edge[] = []
+
+        for(let i=1; i < routeNodes.length;i++){
+            const currentN = routeNodes[i]
+            const adj = this.nodesAdjacency.get(lastN)
+
+            if(adj){
+                let found = false
+                for(const n of adj){
+                    if(n.node === currentN){
+                        totalLength += n.distance
+                        routeEdges.push(n.edge)
+                        found = true
+                    }
+                }
+                if(!found) console.error("No edge found for nodes", lastN, currentN)
+            }else console.error("No neighbours")
+            lastN = currentN
+        }
+        return {totalLength, routeEdges}
+    }
+
 }

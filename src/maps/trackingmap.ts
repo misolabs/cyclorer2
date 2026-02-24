@@ -1,6 +1,6 @@
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 import * as L from 'leaflet'
-import type {AreaNode, LatLon} from "../models/models.ts";
+import type {AreaNode, LatLon, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
@@ -13,6 +13,14 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   <td>length</td>
   <td><b>${feature.properties.length.toFixed(0)}m</b></td>
   </tr>
+  <tr>
+  <td>u</td>
+  <td><b>${feature.properties.u}</b></td>
+  </tr>
+  <tr>
+  <td>v</td>
+  <td><b>${feature.properties.v}</b></td>
+  </tr>
   </table>`
   layer.bindPopup(html)
 }
@@ -20,12 +28,15 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
 export class TrackingMap{
     map: L.Map
     positionMarker: L.Marker|null = null
+    headingMarker: L.Marker|null = null
     neighbourMarker: L.CircleMarker[] = []
     snappedEdge: L.Polyline
+    routeLayer: L.Polyline
 
     constructor(elName: string){
         this.map = L.map(elName)
         this.snappedEdge = L.polyline([], {color: "#ff7f00"}).addTo(this.map)
+        this.routeLayer = L.polyline([], {color: "#1f78b4", weight: 9}).addTo(this.map)
     }
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
@@ -79,8 +90,13 @@ export class TrackingMap{
     }
 
     addPositionMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
-        this.positionMarker = L.marker(startPos, {draggable: true}).addTo(this.map)
+        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking"}).addTo(this.map)
         this.positionMarker.addEventListener("dragend", listener)
+    }
+
+    addHeadingMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
+        this.headingMarker = L.marker(startPos, {draggable: true, title: "Heading"}).addTo(this.map)
+        this.headingMarker.addEventListener("dragend", listener)
     }
 
     setAreaMarker(areas: AreaNode[]): void{
@@ -115,5 +131,18 @@ export class TrackingMap{
     setSnappedEdge(poly: LatLon[]){
         const lfPoly = poly.map(e => new L.LatLng(e.lat, e.lon))
         this.snappedEdge.setLatLngs(lfPoly)
+    }
+
+    setRoute(route: Route){
+        var poly: L.LatLng[]=[]
+
+        for(const edge of route.routeEdges){
+            poly = poly.concat(edge.coordinates.map(e => new LatLng(e.lat, e.lon)))
+        }
+        this.routeLayer.setLatLngs(poly)
+    }
+
+    clearRoute(){
+        this.routeLayer.setLatLngs([])
     }
 }
