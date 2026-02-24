@@ -32,11 +32,18 @@ export class TrackingMap{
     neighbourMarker: L.CircleMarker[] = []
     snappedEdge: L.Polyline
     routeLayer: L.Polyline
+    headingIcon: L.Icon
 
     constructor(elName: string){
         this.map = L.map(elName)
-        this.snappedEdge = L.polyline([], {color: "#ff7f00"}).addTo(this.map)
-        this.routeLayer = L.polyline([], {color: "#1f78b4", weight: 9}).addTo(this.map)
+        this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
+        this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
+        this.headingIcon = new L.Icon({
+            iconUrl: 'assets/sign-merge-right.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [16, -32],
+        })
     }
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
@@ -95,7 +102,11 @@ export class TrackingMap{
     }
 
     addHeadingMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
-        this.headingMarker = L.marker(startPos, {draggable: true, title: "Heading"}).addTo(this.map)
+        this.headingMarker = L.marker(startPos, {
+            draggable: true,
+            title: "Heading",
+            icon: this.headingIcon}
+        ).addTo(this.map)
         this.headingMarker.addEventListener("dragend", listener)
     }
 

@@ -6,7 +6,7 @@ import {mapBBox} from './models/mapping.ts'
 import {TrackingMap} from './maps/trackingmap'
 import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
-import {geoToLatLon} from "./crs/latlonmath.ts";
+import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
@@ -42,11 +42,14 @@ function moveListener(e: L.DragEndEvent){
 
     const edgeDirection = routingEngine.travelDirection(pos, headingLatLon, closestEdge)
     let startNode: NodeId
+    let segments: LatLon[] = []
     if(edgeDirection == TravelDirection.U_TO_V){
-      trackingMap.setSnappedEdge(closestEdge.edge.coordinates.slice(closestEdge.segmentIndex))
+      segments = closestEdge.edge.coordinates.slice(closestEdge.segmentIndex)
+      segments[0] = interpolateLatLon(segments[0], segments[1], closestEdge.t)
       startNode = NodeId(closestEdge.edge.v)
     }else{ // u
-      trackingMap.setSnappedEdge(closestEdge.edge.coordinates.slice(0, closestEdge.segmentIndex))
+      segments = closestEdge.edge.coordinates.slice(0, closestEdge.segmentIndex + 2).reverse()
+      segments[0] = interpolateLatLon(segments[0], segments[1], 1 - closestEdge.t)
       startNode = NodeId(closestEdge.edge.u)
     }
 
@@ -56,7 +59,14 @@ function moveListener(e: L.DragEndEvent){
       console.log("Route nodes:", routeNodes)
       if(routeNodes) {
         const route = routingEngine.nodes_to_edges(routeNodes)
-        if(route) trackingMap.setRoute(route)
+        if(route) {
+          if(route.routeEdges.length > 0 && route.routeEdges[0] === closestEdge.edge)
+            console.log("Target behind our backs, disengage")
+          else {
+            trackingMap.setSnappedEdge(segments)
+            trackingMap.setRoute(route)
+          }
+        }
         else trackingMap.clearRoute()
       }
     }

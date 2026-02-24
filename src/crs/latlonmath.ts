@@ -34,3 +34,10 @@ export function bbCenter(bbox: BoundingBox): LatLon{
         lon: (bbox.min.lon + bbox.max.lon)/ 2
     }
 }
+
+export function interpolateLatLon(p1:LatLon, p2:LatLon, t:number):LatLon{
+    const lat = p1.lat * t + p2.lat * (1 -t)
+    const lon = p1.lon * t + p2.lon * (1 -t)
+
+    return {lat, lon}
+}
