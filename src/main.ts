@@ -22,25 +22,32 @@ trackingMap.initBaseLayer(ellergronnGPS, 15)
 trackingMap.addPositionMarker(ellergronnGPS, moveListener)
 trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
 
-let headingLatLon: LatLon
+let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
+let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
+
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
+  updateRouting()
 }
 
-function moveListener(e: L.DragEndEvent){
-  const pos: LatLon = geoToLatLon(e.target.getLatLng())
+function moveListener(e: L.DragEndEvent) {
+  posLatLon = geoToLatLon(e.target.getLatLng())
 
-  e.target.bindPopup(`Coordinates: <br/><b>${pos.lat}<br/>${pos.lon}</b>`)
-  const areas = areaFinder.findNeighbours(pos)
+  e.target.bindPopup(`Coordinates: <br/><b>${posLatLon.lat}<br/>${posLatLon.lon}</b>`)
+  updateRouting()
+}
+
+function updateRouting(){
+  const areas = areaFinder.findNeighbours(posLatLon)
   console.log(areas)
   trackingMap.setAreaMarker(areas)
 
-  const closestEdge = routingEngine.findClosestEdge(pos)
+  const closestEdge = routingEngine.findClosestEdge(posLatLon)
   if(closestEdge) {
     console.log("Snapped to edge:", closestEdge)
     //trackingMap.setSnappedEdge(closestEdge.edge.coordinates)
 
-    const edgeDirection = routingEngine.travelDirection(pos, headingLatLon, closestEdge)
+    const edgeDirection = routingEngine.travelDirection(posLatLon, headingLatLon, closestEdge)
     let startNode: NodeId
     let segments: LatLon[] = []
     if(edgeDirection == TravelDirection.U_TO_V){
@@ -76,7 +83,7 @@ function moveListener(e: L.DragEndEvent){
   }
 }
 
-async function loadStats(url: string) {
+async function loadConfig(url: string) {
   try {
     const response = await fetch(url);
     if (!response.ok) throw new Error("Network error");
@@ -94,7 +101,7 @@ async function loadStats(url: string) {
 }
 async function loadData(){
   // First load stats
-  await loadStats("data/stats.json")
+  await loadConfig("data/stats.json")
 
   // Routing data
   routingEngine = new RoutingEngine(regionBBox)
