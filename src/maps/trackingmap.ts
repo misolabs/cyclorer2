@@ -101,8 +101,11 @@ export class TrackingMap{
 
     setAreaMarker(areas: AreaNode[]): void{
         // If we need more markers, add them
-        if(this.neighbourMarker.length < areas.length){
-            for(let i = 0; i <= areas.length - this.neighbourMarker.length; i++){
+        const nMarker = this.neighbourMarker.length
+        const nAreas = areas.length
+
+        if(nMarker < nAreas){
+            for(let i = 0; i < nAreas - nMarker; i++){
                 const marker = L.circleMarker(
                     new LatLng(0,0),
                     {
@@ -114,16 +117,19 @@ export class TrackingMap{
                     })
                 this.map.addLayer(marker)
                 this.neighbourMarker.push(marker)
-
             }
         // If there are too many remove some
-        }else if(this.neighbourMarker.length > areas.length){
-            const marker = this.neighbourMarker.pop()
-            if(marker)
-                this.map.removeLayer(marker)
+        }else if(nMarker > nAreas){
+            for(let i = 0; i < nMarker - nAreas; i++) {
+                const marker = this.neighbourMarker.pop()
+                if (marker)
+                    this.map.removeLayer(marker)
+            }
         }
+        console.log("Areas", areas.length, "Marker", this.neighbourMarker.length)
+
         // Update position
-        for(let i=0; i < areas.length; i++){
+        for(let i=0; i < this.neighbourMarker.length; i++){
             this.neighbourMarker[i].setLatLng(new LatLng(areas[i].position.lat, areas[i].position.lon))
         }
     }
