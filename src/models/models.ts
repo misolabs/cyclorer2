@@ -1,3 +1,5 @@
+import type {GeoJsonArea} from "./geo.ts";
+
 export interface LatLon {
   lat: number;
   lon: number;
@@ -43,6 +45,17 @@ export interface Node{
 
 export interface AreaNode extends Node{
   area_id: number
+  osmid: number
+  position: LatLon
+}
+
+export interface Area{
+  area_id: number
+
+  geoData: GeoJsonArea
+  totalLength: number
+  edgeCount: number
+  bbox: BoundingBox
 }
 
 export interface AdjacencyInfo {

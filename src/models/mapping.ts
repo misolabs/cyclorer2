@@ -1,6 +1,28 @@
 import {type GeoJsonArea, type GeoJsonBBox, type GeoJsonEntrypoint, type GeoJsonRouting} from "./geo.ts";
-import {type Edge, type LatLon, type BoundingBox, type AreaNode} from "./models.ts";
+import {type Edge, type LatLon, type BoundingBox, type AreaNode, type Area} from "./models.ts";
+import type {Position} from "geojson";
 
+// Recursive structure
+type NestedPositions = Position | NestedPositions[];
+type NestedLatLon<T> =
+    T extends Position
+        ? LatLon
+        : T extends (infer U)[]
+            ? NestedLatLon<U>[]
+            : never;
+
+export function mapCoordinates<T extends NestedPositions>(coords: T): NestedLatLon<T> {
+  // Base case: Position
+  if (typeof coords[0] === "number") {
+    const [lng, lat] = coords as Position;
+    return { lat, lon: lng } as NestedLatLon<T>;
+  }
+
+  // Recursive case: array
+  return (coords as NestedPositions[]).map(c =>
+      mapCoordinates(c)
+  ) as NestedLatLon<T>;
+}
 
 export function mapBBox(bbox: GeoJsonBBox): BoundingBox {
   // tuple destructuring
@@ -40,5 +62,16 @@ export function mapGeoAreaNode(feature: GeoJsonEntrypoint): AreaNode{
     osmid: Number(feature.properties.osmid),
     area_id: feature.properties.area_id,
     position: {lon: feature.geometry.coordinates[0], lat: feature.geometry.coordinates[1]}
+  }
+}
+
+export function mapGeoArea(feature: GeoJsonArea): Area{
+  return{
+    area_id: feature.properties.area_id,
+    totalLength: feature.properties.total_length,
+    edgeCount: feature.properties.edge_count,
+    geoData: feature,
+    //coordinates: mapCoordinates(feature.geometry.coordinates),
+    bbox: mapBBox(feature.properties.bbox)
   }
 }

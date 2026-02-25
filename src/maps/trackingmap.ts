@@ -36,6 +36,8 @@ export class TrackingMap{
 
     constructor(elName: string){
         this.map = L.map(elName)
+        L.control.scale({metric: true, imperial: false}).addTo(this.map)
+
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
         this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
         this.headingIcon = new L.Icon({

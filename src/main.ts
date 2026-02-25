@@ -7,6 +7,7 @@ import {TrackingMap} from './maps/trackingmap'
 import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
 import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
+import {PreviewMap} from "./maps/previewmap.ts";
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
@@ -17,10 +18,12 @@ var regionBBox: BoundingBox
 var routingEngine!: RoutingEngine
 var areaFinder!: AreaFinder
 
-const trackingMap: TrackingMap = new TrackingMap("map")
+const trackingMap: TrackingMap = new TrackingMap("tracking-map")
 trackingMap.initBaseLayer(ellergronnGPS, 15)
 trackingMap.addPositionMarker(ellergronnGPS, moveListener)
 trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
+
+const previewMap: PreviewMap = new PreviewMap("preview-map")
 
 let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
@@ -61,9 +64,15 @@ function updateRouting(){
     }
 
     if(areas.length > 0){
+      // Testing
+      const area = areaFinder.areaData.get(areas[0].area_id)
+      if(area)
+        previewMap.setArea(area)
+
       console.log("Dijkstra from ", startNode, " to ", NodeId(areas[0].osmid))
       const routeNodes = routingEngine.dijkstra(startNode, NodeId(areas[0].osmid))
       console.log("Route nodes:", routeNodes)
+
       if(routeNodes) {
         const route = routingEngine.nodes_to_edges(routeNodes)
         if(route) {

@@ -1,12 +1,14 @@
 import {logError} from "../helpers.ts";
 import type {GeoJsonAreaCollection, GeoJsonEntrypoint, GeoJsonEntrypointCollection} from "../models/geo.ts";
 import {GridIndex, NodeGrid} from "./gridindex.ts";
-import type {AreaNode, BoundingBox, LatLon} from "../models/models.ts";
-import {mapGeoAreaNode} from "../models/mapping.ts";
+import type {Area, AreaNode, BoundingBox, LatLon} from "../models/models.ts";
+import {mapGeoArea, mapGeoAreaNode} from "../models/mapping.ts";
 
 export class AreaFinder{
     areaGeoData!: GeoJsonAreaCollection
     entrypointsGeoData!: GeoJsonEntrypointCollection
+
+    areaData: Map<number, Area> = new Map()
 
     grid: NodeGrid<AreaNode>
 
@@ -37,6 +39,13 @@ export class AreaFinder{
             const response = await fetch(url);
             if (!response.ok) throw new Error("Network error");
             this.areaGeoData = await response.json();
+
+            // Store areas in map for easy retrieval
+            for(const geoArea of this.areaGeoData.features){
+                const area = mapGeoArea(geoArea)
+                this.areaData.set(area.area_id, area)
+            }
+
             if(this.areaGeoData)
                 console.log("Areas", this.areaGeoData.features.length)
         } catch (err:unknown) {
