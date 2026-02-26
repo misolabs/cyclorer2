@@ -15,6 +15,8 @@ import type {GeoJsonRoutingollection} from "../models/geo.ts";
 import {bbCenter} from "../crs/latlonmath.ts";
 import {pointToSegmentDistance} from "../crs/cartesian.ts";
 
+const GRID_RESOLUTION: number = 0.005
+
 export class RoutingEngine{
     regionBB: BoundingBox
     projection: CartesianProjection
@@ -60,7 +62,7 @@ export class RoutingEngine{
 
     buildDataStructures(){
         // Create grid
-        this.edgeGridIndex  = new EdgeGrid(this.regionBB, 0.001)
+        this.edgeGridIndex  = new EdgeGrid(this.regionBB, GRID_RESOLUTION)
 
         // Add edges to grid index
         for(const geoEdge of this.routingGeoData.features){

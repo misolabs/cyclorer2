@@ -13,7 +13,7 @@ export class AreaFinder{
     grid: NodeGrid<AreaNode>
 
     constructor(regionBB: BoundingBox) {
-        this.grid = new NodeGrid<AreaNode>(regionBB, 0.001)
+        this.grid = new NodeGrid<AreaNode>(regionBB, 0.005)
     }
 
     async init(){

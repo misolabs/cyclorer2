@@ -147,6 +147,10 @@ export class TrackingMap{
         }
     }
 
+    clearAreaMarker(){
+        this.setAreaMarker([])
+    }
+
     setSnappedEdge(poly: LatLon[]){
         const lfPoly = poly.map(e => new L.LatLng(e.lat, e.lon))
         this.snappedEdge.setLatLngs(lfPoly)
@@ -163,5 +167,6 @@ export class TrackingMap{
 
     clearRoute(){
         this.routeLayer.setLatLngs([])
+        this.snappedEdge.setLatLngs([])
     }
 }

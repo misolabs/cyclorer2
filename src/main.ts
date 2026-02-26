@@ -122,7 +122,7 @@ function updateRouting(){
           if (!foundRoute) {
             console.log("Trying to find new entrypoint to largest area")
             entrypointCandidates.sort((a, b) =>
-              areaFinder.areaInfoById(a.area_id).totalLength - areaFinder.areaInfoById(b.area_id).totalLength)
+              areaFinder.areaInfoById(a.area_id).totalLength - areaFinder.areaInfoById(b.area_id).totalLength).reverse()
 
             // Try candidates from largest to smallest
             for(const entrypoint of entrypointCandidates){
@@ -142,6 +142,8 @@ function updateRouting(){
           if(foundRoute && currentRoute){
             trackingMap.setSnappedEdge(segments)
             trackingMap.setRoute(currentRoute)
+            if(currentEntrypoint)
+              previewMap.setArea(areaFinder.areaInfoById(currentEntrypoint.area_id))
           }
         } else {
           // We have no target
@@ -154,6 +156,9 @@ function updateRouting(){
   }else{
     // We are completely lost -> hide everything
     trackingMap.clearRoute()
+    previewMap.clearArea()
+    trackingMap.clearAreaMarker()
+
     console.log("No trail close to current position")
   }
 }

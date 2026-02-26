@@ -16,4 +16,8 @@ export class PreviewMap {
         this.previewArea.addData(area.geoData)
         this.map.fitBounds(this.previewArea.getBounds())
     }
+
+    clearArea(){
+        this.previewArea.clearLayers()
+    }
 }
