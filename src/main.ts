@@ -195,7 +195,7 @@ async function loadConfig(url: string) {
 }
 async function loadData(){
   // First load stats
-  await loadConfig("data/stats.json")
+  await loadConfig(import.meta.env.BASE_URL + "data/stats.json")
 
   // Routing data
   routingEngine = new RoutingEngine(regionBBox)

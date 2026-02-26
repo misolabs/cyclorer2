@@ -91,7 +91,7 @@ export class RoutingEngine{
     }
 
     async init(){
-        await this.loadRoutingEdges("data/routing_edges.geojson")
+        await this.loadRoutingEdges(import.meta.env.BASE_URL + "data/routing_edges.geojson")
         this.buildDataStructures()
     }
 

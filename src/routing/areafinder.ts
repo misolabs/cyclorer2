@@ -19,8 +19,8 @@ export class AreaFinder{
     async init(){
         // Areas and entrypoints
         await Promise.all([
-            this.loadAreas("data/unvisited_areas.geojson"),
-            this.loadEntrypoints("data/unvisited_junctions.geojson")
+            this.loadAreas(import.meta.env.BASE_URL + "data/unvisited_areas.geojson"),
+            this.loadEntrypoints(import.meta.env.BASE_URL + "data/unvisited_junctions.geojson")
         ])
         if(this.entrypointsGeoData && this.areaGeoData) {
             // Build spatial index

@@ -41,7 +41,7 @@ export class TrackingMap{
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
         this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
         this.headingIcon = new L.Icon({
-            iconUrl: 'assets/sign-merge-right.png',
+            iconUrl: import.meta.env.BASE_URL + 'assets/sign-merge-right.png',
             iconSize: [32, 32],
             iconAnchor: [16, 32],
             popupAnchor: [16, -32],
