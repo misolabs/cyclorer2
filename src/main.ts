@@ -17,6 +17,12 @@ import {RoutingEngine} from "./routing/routing.ts";
 import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDescription} from "./dom.ts";
+import { defineConfig } from "vite";
+
+// For github CI
+export default defineConfig({
+  base: "/cyclorer2/",
+});
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
