@@ -176,11 +176,13 @@ export class RoutingEngine{
         }
 
         path.reverse();
-        //console.log("Reconstructed path", path)
+        console.log("Reconstructed path", path)
         return path;
     }
 
     dijkstra(start: NodeId, target: NodeId): NodeId[]|null {
+        if(start == target) return []
+
         const dist = new Map<NodeId, number>(); // Distances from starting node to node x
         const prev = new Map<NodeId, NodeId>(); // Best predecessor for node x
         const visited = new Set<NodeId>();

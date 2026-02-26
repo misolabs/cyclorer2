@@ -95,4 +95,5 @@ export function NodeId(value: number): NodeId {
 export interface Route{
   totalLength: number
   routeEdges: Edge[]
+  inTravelDirection?: boolean
 }

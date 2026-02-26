@@ -68,4 +68,11 @@ export class AreaFinder{
     findNeighbours(pos: LatLon): AreaNode[]{
         return this.grid.findNeighbours(pos, 1)
     }
+
+    areaInfoById(areaId: number): Area {
+        const area = this.areaData.get(areaId)
+        if(area)
+            return area
+        else throw new Error("Area not found")
+    }
 }

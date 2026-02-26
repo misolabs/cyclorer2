@@ -153,10 +153,10 @@ export class TrackingMap{
     }
 
     setRoute(route: Route){
-        var poly: L.LatLng[]=[]
+        var poly: L.LatLng[][]=[]
 
         for(const edge of route.routeEdges){
-            poly = poly.concat(edge.coordinates.map(e => new LatLng(e.lat, e.lon)))
+            poly.push(edge.coordinates.map(e => new LatLng(e.lat, e.lon)))
         }
         this.routeLayer.setLatLngs(poly)
     }
