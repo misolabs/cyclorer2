@@ -245,7 +245,7 @@ export class RoutingEngine{
         return this.reconstructPath(prev, target);
     }
 
-    nodes_to_edges(routeNodes: NodeId[]): Route{
+    nodesToEdges(routeNodes: NodeId[]): Route{
         // Collect edges and length
         let lastN = routeNodes[0]
         let totalLength = 0
@@ -271,4 +271,18 @@ export class RoutingEngine{
         return {totalLength, routeEdges}
     }
 
+    findRoute(startNode: NodeId, targetNode: NodeId, currentEdge: Edge){
+        const routeNodes = this.dijkstra(startNode, targetNode)
+
+        if(routeNodes) {
+            const route = this.nodesToEdges(routeNodes)
+            if (route) {
+                // Is the target ahead of us?
+                route.inTravelDirection = !(route.routeEdges.length > 0 && route.routeEdges[0] === currentEdge)
+                return route
+            } else console.log("Could not reconstruct edges")
+        }else console.log("Dijkstra found no route")
+
+        return undefined
+    }
 }

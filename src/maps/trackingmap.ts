@@ -98,18 +98,20 @@ export class TrackingMap{
         }).addTo(this.map)        
     }
 
-    addPositionMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
+    addPositionMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
         this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking"}).addTo(this.map)
-        this.positionMarker.addEventListener("dragend", listener)
+        if(listener != null)
+            this.positionMarker.addEventListener("dragend", listener)
     }
 
-    addHeadingMarker(startPos: L.LatLng, listener: (e: L.DragEndEvent)=>void){
+    addHeadingMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
         this.headingMarker = L.marker(startPos, {
             draggable: true,
             title: "Heading",
             icon: this.headingIcon}
         ).addTo(this.map)
-        this.headingMarker.addEventListener("dragend", listener)
+        if(listener != null)
+            this.headingMarker.addEventListener("dragend", listener)
     }
 
     setAreaMarker(areas: AreaNode[]): void{
@@ -168,5 +170,11 @@ export class TrackingMap{
     clearRoute(){
         this.routeLayer.setLatLngs([])
         this.snappedEdge.setLatLngs([])
+    }
+
+    setPosition(pos: LatLon){
+        const leafPos = new LatLng(pos.lat, pos.lon)
+        this.map.setView(leafPos)
+        this.positionMarker?.setLatLng(leafPos)
     }
 }

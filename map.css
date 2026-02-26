@@ -16,6 +16,15 @@
     font-family: sans-serif;
     text-shadow: 2px 2px 1px grey;
     color: white;
+    background-color: darkslategrey;
+}
+
+#description{
+    position: absolute;
+    z-index: 1001;
+    top: 5px;
+    left: 0;
+    width: 100%;
 
     display: flex;
     justify-content: center;

@@ -16,6 +16,10 @@ import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
 import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
+import {formatDistance, setDescription} from "./dom.ts";
+
+const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
+//const isMobileLike = true
 
 const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
@@ -28,13 +32,17 @@ var areaFinder!: AreaFinder
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
 trackingMap.initBaseLayer(ellergronnGPS, 15)
-trackingMap.addPositionMarker(ellergronnGPS, moveListener)
-trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
+trackingMap.addPositionMarker(ellergronnGPS, (isMobileLike ? null : moveListener))
+if(!isMobileLike)
+  trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
 
 const previewMap: PreviewMap = new PreviewMap("preview-map")
 
 let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
+
+var watchId: number = -1
+var trackingEnabled = isMobileLike // Enable on mobile
 
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
@@ -48,24 +56,26 @@ function moveListener(e: L.DragEndEvent) {
   updateRouting()
 }
 
+function trackingListener(pos: GeolocationPosition){
+  posLatLon = {lat: pos.coords.latitude, lon: pos.coords.longitude}
+  trackingMap.setPosition(posLatLon)
+
+  // TODO: heading
+
+  updateRouting()
+}
+
+function registerTrackingListener(){
+  watchId = navigator.geolocation.watchPosition(
+      trackingListener,
+      (err) => console.warn("Geolocation error:", err.message),
+      { enableHighAccuracy: true }
+  );
+}
+
 var currentEntrypoint: AreaNode|null
 var currentEdge: Edge|null
 var currentRoute: Route|null
-
-function findRoute(startNode: NodeId, targetNode: NodeId, currentEdge: Edge){
-  const routeNodes = routingEngine.dijkstra(startNode, targetNode)
-
-  if(routeNodes) {
-    const route = routingEngine.nodes_to_edges(routeNodes)
-    if (route) {
-      // Is the target ahead of us?
-      route.inTravelDirection = !(route.routeEdges.length > 0 && route.routeEdges[0] === currentEdge)
-      return route
-    } else console.log("Could not reconstruct edges")
-  }else console.log("Dijkstra found no route")
-
-  return undefined
-}
 
 function updateRouting(){
   const closestEdge = routingEngine.findClosestEdge(posLatLon)
@@ -87,6 +97,7 @@ function updateRouting(){
 
     // 1. Unvisited territory
     if(closestEdge.edge.ride_count == 0){
+      setDescription("GO Explore!")
       console.log("Unvisited territory")
       currentRoute = null
       // TODO Determine area we are visiting and show preview
@@ -111,7 +122,7 @@ function updateRouting(){
           // 3.A Stay on the same target if possible
           if (currentEntrypoint != null && entrypointCandidates.find(ep => ep === currentEntrypoint)) {
             console.log("Same entrypoint, new route")
-            const routeCandidate = findRoute(startNode, NodeId(currentEntrypoint.osmid), closestEdge.edge)
+            const routeCandidate = routingEngine.findRoute(startNode, NodeId(currentEntrypoint.osmid), closestEdge.edge)
             if (routeCandidate && routeCandidate.inTravelDirection) {
               foundRoute = true
               currentRoute = routeCandidate
@@ -126,7 +137,7 @@ function updateRouting(){
 
             // Try candidates from largest to smallest
             for(const entrypoint of entrypointCandidates){
-              const routeCandidate = findRoute(startNode, NodeId(entrypoint.osmid), closestEdge.edge)
+              const routeCandidate = routingEngine.findRoute(startNode, NodeId(entrypoint.osmid), closestEdge.edge)
               console.log("Checking candidate...", routeCandidate)
               if (routeCandidate && routeCandidate.inTravelDirection) {
                 console.log("Found new route to new entrypoint")
@@ -142,8 +153,11 @@ function updateRouting(){
           if(foundRoute && currentRoute){
             trackingMap.setSnappedEdge(segments)
             trackingMap.setRoute(currentRoute)
-            if(currentEntrypoint)
-              previewMap.setArea(areaFinder.areaInfoById(currentEntrypoint.area_id))
+            if(currentEntrypoint){
+              const areaInfo = areaFinder.areaInfoById(currentEntrypoint.area_id)
+              previewMap.setArea(areaInfo)
+              setDescription(formatDistance(areaInfo.totalLength))
+            }
           }
         } else {
           // We have no target
@@ -203,3 +217,6 @@ async function loadData(){
 //  Load all application data
 await loadData()
 
+if(trackingEnabled && "geolocation" in navigator){
+  registerTrackingListener()
+}
