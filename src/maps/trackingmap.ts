@@ -3,6 +3,11 @@ import * as L from 'leaflet'
 import type {AreaNode, LatLon, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
+(window as any).L = L
+
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-rotate'
+
 // Import marker images so Vite bundles them
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
@@ -49,8 +54,9 @@ export class TrackingMap{
     headingIcon: L.Icon
 
     constructor(elName: string){
-        this.map = L.map(elName)
-        //this.map.setBearing(30)
+        this.map = L.map(elName, { rotate: true })
+        this.map.setBearing(30)
+
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
