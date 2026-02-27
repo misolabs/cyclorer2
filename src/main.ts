@@ -17,6 +17,7 @@ import {RoutingEngine} from "./routing/routing.ts";
 import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDescription} from "./dom.ts";
+import {Heading} from "./routing/heading.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
@@ -60,7 +61,8 @@ function trackingListener(pos: GeolocationPosition){
   posLatLon = {lat: pos.coords.latitude, lon: pos.coords.longitude}
   trackingMap.setPosition(posLatLon)
 
-  // TODO: heading
+  const bearing = heading.update(posLatLon, pos.coords.speed)
+  trackingMap.map.setBearing(bearing)
 
   updateRouting()
 }
@@ -76,12 +78,14 @@ function registerTrackingListener(){
 var currentEntrypoint: AreaNode|null
 var currentEdge: Edge|null
 var currentRoute: Route|null
+var heading: Heading = new Heading()
 
 function updateRouting(){
   const closestEdge = routingEngine.findClosestEdge(posLatLon)
 
   if(closestEdge){
-    const edgeDirection = routingEngine.travelDirection(posLatLon, headingLatLon, closestEdge)
+//    const edgeDirection = routingEngine.travelDirection(posLatLon, headingLatLon, closestEdge)
+    const edgeDirection = routingEngine.travelDirectionVector(heading.getHeading(), closestEdge)
     // Prepare for routing - Starting node and heading
     let startNode: NodeId
     let segments: LatLon[] = []

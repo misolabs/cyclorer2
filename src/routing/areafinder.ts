@@ -4,6 +4,9 @@ import {GridIndex, NodeGrid} from "./gridindex.ts";
 import type {Area, AreaNode, BoundingBox, LatLon} from "../models/models.ts";
 import {mapGeoArea, mapGeoAreaNode} from "../models/mapping.ts";
 
+const GRID_RESOLUTION: number = 0.001
+const NEIGHBOURHOOD = 2
+
 export class AreaFinder{
     areaGeoData!: GeoJsonAreaCollection
     entrypointsGeoData!: GeoJsonEntrypointCollection
@@ -13,7 +16,7 @@ export class AreaFinder{
     grid: NodeGrid<AreaNode>
 
     constructor(regionBB: BoundingBox) {
-        this.grid = new NodeGrid<AreaNode>(regionBB, 0.005)
+        this.grid = new NodeGrid<AreaNode>(regionBB, GRID_RESOLUTION)
     }
 
     async init(){
@@ -66,7 +69,7 @@ export class AreaFinder{
     }
 
     findNeighbours(pos: LatLon): AreaNode[]{
-        return this.grid.findNeighbours(pos, 1)
+        return this.grid.findNeighbours(pos, NEIGHBOURHOOD)
     }
 
     areaInfoById(areaId: number): Area {

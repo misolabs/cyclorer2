@@ -15,7 +15,8 @@ import type {GeoJsonRoutingollection} from "../models/geo.ts";
 import {bbCenter} from "../crs/latlonmath.ts";
 import {pointToSegmentDistance} from "../crs/cartesian.ts";
 
-const GRID_RESOLUTION: number = 0.005
+const GRID_RESOLUTION: number = 0.001
+const NEIGHBOURHOOD = 2
 
 export class RoutingEngine{
     regionBB: BoundingBox
@@ -106,7 +107,7 @@ export class RoutingEngine{
         let segmentIndex!:number
         let segmentT!:number
 
-        const candidates = this.edgeGridIndex.findNeighbours(pos)
+        const candidates = this.edgeGridIndex.findNeighbours(pos, NEIGHBOURHOOD)
         for(const e of candidates){
             //console.log("Candidate", e.osmid)
             const pointsXY = e.cartesian
@@ -157,6 +158,18 @@ export class RoutingEngine{
         return dot > 0 ? TravelDirection.U_TO_V : TravelDirection.V_TO_U
     }
 
+    travelDirectionVector(vH: Cartesian, closestEdge: EdgeIntersection):TravelDirection{
+        // Dot product of direction of travel and current edge segment from u to v
+        // positive = same general direction
+        const lH = Math.sqrt(vH.x * vH.x + vH.y * vH.y)
+
+        const su = closestEdge.edge.cartesian[closestEdge.segmentIndex]
+        const sv = closestEdge.edge.cartesian[closestEdge.segmentIndex + 1]
+        const vUV: Cartesian = {x: sv.x -su.x, y: sv.y - su.y}
+
+        const dot = (vH.x * vUV.x + vH.y * vUV.y) / lH
+        return dot > 0 ? TravelDirection.U_TO_V : TravelDirection.V_TO_U
+    }
     // Dijkstra route finding
     //=======================
 
