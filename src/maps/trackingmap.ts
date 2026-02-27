@@ -3,6 +3,20 @@ import * as L from 'leaflet'
 import type {AreaNode, LatLon, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
+// Import marker images so Vite bundles them
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+
+// Fix default icon paths
+delete (L.Icon.Default.prototype as any)._getIconUrl
+
+L.Icon.Default.mergeOptions({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
+})
+
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   const html = `<table>
   <tr>
@@ -36,6 +50,7 @@ export class TrackingMap{
 
     constructor(elName: string){
         this.map = L.map(elName)
+        //this.map.setBearing(30)
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
