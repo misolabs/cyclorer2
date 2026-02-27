@@ -158,7 +158,10 @@ export class RoutingEngine{
         return dot > 0 ? TravelDirection.U_TO_V : TravelDirection.V_TO_U
     }
 
-    travelDirectionVector(vH: Cartesian, closestEdge: EdgeIntersection):TravelDirection{
+    travelDirectionVector(vH: Cartesian|null, closestEdge: EdgeIntersection):TravelDirection|undefined{
+        if(!vH)
+            return undefined
+
         // Dot product of direction of travel and current edge segment from u to v
         // positive = same general direction
         const lH = Math.sqrt(vH.x * vH.x + vH.y * vH.y)

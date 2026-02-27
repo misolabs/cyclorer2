@@ -1,5 +1,5 @@
 // For heading direction
-import type {LatLon} from "../models/models.ts";
+import type {Cartesian, LatLon} from "../models/models.ts";
 
 const MIN_SPEED = 1.0
 const MAX_HISTORY = 5;
@@ -47,6 +47,32 @@ function modeFilter(headings: number[]) {
     return heading
 }
 
+function smoothAngle(prev: number, current: number, alpha: number) {
+    const delta = ((((current - prev) % 360) + 540) % 360) - 180;
+    return (prev + alpha * delta + 360) % 360;
+}
+
+function smoothVector(
+    prev: { x: number; y: number },
+    current: { x: number; y: number },
+    alpha: number
+) {
+    const x = prev.x + alpha * (current.x - prev.x);
+    const y = prev.y + alpha * (current.y - prev.y);
+
+    const length = Math.hypot(x, y);
+
+    return {
+        x: x / length,
+        y: y / length
+    };
+}
+
+function vectorToBearing(v: Cartesian) {
+    const radians = Math.atan2(v.x, -v.y);
+    return (radians * 180 / Math.PI + 360) % 360;
+}
+
 export class Heading {
     headingHistory: number[] = [];
     lastPos: LatLon | null = null
@@ -77,5 +103,33 @@ export class Heading {
             x: Math.cos(radians),
             y: Math.sin(radians)
         }
+    }
+}
+
+export class HeadingExp {
+    lastPos: Cartesian | null = null
+    currentDirection: Cartesian | null = null
+
+    update(newPos: Cartesian, speed: number|null) {
+        // Heading
+        if (this.lastPos && speed !== null && speed > MIN_SPEED) {
+            const dir = {x: newPos.x - this.lastPos.x, y: newPos.y - this.lastPos.y};
+            if(this.currentDirection){
+                this.currentDirection = smoothVector(this.currentDirection, dir, 0.15)
+            }
+        }
+
+        this.lastPos = newPos
+        return this.currentDirection
+    }
+
+    getDirection(){
+        return this.currentDirection
+    }
+
+    getBearing(){
+        if(this.currentDirection)
+            return vectorToBearing(this.currentDirection)
+        else return 0
     }
 }
