@@ -62,8 +62,9 @@ function trackingListener(pos: GeolocationPosition){
   trackingMap.setPosition(posLatLon)
 
   const posXY = trackingMap.map.project({lat: pos.coords.latitude, lng: pos.coords.longitude})
-  const bearing = heading.update(posXY, pos.coords.speed)
-  trackingMap.map.setBearing(heading.getBearing())
+  heading.update(posXY, pos.coords.speed)
+  const smoothBearing = Math.round(heading.getBearing() / 5) * 5
+  trackingMap.map.setBearing(smoothBearing)
 
   updateRouting()
 }
