@@ -14,10 +14,11 @@ import {mapBBox} from './models/mapping.ts'
 import {TrackingMap} from './maps/trackingmap'
 import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
-import {geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
+import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDescription} from "./dom.ts";
 import {Heading, HeadingExp} from "./routing/heading.ts";
+import {CartesianProjection} from "./helpers.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
@@ -30,6 +31,7 @@ var statsData: StatsJson
 var regionBBox: BoundingBox
 var routingEngine!: RoutingEngine
 var areaFinder!: AreaFinder
+export var projection: CartesianProjection
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
 trackingMap.initBaseLayer(ellergronnGPS, 16)
@@ -61,9 +63,9 @@ function trackingListener(pos: GeolocationPosition){
   posLatLon = {lat: pos.coords.latitude, lon: pos.coords.longitude}
   trackingMap.setPosition(posLatLon)
 
-  const posXY = trackingMap.map.project({lat: pos.coords.latitude, lng: pos.coords.longitude})
+  const posXY = projection.fromLatlon(posLatLon)
   heading.update(posXY, pos.coords.speed)
-  const smoothBearing = Math.round(heading.getBearing() / 5) * 5
+  const smoothBearing = Math.round(heading.getBearing() / 5 ) * 5
   trackingMap.map.setBearing(smoothBearing)
 
   updateRouting()
@@ -192,6 +194,7 @@ async function loadConfig(url: string) {
     
     // bbox format: minLon, minLat, maxLon, maxLat
     regionBBox = mapBBox(statsData.bbox)
+    projection = new CartesianProjection(bbCenter(regionBBox))
 
     //uiUpdateStats(statsData["total_length"], statsData["areas"])
     //document.getElementById("stats-total-length").classList.add("fadein-slow")

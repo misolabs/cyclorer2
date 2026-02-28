@@ -69,9 +69,9 @@ export class TrackingMap{
         })
         this.positionIcon = new L.Icon({
             iconUrl: import.meta.env.BASE_URL + 'assets/pos-marker.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [16, -32],
+            iconSize: [48, 48],
+            iconAnchor: [24, 24],
+            popupAnchor: [0, 0],
         })
     }
 
