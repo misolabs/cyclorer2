@@ -6,7 +6,14 @@ import {LatLng} from "leaflet";
 (window as any).L = L
 
 import 'leaflet/dist/leaflet.css'
+
+// Leaflet rotate plugin
 import 'leaflet-rotate'
+
+// Marker cluster plugin
+import "leaflet.markercluster/dist/MarkerCluster.css"
+import "leaflet.markercluster/dist/MarkerCluster.Default.css"
+import "leaflet.markercluster/dist/leaflet.markercluster.js"
 
 // Import marker images so Vite bundles them
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
@@ -54,6 +61,9 @@ export class TrackingMap{
     headingIcon: L.Icon
     positionIcon: L.Icon
 
+    areaCluster: L.MarkerClusterGroup
+
+
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true })
 
@@ -73,6 +83,7 @@ export class TrackingMap{
             iconAnchor: [24, 24],
             popupAnchor: [0, 0],
         })
+        this.areaCluster = L.markerClusterGroup({maxClusterRadius: 150}).addTo(this.map)
     }
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
@@ -100,11 +111,15 @@ export class TrackingMap{
             [minLat, minLon],
             [maxLat, maxLon]
             );
-            
+
+            // Bounding rectangle
             L.rectangle(bounds,{weight:1, color: (features[i].properties.total_length > 200 ? "Purple": "Blue")})
             .bindPopup(`area: <b>${features[i].properties.area_id}</b>`)
             .addTo(this.map)
-    //        .on("mouseover", (e:L.LeafletMouseEvent) => {e.target.setStyle({color: "white"})})
+
+            // Add to cluster layer
+            const marker = L.marker(bounds.getCenter())
+            this.areaCluster.addLayer(marker)
         }
     
         // Draw edge network

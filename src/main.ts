@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import * as L from 'leaflet'
 import type {StatsJson} from './models/geo.ts'
 import {
-  type Area, type AreaNode,
+  type AreaNode,
   type BoundingBox,
   type Edge,
   type LatLon,
@@ -17,7 +17,7 @@ import {RoutingEngine} from "./routing/routing.ts";
 import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDescription} from "./dom.ts";
-import {Heading, HeadingExp} from "./routing/heading.ts";
+import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
@@ -93,7 +93,7 @@ function updateRouting(){
 
     // Prepare for routing - Starting node and heading
     let startNode: NodeId
-    let segments: LatLon[] = []
+    let segments: LatLon[]
     if (edgeDirection == TravelDirection.U_TO_V) {
       segments = closestEdge.edge.coordinates.slice(closestEdge.segmentIndex)
       segments[0] = interpolateLatLon(segments[0], segments[1], closestEdge.t)
@@ -125,7 +125,6 @@ function updateRouting(){
         trackingMap.setAreaMarker(entrypointCandidates)
 
         if (entrypointCandidates.length > 0) {
-          let targetNode: AreaNode
           let foundRoute: boolean = false
 
           // 3.A Stay on the same target if possible
