@@ -8,12 +8,12 @@ import {LatLng} from "leaflet";
 import 'leaflet/dist/leaflet.css'
 
 // Leaflet rotate plugin
-import 'leaflet-rotate'
+await import('leaflet-rotate')
 
 // Marker cluster plugin
 import "leaflet.markercluster/dist/MarkerCluster.css"
 import "leaflet.markercluster/dist/MarkerCluster.Default.css"
-import "leaflet.markercluster/dist/leaflet.markercluster.js"
+await import("leaflet.markercluster/dist/leaflet.markercluster.js")
 
 // Import marker images so Vite bundles them
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
