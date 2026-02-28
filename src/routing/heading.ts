@@ -117,6 +117,7 @@ export class HeadingExp {
             if(this.currentDirection){
                 this.currentDirection = smoothVector(this.currentDirection, dir, 0.15)
             }
+            else this.currentDirection = dir
         }
 
         this.lastPos = newPos
