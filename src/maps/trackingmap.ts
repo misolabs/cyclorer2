@@ -52,6 +52,7 @@ export class TrackingMap{
     snappedEdge: L.Polyline
     routeLayer: L.Polyline
     headingIcon: L.Icon
+    positionIcon: L.Icon
 
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true })
@@ -62,6 +63,12 @@ export class TrackingMap{
         this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
         this.headingIcon = new L.Icon({
             iconUrl: import.meta.env.BASE_URL + 'assets/sign-merge-right.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [16, -32],
+        })
+        this.positionIcon = new L.Icon({
+            iconUrl: import.meta.env.BASE_URL + 'assets/pos-marker.png',
             iconSize: [32, 32],
             iconAnchor: [16, 32],
             popupAnchor: [16, -32],
@@ -119,7 +126,7 @@ export class TrackingMap{
     }
 
     addPositionMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
-        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking"}).addTo(this.map)
+        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.positionIcon}).addTo(this.map)
         if(listener != null)
             this.positionMarker.addEventListener("dragend", listener)
     }
