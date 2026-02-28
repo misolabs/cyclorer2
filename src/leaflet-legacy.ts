@@ -6,7 +6,6 @@ import 'leaflet/dist/leaflet.css'
 
 export async function loadLegacyPlugins() {
     await import('leaflet-rotate')
-    await import('leaflet.markercluster')
 }
 
 export default L
