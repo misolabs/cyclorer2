@@ -55,7 +55,6 @@ export class TrackingMap{
 
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true })
-        this.map.setBearing(30)
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 

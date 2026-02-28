@@ -32,7 +32,7 @@ var routingEngine!: RoutingEngine
 var areaFinder!: AreaFinder
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
-trackingMap.initBaseLayer(ellergronnGPS, 15)
+trackingMap.initBaseLayer(ellergronnGPS, 16)
 trackingMap.addPositionMarker(ellergronnGPS, (isMobileLike ? null : moveListener))
 if(!isMobileLike)
   trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
