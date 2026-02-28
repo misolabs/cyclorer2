@@ -24,5 +24,3 @@ declare module 'leaflet' {
         options?: markerClusterGroup.MarkerClusterGroupOptions
     ): MarkerClusterGroup;
 }
-
-declare module 'leaflet.markercluster';

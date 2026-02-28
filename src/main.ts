@@ -1,5 +1,8 @@
 import 'leaflet/dist/leaflet.css'
-import * as L from 'leaflet'
+
+import L, { loadLegacyPlugins } from './leaflet-legacy'
+await loadLegacyPlugins()
+
 import type {StatsJson} from './models/geo.ts'
 import {
   type AreaNode,

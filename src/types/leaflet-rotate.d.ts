@@ -1,5 +1,5 @@
-declare module 'leaflet-rotate';
 import 'leaflet';
+import * as L from 'leaflet'
 
 declare module 'leaflet' {
     interface Map {
@@ -11,3 +11,4 @@ declare module 'leaflet' {
         rotate?: boolean;
     }
 }
+

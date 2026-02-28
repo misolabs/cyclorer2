@@ -1,19 +1,14 @@
+import L from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
-import * as L from 'leaflet'
+
 import type {AreaNode, LatLon, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
-(window as any).L = L
-
 import 'leaflet/dist/leaflet.css'
-
-// Leaflet rotate plugin
-await import('leaflet-rotate')
 
 // Marker cluster plugin
 import "leaflet.markercluster/dist/MarkerCluster.css"
 import "leaflet.markercluster/dist/MarkerCluster.Default.css"
-await import("leaflet.markercluster/dist/leaflet.markercluster.js")
 
 // Import marker images so Vite bundles them
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
