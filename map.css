@@ -38,3 +38,46 @@ body{
     justify-content: center;
     align-items: center;
 }
+
+#debug{
+    position: absolute;
+    z-index: 2000;
+    top: 30px;
+    left: 20px;
+    width: 100%;
+
+    font-size: medium;
+    font-weight: normal;
+
+}
+
+#gps{
+    position: absolute;
+    z-index: 1001;
+    top: 100px;
+    left: 100px;
+}
+
+.gps-icon {
+    width: 24px;
+    height: 24px;
+
+    background-color: green; /* ← your icon color */
+
+    mask: url("public/assets/gps.svg") no-repeat center;
+    mask-size: contain;
+
+    -webkit-mask: url("public/assets/gps.svg") no-repeat center;
+    -webkit-mask-size: contain;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    background: url('public/assets/gps.svg') center/20px no-repeat;
+    color: darkgreen;
+}
+
+.deactivated{
+    color: red;
+}

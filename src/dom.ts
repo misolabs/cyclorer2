@@ -17,3 +17,7 @@ export function formatDistance(d: number): string{
 export function setDescription(text: string){
     setTextContent("description", text)
 }
+
+export function setDebug(text: string){
+    setTextContent("debug", text)
+}

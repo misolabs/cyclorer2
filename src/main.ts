@@ -19,7 +19,7 @@ import {AreaFinder} from "./routing/areafinder.ts";
 import {RoutingEngine} from "./routing/routing.ts";
 import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
-import {formatDistance, setDescription} from "./dom.ts";
+import {formatDistance, setDebug, setDescription} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
 
@@ -71,6 +71,7 @@ function trackingListener(pos: GeolocationPosition){
   const smoothBearing = Math.round(heading.getBearing() / 5 ) * 5
   trackingMap.map.setBearing(smoothBearing)
 
+  setDebug(`Angle: ${heading.getBearing()} \n Dir: (${heading.getDirection()?.x}, ${heading.getDirection()?.y})`)
   updateRouting()
 }
 
@@ -232,3 +233,5 @@ await loadData()
 if(trackingEnabled && "geolocation" in navigator){
   registerTrackingListener()
 }
+
+setDebug("System ready...")
