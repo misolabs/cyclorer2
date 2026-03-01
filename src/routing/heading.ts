@@ -69,8 +69,8 @@ function smoothVector(
 }
 
 function vectorToBearing(v: Cartesian) {
-    const radians = Math.atan2(v.x, -v.y);
-    return (radians * 180 / Math.PI + 360) % 360;
+    const radians = Math.atan2(v.x, v.y);
+    return 360 - (radians * 180 / Math.PI + 360) % 360;
 }
 
 export class Heading {
@@ -109,6 +109,11 @@ export class Heading {
 export class HeadingExp {
     lastPos: Cartesian | null = null
     currentDirection: Cartesian | null = null
+
+    reinit(lastPos: Cartesian, newPos: Cartesian, speed: number){
+        this.lastPos = lastPos
+        this.update(newPos, speed)
+    }
 
     update(newPos: Cartesian, speed: number|null) {
         // Heading

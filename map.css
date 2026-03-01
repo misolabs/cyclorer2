@@ -54,13 +54,13 @@ body{
 #gps{
     position: absolute;
     z-index: 1001;
-    top: 100px;
-    left: 100px;
+    top: 20px;
+    right: 20px;
 }
 
 .gps-icon {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
 
     background-color: green; /* ← your icon color */
 

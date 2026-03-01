@@ -52,13 +52,25 @@ var trackingEnabled = isMobileLike // Enable on mobile
 
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
+
+  const posXY = projection.fromLatlon(posLatLon)
+  const headingXY = projection.fromLatlon(headingLatLon)
+  heading.reinit(posXY, headingXY, 2.0)
+  trackingMap.map.setBearing(heading.getBearing())
+
   updateRouting()
 }
 
 function moveListener(e: L.DragEndEvent) {
   posLatLon = geoToLatLon(e.target.getLatLng())
 
-  e.target.bindPopup(`Coordinates: <br/><b>${posLatLon.lat}<br/>${posLatLon.lon}</b>`)
+  // Debugging rotation
+  const posXY = projection.fromLatlon(posLatLon)
+  const headingXY = projection.fromLatlon(headingLatLon)
+  heading.reinit(posXY, headingXY, 2.0)
+  trackingMap.map.setBearing(heading.getBearing())
+
+  e.target.bindPopup(`Coordinates: <br/><b>${posLatLon.lat.toFixed(0)}<br/>${posLatLon.lon.toFixed(0)}</b>`)
   updateRouting()
 }
 
