@@ -85,6 +85,14 @@ export class TrackingMap{
         this.map.setView(center, zoomLevel)
     }
 
+    addDeadendsLayer(routingGeoData: GeoJsonRoutingollection){
+        // Mark deadends with broad black lines
+        L.geoJSON(routingGeoData.features, {
+            filter: (feature) => {return feature.properties.deadend},
+            style: {color: "black", weight: 7}
+        }).addTo(this.map)
+    }
+
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         // Simply draw entrypoints as markers
         L.geoJSON(routingGeoData.features, {

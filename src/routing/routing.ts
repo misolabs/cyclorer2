@@ -86,8 +86,9 @@ export class RoutingEngine{
             // Add to spatial grid index for fast lookup
             this.edgeGridIndex.addFeature(edge)
 
-            // Add to adjacency graph
-            this.addToAdjacency(edge)
+            // Add to adjacency graph if not a deadend
+            if(!edge.deadend)
+                this.addToAdjacency(edge)
         }
     }
 

@@ -232,6 +232,7 @@ async function loadData(){
 
   // Draw edges on map
   trackingMap.addRoutingLayer(routingEngine.routingGeoData)
+  trackingMap.addDeadendsLayer(routingEngine.routingGeoData)
 
 // Add a layer to the tracking map
   trackingMap.addAreaLayer(areaFinder.areaGeoData, areaFinder.entrypointsGeoData)
