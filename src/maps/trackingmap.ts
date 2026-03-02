@@ -24,6 +24,9 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow,
 })
 
+const osmTileService = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+const cyclosmTileService = "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
+
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   const html = `<table>
   <tr>
@@ -79,8 +82,8 @@ export class TrackingMap{
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
         // Base map tiles from OSM
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
+        L.tileLayer(cyclosmTileService, {
+          attribution: '&copy; Cyclosm contributors'
         }).addTo(this.map)
         this.map.setView(center, zoomLevel)
     }
