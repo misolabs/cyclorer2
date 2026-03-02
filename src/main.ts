@@ -248,3 +248,12 @@ if(trackingEnabled && "geolocation" in navigator){
 }
 
 setDebug("System ready...")
+
+const settingsCloseButton = document.getElementById("settings-close")
+const settingsPane = document.getElementById("settings")
+function settingsCloseListener(event:PointerEvent){
+  if(settingsPane)
+    settingsPane.style.visibility = "hidden"
+}
+
+settingsCloseButton?.addEventListener("click", settingsCloseListener)
