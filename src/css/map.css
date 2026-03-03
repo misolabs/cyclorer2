@@ -64,17 +64,17 @@ body{
 
     background-color: green; /* ← your icon color */
 
-    mask: url("public/assets/gps-circle.svg") no-repeat center;
+    mask: url("../assets/gps-circle.svg") no-repeat center;
     mask-size: contain;
 
-    -webkit-mask: url("public/assets/gps-circle.svg") no-repeat center;
+    -webkit-mask: url("../assets/gps-circle.svg") no-repeat center;
     -webkit-mask-size: contain;
 }
 
 .icon-btn {
     width: 40px;
     height: 40px;
-    background: url('public/assets/gps.svg') center/20px no-repeat;
+    background: url('../assets/gps.svg') center/20px no-repeat;
     color: darkgreen;
 }
 

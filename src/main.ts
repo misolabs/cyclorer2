@@ -1,4 +1,6 @@
-import 'leaflet/dist/leaflet.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './css/map.css'
+import './css/settings.css'
 
 import L, { loadLegacyPlugins } from './leaflet-legacy'
 await loadLegacyPlugins()
@@ -15,13 +17,14 @@ import {
 } from './models/models.ts'
 import {mapBBox} from './models/mapping.ts'
 import {TrackingMap} from './maps/trackingmap'
-import {AreaFinder} from "./routing/areafinder.ts";
+import {AreaFinder} from "./routing/areafinder.ts"
 import {RoutingEngine} from "./routing/routing.ts";
 import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDebug, setDescription} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
+import {type Settings, settingsInit, settingsShow} from "./settings.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
@@ -249,11 +252,17 @@ if(trackingEnabled && "geolocation" in navigator){
 
 setDebug("System ready...")
 
-const settingsCloseButton = document.getElementById("settings-close")
-const settingsPane = document.getElementById("settings")
-function settingsCloseListener(event:PointerEvent){
-  if(settingsPane)
-    settingsPane.style.visibility = "hidden"
+function onSettingsChanged(s:Settings) {
+  console.log("Settings changed...")
+  console.log(s)
 }
 
-settingsCloseButton?.addEventListener("click", settingsCloseListener)
+function onSettingsButton(event: MouseEvent){
+  settingsShow()
+}
+
+settingsInit("settings", onSettingsChanged)
+
+const settingsButton = document.getElementById("settings-open");
+if(settingsButton)
+  settingsButton.addEventListener("click", onSettingsButton)
