@@ -252,17 +252,19 @@ if(trackingEnabled && "geolocation" in navigator){
 
 setDebug("System ready...")
 
+// SETTINGS
+//=========
+
 function onSettingsChanged(s:Settings) {
   console.log("Settings changed...")
   console.log(s)
-}
 
-function onSettingsButton(event: MouseEvent){
-  settingsShow()
+  // Configure tracking map display
+  trackingMap.toggleAreaBoundingBoxes(s.showAreaBBox)
+  trackingMap.toggleDeadends(s.showDeadends)
 }
 
 settingsInit("settings", onSettingsChanged)
 
-const settingsButton = document.getElementById("settings-open");
-if(settingsButton)
-  settingsButton.addEventListener("click", onSettingsButton)
+const settingsButton = document.getElementById("settings-open")!
+settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})

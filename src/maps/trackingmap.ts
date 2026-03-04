@@ -59,6 +59,10 @@ export class TrackingMap{
     headingIcon: L.Icon
     positionIcon: L.Icon
 
+    areasLayerGroup: L.LayerGroup = L.layerGroup()
+    areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
+    deadendsLayerGroup: L.LayerGroup = L.layerGroup()
+
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true })
 
@@ -78,6 +82,9 @@ export class TrackingMap{
             iconAnchor: [24, 24],
             popupAnchor: [0, 0],
         })
+
+        // Always visible
+        this.areasLayerGroup.addTo(this.map)
     }
 
     initBaseLayer(center: L.LatLng, zoomLevel: number){
@@ -92,8 +99,8 @@ export class TrackingMap{
         // Mark deadends with broad black lines
         L.geoJSON(routingGeoData.features, {
             filter: (feature) => {return feature.properties.deadend},
-            style: {color: "black", weight: 7}
-        }).addTo(this.map)
+            style: {color: "black", weight: 5}
+        }).addTo(this.deadendsLayerGroup)
     }
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
@@ -117,25 +124,25 @@ export class TrackingMap{
             // Bounding rectangle
             L.rectangle(bounds,{weight:1, color: (features[i].properties.total_length > 200 ? "Purple": "Blue")})
             .bindPopup(`area: <b>${features[i].properties.area_id}</b>`)
-            .addTo(this.map)
+            .addTo(this.areaBBoxLayerGroup)
         }
     
         // Draw edge network
         L.geoJSON(areaData.features,
             {
             style: {
-            color: "red",
+            color: "purple",
             weight: 2,
             opacity: 0.7
             }
-        }).addTo(this.map) 
+        }).addTo(this.areasLayerGroup)
         
         // Draw entrypoints
         L.geoJSON(entrypointsData.features,{
             pointToLayer: (feature, latlng) => {
-            return L.circleMarker(latlng, {color: "red", radius: 2, opacity:1}).bindPopup(`nodeid: <b>${feature.properties.osmid}</b>`)
+            return L.circleMarker(latlng, {color: "purple", radius: 2, opacity:1}).bindPopup(`nodeid: <b>${feature.properties.osmid}</b>`)
             }
-        }).addTo(this.map)        
+        }).addTo(this.areasLayerGroup)
     }
 
     addPositionMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
@@ -216,5 +223,15 @@ export class TrackingMap{
         const leafPos = new LatLng(pos.lat, pos.lon)
         this.map.setView(leafPos)
         this.positionMarker?.setLatLng(leafPos)
+    }
+
+    toggleAreaBoundingBoxes(show: boolean){
+        if(show) this.areaBBoxLayerGroup.addTo(this.map)
+        else this.areaBBoxLayerGroup.removeFrom(this.map)
+    }
+
+    toggleDeadends(show: boolean){
+        if(show) this.deadendsLayerGroup.addTo(this.map)
+        else this.deadendsLayerGroup.removeFrom(this.map)
     }
 }

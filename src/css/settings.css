@@ -8,8 +8,12 @@
 
     z-index: 3000;
 
-    background-color: cadetblue;
+    background-color: darkslategray;
+    color: white;
+
     visibility: hidden;
+
+    padding: 20px;
 }
 
 #settings-open{
@@ -18,10 +22,5 @@
     top: 20px;
     right:20px;
     z-index: 2500;
-    background-color: brown;
-}
-
-.form-switch .form-check-input {
-    width: 3rem;
-    height: 1.6rem;
+    background-color: var(--bs-primary);
 }

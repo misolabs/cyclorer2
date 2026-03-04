@@ -29,12 +29,22 @@
 
 
     <!-- VIEW - Settings -->
-    <div id="settings">
+    <div id="settings" class="mb-7">
       <h3>Settings</h3>
 
-      <div class="form-check form-switch">
+      <div class="form-check form-switch mb-lg-3">
         <input class="form-check-input" type="checkbox" id="settings-deadends">
         <label class="form-check-label" for="settings-deadends">Show deadends</label><br>
+      </div>
+
+      <div class="form-check form-switch mb-lg-3">
+        <input class="form-check-input" type="checkbox" id="settings-heatmap-count">
+        <label class="form-check-label" for="settings-heatmap-count">Show Heatmap - Frequency</label><br>
+      </div>
+
+      <div class="form-check form-switch mb-lg-3">
+        <input class="form-check-input" type="checkbox" id="settings-area-bbox">
+        <label class="form-check-label" for="settings-area-bbox">Show Area Bounding Box</label><br>
       </div>
 
       <button id="settings-close" class="btn btn-danger btn-lg w-100">Close</button>
