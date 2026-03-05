@@ -2,6 +2,7 @@ export interface Settings{
     showDeadends: boolean
     showAreaBBox: boolean
     showDebugOverlay: boolean
+    tileService: string
 }
 
 let settingsPane: HTMLElement
@@ -10,6 +11,21 @@ let showAreaBoundingBox: HTMLInputElement
 let showDebugOverlay: HTMLInputElement
 
 let listener: ((s: Settings) => void) | null
+
+function getSelectedRadio(groupName: string): string | null {
+    const selected = document.querySelector<HTMLInputElement>(
+        `input[name="${groupName}"]:checked`
+    )
+    return selected ? selected.value : null
+}
+
+function applyRadioSelection(groupName: string, value: string) {
+    const radio = document.querySelector<HTMLInputElement>(
+        `input[name="${groupName}"][value="${value}"]`
+    )
+
+    if (radio) radio.checked = true
+}
 
 export function settingsInit(element: string, l: ((s: Settings) => void) | null) {
     settingsPane = document.getElementById(element)!
@@ -24,6 +40,7 @@ export function settingsInit(element: string, l: ((s: Settings) => void) | null)
     deadendsInput.checked = storedSettings.showAreaBBox
     showAreaBoundingBox.checked = storedSettings.showAreaBBox
     showDebugOverlay.checked = storedSettings.showDebugOverlay
+    applyRadioSelection("mapService", storedSettings.tileService)
 
     if(listener) listener(storedSettings)
 }
@@ -39,6 +56,7 @@ function settingsCloseListener(event:MouseEvent){
         showDeadends: deadendsInput.checked,
         showAreaBBox: showAreaBoundingBox.checked,
         showDebugOverlay: showDebugOverlay.checked,
+        tileService: getSelectedRadio("mapService") ?? "osm"
     }
 
     // Persist in local storage
@@ -54,6 +72,7 @@ const defaultSettings: Settings ={
     showDeadends: true,
     showAreaBBox: true,
     showDebugOverlay: false,
+    tileService: "osm"
 }
 
 const STORAGE_KEY = 'cyclorer2_settings'

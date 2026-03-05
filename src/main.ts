@@ -40,7 +40,10 @@ var areaFinder!: AreaFinder
 export var projection: CartesianProjection
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
-trackingMap.initBaseLayer(ellergronnGPS, 16)
+//trackingMap.initBaseLayer(ellergronnGPS, 16)
+// TODO - Integrate zoom level into settings
+trackingMap.map.setView(ellergronnGPS, 16)
+
 trackingMap.addPositionMarker(ellergronnGPS, (isMobileLike ? null : moveListener))
 if(!isMobileLike)
   trackingMap.addHeadingMarker(ellergronnGPS, headingMarkerListener)
@@ -262,7 +265,12 @@ function onSettingsChanged(s:Settings) {
   // Configure tracking map display
   trackingMap.toggleAreaBoundingBoxes(s.showAreaBBox)
   trackingMap.toggleDeadends(s.showDeadends)
+
+  // Debug overlay
   document.getElementById("debug")!.style.visibility = s.showDebugOverlay ? "visible" : "hidden"
+
+  console.log("Tile service", s.tileService)
+  trackingMap.setBaseLayer(s.tileService)
 }
 
 settingsInit("settings", onSettingsChanged)

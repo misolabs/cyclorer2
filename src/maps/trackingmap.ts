@@ -24,9 +24,6 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow,
 })
 
-const osmTileService = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-const cyclosmTileService = "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
-
 function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   const html = `<table>
   <tr>
@@ -49,6 +46,21 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   layer.bindPopup(html)
 }
 
+interface TileService{
+    attribution: string
+    url: string
+}
+
+const osmTileService: TileService = {url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
+const cyclosmTileService: TileService = {url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", attribution: "CyclOSM"}
+
+const tileServices:Map<string, TileService> = new Map([
+    ["osm", osmTileService],
+    ["cyclosm", cyclosmTileService],
+])
+
+let currentTileService: TileService | null = null
+
 export class TrackingMap{
     map: L.Map
     positionMarker: L.Marker|null = null
@@ -59,6 +71,7 @@ export class TrackingMap{
     headingIcon: L.Icon
     positionIcon: L.Icon
 
+    baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
     deadendsLayerGroup: L.LayerGroup = L.layerGroup()
@@ -87,9 +100,23 @@ export class TrackingMap{
         this.areasLayerGroup.addTo(this.map)
     }
 
+    setBaseLayer(id: string){
+        const ts = tileServices.get(id)
+        if(ts && ts !== currentTileService){
+            console.log("Setting new base layer", id)
+            if(this.baseLayer) this.map.removeLayer(this.baseLayer)
+
+            this.baseLayer = L.tileLayer(ts.url, {
+                attribution: `&copy; ${ts.attribution} contributors`
+            }).addTo(this.map)
+            currentTileService = ts
+        }
+    }
+
+    // TODO Change this !!!
     initBaseLayer(center: L.LatLng, zoomLevel: number){
         // Base map tiles from OSM
-        L.tileLayer(cyclosmTileService, {
+        L.tileLayer(cyclosmTileService.url, {
           attribution: '&copy; Cyclosm contributors'
         }).addTo(this.map)
         this.map.setView(center, zoomLevel)

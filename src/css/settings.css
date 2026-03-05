@@ -24,3 +24,8 @@
     z-index: 2500;
     background-color: var(--bs-primary);
 }
+
+.card-body{
+    background-color: lightslategray;
+    color: white;
+}
