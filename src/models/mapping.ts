@@ -47,6 +47,7 @@ export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
     
     deadend: feature.properties.deadend,
     ride_count: feature.properties.ride_count,
+    area_id: feature.properties.area_id,
 
     highway: feature.properties.highway,
     length: feature.properties.length,

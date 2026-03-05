@@ -7,7 +7,8 @@ declare module 'leaflet' {
     }
 
     interface MapOptions {
-        rotate?: boolean;
+        rotate?: boolean
+        rotateControl?: boolean
     }
 }
 

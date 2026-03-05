@@ -77,7 +77,7 @@ export class TrackingMap{
     deadendsLayerGroup: L.LayerGroup = L.layerGroup()
 
     constructor(elName: string){
-        this.map = L.map(elName, { rotate: true })
+        this.map = L.map(elName, { rotate: true, rotateControl: false })
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
@@ -111,15 +111,6 @@ export class TrackingMap{
             }).addTo(this.map)
             currentTileService = ts
         }
-    }
-
-    // TODO Change this !!!
-    initBaseLayer(center: L.LatLng, zoomLevel: number){
-        // Base map tiles from OSM
-        L.tileLayer(cyclosmTileService.url, {
-          attribution: '&copy; Cyclosm contributors'
-        }).addTo(this.map)
-        this.map.setView(center, zoomLevel)
     }
 
     addDeadendsLayer(routingGeoData: GeoJsonRoutingollection){
@@ -158,16 +149,16 @@ export class TrackingMap{
         L.geoJSON(areaData.features,
             {
             style: {
-            color: "purple",
-            weight: 2,
-            opacity: 0.7
+            color: "red",
+            weight: 3,
+            opacity: 1
             }
         }).addTo(this.areasLayerGroup)
         
         // Draw entrypoints
         L.geoJSON(entrypointsData.features,{
             pointToLayer: (feature, latlng) => {
-            return L.circleMarker(latlng, {color: "purple", radius: 2, opacity:1}).bindPopup(`nodeid: <b>${feature.properties.osmid}</b>`)
+            return L.circleMarker(latlng, {color: "red", radius: 3, opacity:1}).bindPopup(`nodeid: <b>${feature.properties.osmid}</b>`)
             }
         }).addTo(this.areasLayerGroup)
     }

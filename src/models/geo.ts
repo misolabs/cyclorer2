@@ -33,6 +33,7 @@ export interface RoutingEdgeProperties {
     deadend: boolean
     highway: string | string[]
     ride_count: number
+    area_id?: number
 
     length: number;
     bbox: GeoJsonBBox

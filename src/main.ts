@@ -127,7 +127,7 @@ function updateRouting(){
     }
 
     // 1. Unvisited territory
-    if(closestEdge.edge.ride_count == 0){
+    if(closestEdge.edge.ride_count == 0 && closestEdge.edge.area_id != undefined){
       setDescription("GO Explore!")
       console.log("Unvisited territory")
       currentRoute = null

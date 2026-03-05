@@ -27,6 +27,7 @@ export interface Edge {
 
   deadend: boolean
   ride_count: number
+  area_id?: number
 
   coordinates: LatLon[];
   cartesian: Cartesian[]

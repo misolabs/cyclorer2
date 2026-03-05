@@ -25,6 +25,7 @@
     background-color: var(--bs-primary);
 }
 
+/* Card background */
 .card-body{
     background-color: lightslategray;
     color: white;
