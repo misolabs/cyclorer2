@@ -262,6 +262,7 @@ function onSettingsChanged(s:Settings) {
   // Configure tracking map display
   trackingMap.toggleAreaBoundingBoxes(s.showAreaBBox)
   trackingMap.toggleDeadends(s.showDeadends)
+  document.getElementById("debug")!.style.visibility = s.showDebugOverlay ? "visible" : "hidden"
 }
 
 settingsInit("settings", onSettingsChanged)
