@@ -37,6 +37,7 @@ export interface Edge {
 
   highway?: string|string[];
   name?: string|string[];
+  offroad: boolean
 }
 
 export interface Node{

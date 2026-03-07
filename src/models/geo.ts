@@ -6,6 +6,7 @@ export interface StatsJson{
     areas: number
     entrypoints: number
     total_length: number
+    ride_count_max: number
 }
 
 // Bounding box in GeoJSON
@@ -32,6 +33,7 @@ export interface RoutingEdgeProperties {
 
     deadend: boolean
     highway: string | string[]
+    offroad: boolean
     ride_count: number
     area_id?: number
 

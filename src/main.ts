@@ -238,6 +238,7 @@ async function loadData(){
 
   // Draw edges on map
   trackingMap.addRoutingLayer(routingEngine.routingGeoData)
+  trackingMap.addFrequencyHeatmap(routingEngine.routingGeoData, statsData.ride_count_max)
   trackingMap.addDeadendsLayer(routingEngine.routingGeoData)
 
 // Add a layer to the tracking map
@@ -265,6 +266,7 @@ function onSettingsChanged(s:Settings) {
   // Configure tracking map display
   trackingMap.toggleAreaBoundingBoxes(s.showAreaBBox)
   trackingMap.toggleDeadends(s.showDeadends)
+  trackingMap.toggleFrequencyHeatmap(s.showFrequencyHeatmap)
 
   // Debug overlay
   document.getElementById("debug")!.style.visibility = s.showDebugOverlay ? "visible" : "hidden"

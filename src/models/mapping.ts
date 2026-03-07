@@ -51,6 +51,7 @@ export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
 
     highway: feature.properties.highway,
     length: feature.properties.length,
+    offroad: feature.properties.offroad,
 
     coordinates,
     cartesian: [],

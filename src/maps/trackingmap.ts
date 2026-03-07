@@ -75,6 +75,7 @@ export class TrackingMap{
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
     deadendsLayerGroup: L.LayerGroup = L.layerGroup()
+    freqHeatmapLayerGroup: L.LayerGroup = L.layerGroup()
 
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true, rotateControl: false })
@@ -126,7 +127,25 @@ export class TrackingMap{
         L.geoJSON(routingGeoData.features, {
             onEachFeature: popupRoutingEdge,
             style: {color: "grey", weight: 2}
-        }).addTo(this.map)        
+        }).addTo(this.map)
+    }
+
+    addFrequencyHeatmap(routingGeoData: GeoJsonRoutingollection, maxRideCount: number){
+        // Drawedges with custom color depending on ride_count
+        L.geoJSON(routingGeoData.features, {
+            onEachFeature: (feature: GeoJsonRouting, layer: L.Polyline) => {
+                const vLog = Math.log(feature.properties.ride_count + 1) / Math.log(maxRideCount + 1)
+                const vLin = feature.properties.ride_count / maxRideCount
+                layer.setStyle({color: 'hsl(290, 100%, 50%)', opacity: 1 - vLog})
+            },
+            filter: (feature) =>
+            {
+                return (!feature.properties.deadend) &&
+                (feature.properties.offroad) &&
+                (feature.properties.ride_count > 0)
+            },
+            style: {color: "grey", weight: 5}
+        }).addTo(this.freqHeatmapLayerGroup)
     }
 
     addAreaLayer(areaData: GeoJsonAreaCollection, entrypointsData: GeoJsonEntrypointCollection){
@@ -251,5 +270,10 @@ export class TrackingMap{
     toggleDeadends(show: boolean){
         if(show) this.deadendsLayerGroup.addTo(this.map)
         else this.deadendsLayerGroup.removeFrom(this.map)
+    }
+
+    toggleFrequencyHeatmap(show: boolean){
+        if(show) this.freqHeatmapLayerGroup.addTo(this.map)
+        else this.freqHeatmapLayerGroup.removeFrom(this.map)
     }
 }

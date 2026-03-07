@@ -4,6 +4,62 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 67,
+        "osmid": "412446720"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.006736000000001,
+          49.474126899999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 68,
+        "osmid": "412446721"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.009214500000001,
+          49.47074289999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 99,
+        "osmid": "897110020"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0198802,
+          49.47274959999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 190,
+        "osmid": "6319054853"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.009860800000002,
+          49.467249499999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 2,
         "osmid": "2319495197"
       },
@@ -12,20 +68,6 @@
         "coordinates": [
           6.012917200000001,
           49.4975695
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 8,
-        "osmid": "4829132841"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.984577600000001,
-          49.480589099999996
         ]
       }
     },
@@ -46,7 +88,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 142,
+        "area_id": 164,
         "osmid": "3858636850"
       },
       "geometry": {
@@ -54,6 +96,20 @@
         "coordinates": [
           5.980026600000002,
           49.487729899999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 194,
+        "osmid": "322572341"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.041796500000002,
+          49.46875849999999
         ]
       }
     },
@@ -74,7 +130,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 27,
+        "area_id": 26,
         "osmid": "7677024318"
       },
       "geometry": {
@@ -88,7 +144,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 27,
+        "area_id": 26,
         "osmid": "7677024328"
       },
       "geometry": {
@@ -130,20 +186,6 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 5,
-        "osmid": "726165583"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.975108699999999,
-          49.45586079999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "area_id": 3,
         "osmid": "1914462287"
       },
@@ -158,7 +200,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 28,
+        "area_id": 5,
+        "osmid": "726165583"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.975108699999999,
+          49.45586079999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "322572369"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.046916800000001,
+          49.45620679999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 27,
         "osmid": "2139961431"
       },
       "geometry": {
@@ -172,7 +242,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 28,
+        "area_id": 27,
         "osmid": "10072967257"
       },
       "geometry": {
@@ -186,7 +256,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 118,
         "osmid": "9277638747"
       },
       "geometry": {
@@ -214,7 +284,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 91,
+        "area_id": 95,
         "osmid": "813496416"
       },
       "geometry": {
@@ -222,20 +292,6 @@
         "coordinates": [
           6.000463700000002,
           49.45013319999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 32,
-        "osmid": "7684114529"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0162237,
-          49.47882679999999
         ]
       }
     },
@@ -256,7 +312,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 81,
+        "area_id": 82,
         "osmid": "8116635750"
       },
       "geometry": {
@@ -264,20 +320,6 @@
         "coordinates": [
           6.0118195,
           49.47970509999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 12,
-        "osmid": "726165607"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.9764181,
-          49.453471
         ]
       }
     },
@@ -298,14 +340,42 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
-        "osmid": "288825452"
+        "area_id": 12,
+        "osmid": "726165607"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.0080101,
-          49.49008339999999
+          5.9764181,
+          49.453471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 194,
+        "osmid": "321536107"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.043326500000002,
+          49.467440499999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 148,
+        "osmid": "1955237996"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.961331500000001,
+          49.487280899999995
         ]
       }
     },
@@ -354,6 +424,34 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 133,
+        "osmid": "2720460919"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0214017,
+          49.475020099999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 133,
+        "osmid": "2720460920"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0203079,
+          49.4744195
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 1,
         "osmid": "2265806968"
       },
@@ -362,6 +460,34 @@
         "coordinates": [
           6.027007700000001,
           49.4978271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 112,
+        "osmid": "6305874042"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.021325900000002,
+          49.46431789999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "691255419"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.043890300000001,
+          49.45185759999998
         ]
       }
     },
@@ -424,7 +550,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 132,
+        "area_id": 47,
+        "osmid": "322089105"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.057732200000002,
+          49.482935499999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 154,
         "osmid": "2696700050"
       },
       "geometry": {
@@ -452,7 +592,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 55,
+        "area_id": 51,
+        "osmid": "1622904979"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.041817300000001,
+          49.46967409999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 56,
         "osmid": "493607060"
       },
       "geometry": {
@@ -460,6 +614,20 @@
         "coordinates": [
           5.991704200000001,
           49.484096399999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "322576535"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.047865700000001,
+          49.47387639999999
         ]
       }
     },
@@ -480,7 +648,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 122,
+        "area_id": 143,
         "osmid": "1915824282"
       },
       "geometry": {
@@ -494,7 +662,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
+        "area_id": 89,
         "osmid": "726161580"
       },
       "geometry": {
@@ -522,21 +690,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 67,
-        "osmid": "813490366"
+        "area_id": 51,
+        "osmid": "1622905018"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.004024200000001,
-          49.454640999999995
+          6.042165300000001,
+          49.470632299999984
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 163,
+        "area_id": 188,
         "osmid": "4829132991"
       },
       "geometry": {
@@ -550,7 +718,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 163,
+        "area_id": 188,
         "osmid": "4829132993"
       },
       "geometry": {
@@ -572,6 +740,20 @@
         "coordinates": [
           6.001420900000001,
           49.49497209999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "7816960203"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0539825,
+          49.46908489999999
         ]
       }
     },
@@ -606,6 +788,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 31,
+        "osmid": "2228564179"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.017116200000001,
+          49.47916139999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 1,
         "osmid": "246816982"
       },
@@ -634,21 +830,119 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 115,
-        "osmid": "6391216407"
+        "area_id": 190,
+        "osmid": "6319054847"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9830548,
-          49.48804439999999
+          6.009823500000001,
+          49.466201399999996
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 97,
+        "area_id": 122,
+        "osmid": "1598834942"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.021599500000001,
+          49.4614752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 8,
+        "osmid": "1633294590"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9823608,
+          49.48445319999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "321534213"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0542788000000005,
+          49.4707759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 83,
+        "osmid": "1447926029"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0263021,
+          49.479788699999986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "1447926036"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027370200000001,
+          49.47818809999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "1447926038"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0280871000000005,
+          49.4783558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 83,
+        "osmid": "1447926046"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027700800000001,
+          49.478375799999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 105,
         "osmid": "1314025759"
       },
       "geometry": {
@@ -662,7 +956,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 65,
+        "area_id": 64,
         "osmid": "1314025772"
       },
       "geometry": {
@@ -684,20 +978,6 @@
         "coordinates": [
           6.0144742,
           49.4942735
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 8,
-        "osmid": "1633294637"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.981901500000002,
-          49.484298199999984
         ]
       }
     },
@@ -746,7 +1026,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "2709758266"
       },
       "geometry": {
@@ -802,7 +1082,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 118,
         "osmid": "2687746372"
       },
       "geometry": {
@@ -816,35 +1096,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
-        "osmid": "1560529221"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.007534400000002,
-          49.492971699999984
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 90,
-        "osmid": "813490502"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0070459000000005,
-          49.45829029999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 88,
+        "area_id": 91,
         "osmid": "470559044"
       },
       "geometry": {
@@ -858,7 +1110,49 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 93,
+        "osmid": "813490502"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0070459000000005,
+          49.45829029999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 118,
+        "osmid": "1560529221"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.007534400000002,
+          49.492971699999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 117,
+        "osmid": "1447926088"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.024308400000001,
+          49.476056699999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 118,
         "osmid": "2687746382"
       },
       "geometry": {
@@ -872,7 +1166,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 118,
         "osmid": "2687746387"
       },
       "geometry": {
@@ -886,7 +1180,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 31,
+        "osmid": "2678952278"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029683000000001,
+          49.478731799999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 117,
+        "osmid": "1447926102"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0234597,
+          49.47567029999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 25,
         "osmid": "2978822490"
       },
       "geometry": {
@@ -914,20 +1236,6 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 32,
-        "osmid": "600498527"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0062314,
-          49.476659899999994
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "area_id": 77,
         "osmid": "1868949857"
       },
@@ -942,7 +1250,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 81,
+        "area_id": 82,
         "osmid": "600498535"
       },
       "geometry": {
@@ -956,7 +1264,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 132,
+        "area_id": 154,
         "osmid": "2265799023"
       },
       "geometry": {
@@ -998,6 +1306,34 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 33,
+        "osmid": "1855424894"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.023769400000002,
+          49.469192599999985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "1672206725"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0571428,
+          49.46968669999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 43,
         "osmid": "4481677702"
       },
@@ -1026,7 +1362,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 64,
+        "area_id": 31,
+        "osmid": "1855424909"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0302221,
+          49.4670229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 63,
         "osmid": "2844164507"
       },
       "geometry": {
@@ -1034,6 +1384,20 @@
         "coordinates": [
           5.994025700000002,
           49.46121879999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 89,
+        "osmid": "2696769947"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.971934300000002,
+          49.469482799999994
         ]
       }
     },
@@ -1054,7 +1418,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 143,
+        "area_id": 166,
         "osmid": "2844164511"
       },
       "geometry": {
@@ -1068,21 +1432,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 32,
-        "osmid": "2018402720"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0060775,
-          49.48310969999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 143,
+        "area_id": 166,
         "osmid": "2844164513"
       },
       "geometry": {
@@ -1096,7 +1446,49 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 123,
+        "area_id": 31,
+        "osmid": "600498594"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029345000000001,
+          49.478672099999976
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "600498595"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029239100000001,
+          49.47891829999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "600498598"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.028549699999999,
+          49.47970729999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 144,
         "osmid": "2709758376"
       },
       "geometry": {
@@ -1104,6 +1496,20 @@
         "coordinates": [
           6.0002542000000005,
           49.487142199999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 83,
+        "osmid": "600498600"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027946900000001,
+          49.479742099999996
         ]
       }
     },
@@ -1138,7 +1544,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 137,
+        "area_id": 150,
+        "osmid": "2018402759"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.011159000000003,
+          49.481564099999986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 159,
         "osmid": "2709758411"
       },
       "geometry": {
@@ -1166,21 +1586,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
-        "osmid": "1917479375"
+        "area_id": 46,
+        "osmid": "322576845"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.007768500000001,
-          49.49000089999999
+          6.053645200000001,
+          49.47118399999999
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 32,
+        "area_id": 150,
         "osmid": "2018402771"
       },
       "geometry": {
@@ -1194,7 +1614,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "1917479380"
       },
       "geometry": {
@@ -1202,20 +1622,6 @@
         "coordinates": [
           6.0068225,
           49.4883136
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 41,
-        "osmid": "1917479381"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.007561300000001,
-          49.489897
         ]
       }
     },
@@ -1236,7 +1642,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 138,
+        "area_id": 160,
         "osmid": "4828412393"
       },
       "geometry": {
@@ -1250,21 +1656,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 115,
-        "osmid": "2709758442"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.982728100000001,
-          49.48773579999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "7301738993"
       },
       "geometry": {
@@ -1278,7 +1670,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "1295708669"
       },
       "geometry": {
@@ -1306,7 +1698,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 112,
+        "area_id": 127,
         "osmid": "4086635008"
       },
       "geometry": {
@@ -1320,7 +1712,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "1295708675"
       },
       "geometry": {
@@ -1334,7 +1726,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 142,
+        "area_id": 133,
+        "osmid": "5596723723"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.020419200000001,
+          49.474504599999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 164,
         "osmid": "2709758482"
       },
       "geometry": {
@@ -1348,7 +1754,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 142,
+        "area_id": 164,
         "osmid": "2709758484"
       },
       "geometry": {
@@ -1376,6 +1782,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 24,
+        "osmid": "7325147677"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.023161900000001,
+          49.50226539999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 3,
         "osmid": "8661412386"
       },
@@ -1390,7 +1810,77 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 145,
+        "area_id": 94,
+        "osmid": "1303261765"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.007831400000002,
+          49.45161439999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 119,
+        "osmid": "3029801542"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.014497700000001,
+          49.46235029999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "7383564877"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.039469,
+          49.45403089999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 99,
+        "osmid": "1428841062"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0193531,
+          49.47254909999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 115,
+        "osmid": "1594643068"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0196837,
+          49.463620199999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 168,
         "osmid": "2891485825"
       },
       "geometry": {
@@ -1404,7 +1894,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 145,
+        "area_id": 46,
+        "osmid": "321534593"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.052955200000001,
+          49.47106409999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 168,
         "osmid": "2891485827"
       },
       "geometry": {
@@ -1432,21 +1936,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 98,
-        "osmid": "1593338517"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.013442100000002,
-          49.457635799999984
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 145,
+        "area_id": 168,
         "osmid": "2891485848"
       },
       "geometry": {
@@ -1474,7 +1964,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 88,
+        "area_id": 91,
         "osmid": "800008861"
       },
       "geometry": {
@@ -1488,7 +1978,49 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 90,
+        "area_id": 46,
+        "osmid": "8116732578"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.046661400000001,
+          49.455555999999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "6915486382"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029579700000001,
+          49.478672999999986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "6915486383"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029454900000001,
+          49.478757399999985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 93,
         "osmid": "813486781"
       },
       "geometry": {
@@ -1502,7 +2034,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "10090404549"
       },
       "geometry": {
@@ -1516,7 +2048,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "10739321542"
       },
       "geometry": {
@@ -1530,7 +2062,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 122,
+        "area_id": 24,
+        "osmid": "273078982"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0231786000000005,
+          49.502394299999985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 143,
         "osmid": "2399390414"
       },
       "geometry": {
@@ -1538,6 +2084,34 @@
         "coordinates": [
           5.998826200000001,
           49.484065499999986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "9481808598"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986864900000001,
+          49.500729499999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "9481808613"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9867465,
+          49.49858079999999
         ]
       }
     },
@@ -1558,14 +2132,14 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 64,
-        "osmid": "2844171006"
+        "area_id": 114,
+        "osmid": "1428818686"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9877413000000015,
-          49.46225519999998
+          6.0118217000000005,
+          49.47535659999999
         ]
       }
     },
@@ -1586,6 +2160,48 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 122,
+        "osmid": "1593404169"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0194121,
+          49.46155649999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 56,
+        "osmid": "1606658832"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.990722900000001,
+          49.488177399999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 51,
+        "osmid": "1869865749"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0425127,
+          49.47113779999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 5,
         "osmid": "2891535126"
       },
@@ -1594,20 +2210,6 @@
         "coordinates": [
           5.9832692,
           49.4584857
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 55,
-        "osmid": "1606658845"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.991621800000001,
-          49.4894034
         ]
       }
     },
@@ -1628,21 +2230,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 7,
-        "osmid": "6392064804"
+        "area_id": 112,
+        "osmid": "1428818723"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9871794,
-          49.48932549999999
+          6.0238636,
+          49.46716599999999
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "1915116324"
       },
       "geometry": {
@@ -1656,21 +2258,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 7,
-        "osmid": "6392064805"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.9856853999999995,
-          49.48844299999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "1915116327"
       },
       "geometry": {
@@ -1684,7 +2272,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "7677791019"
       },
       "geometry": {
@@ -1692,6 +2280,48 @@
         "coordinates": [
           6.025168,
           49.50162809999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 115,
+        "osmid": "1428818734"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0174051,
+          49.468430899999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "3029742393"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.041763500000001,
+          49.4637169
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "3029742395"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.041756299999999,
+          49.463592199999994
         ]
       }
     },
@@ -1712,6 +2342,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 46,
+        "osmid": "1918571330"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.044413700000001,
+          49.47468549999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 5,
         "osmid": "6270206791"
       },
@@ -1726,7 +2370,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 163,
+        "area_id": 188,
         "osmid": "5866208072"
       },
       "geometry": {
@@ -1740,14 +2384,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 98,
-        "osmid": "8933233486"
+        "area_id": 55,
+        "osmid": "331408204"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.013987200000001,
-          49.457766499999984
+          5.993986099999999,
+          49.49197029999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "322573134"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.056815500000001,
+          49.469220499999984
         ]
       }
     },
@@ -1768,7 +2426,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 150,
+        "area_id": 174,
         "osmid": "3554392921"
       },
       "geometry": {
@@ -1782,7 +2440,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 55,
+        "area_id": 46,
+        "osmid": "3021087582"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0473212,
+          49.45667799999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 56,
         "osmid": "331408225"
       },
       "geometry": {
@@ -1796,7 +2468,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 132,
+        "area_id": 154,
         "osmid": "2319485795"
       },
       "geometry": {
@@ -1810,7 +2482,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 132,
+        "area_id": 154,
         "osmid": "2265820004"
       },
       "geometry": {
@@ -1818,6 +2490,34 @@
         "coordinates": [
           6.023163200000002,
           49.50141799999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "1918571364"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0440589,
+          49.47528499999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "1918571373"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0469893,
+          49.47304279999999
         ]
       }
     },
@@ -1838,21 +2538,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 56,
-        "osmid": "331408244"
+        "area_id": 46,
+        "osmid": "1918571383"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.985635700000001,
-          49.48807269999999
+          6.045888200000001,
+          49.474110800000005
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 125,
+        "area_id": 46,
+        "osmid": "295172984"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.058375899999999,
+          49.477367199999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 146,
         "osmid": "3089341314"
       },
       "geometry": {
@@ -1880,7 +2594,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 96,
+        "area_id": 104,
         "osmid": "3686153098"
       },
       "geometry": {
@@ -1894,7 +2608,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 64,
+        "area_id": 63,
         "osmid": "2863776651"
       },
       "geometry": {
@@ -1908,14 +2622,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 47,
-        "osmid": "470567821"
+        "area_id": 31,
+        "osmid": "8475661195"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.000566300000001,
-          49.48753299999999
+          6.029269900000001,
+          49.47879149999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "8475661197"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029267900000001,
+          49.47854619999999
         ]
       }
     },
@@ -1936,7 +2664,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 138,
+        "osmid": "1843211162"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.007296600000001,
+          49.4616821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 25,
         "osmid": "273079196"
       },
       "geometry": {
@@ -1950,7 +2692,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 35,
+        "area_id": 93,
+        "osmid": "1319910301"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0070927,
+          49.4569086
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 173,
         "osmid": "3492739998"
       },
       "geometry": {
@@ -1958,20 +2714,6 @@
         "coordinates": [
           5.986846800000001,
           49.4712293
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 35,
-        "osmid": "3492739999"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.9879624,
-          49.470689699999994
         ]
       }
     },
@@ -2006,7 +2748,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
+        "area_id": 89,
         "osmid": "8944571309"
       },
       "geometry": {
@@ -2034,6 +2776,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 172,
+        "osmid": "3488799665"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.028258499999999,
+          49.45921129999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 58,
         "osmid": "331408310"
       },
@@ -2048,7 +2804,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 157,
+        "area_id": 181,
         "osmid": "2863809464"
       },
       "geometry": {
@@ -2090,7 +2846,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 113,
+        "area_id": 7,
+        "osmid": "247841727"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9858063,
+          49.488462299999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 129,
         "osmid": "3554401215"
       },
       "geometry": {
@@ -2118,7 +2888,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 68,
+        "area_id": 8,
+        "osmid": "1633921989"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.984568000000002,
+          49.48074359999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 165,
         "osmid": "2844144581"
       },
       "geometry": {
@@ -2126,6 +2910,20 @@
         "coordinates": [
           6.004403800000001,
           49.47193429999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 119,
+        "osmid": "1593279437"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.017061199999999,
+          49.46206779999999
         ]
       }
     },
@@ -2160,14 +2958,14 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 72,
-        "osmid": "470559706"
+        "area_id": 70,
+        "osmid": "296207321"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.0019137,
-          49.45913319999999
+          6.0441233,
+          49.49441459999999
         ]
       }
     },
@@ -2188,6 +2986,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 33,
+        "osmid": "279378922"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.025300900000001,
+          49.4678216
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 57,
         "osmid": "3554452463"
       },
@@ -2202,7 +3014,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 153,
+        "area_id": 178,
         "osmid": "8714345455"
       },
       "geometry": {
@@ -2230,7 +3042,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "3210679289"
       },
       "geometry": {
@@ -2244,7 +3056,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 125,
+        "area_id": 46,
+        "osmid": "9010195449"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.047679600000001,
+          49.47271059999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "683807744"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.046675400000001,
+          49.455611399999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 146,
         "osmid": "1917498368"
       },
       "geometry": {
@@ -2258,63 +3098,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 32,
-        "osmid": "10302454789"
+        "area_id": 190,
+        "osmid": "7195243526"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.006305500000001,
-          49.47668389999999
+          6.0084224000000015,
+          49.466739199999985
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 32,
-        "osmid": "10302454790"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.006667500000002,
-          49.47627429999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 32,
-        "osmid": "10302454791"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0063441,
-          49.47675069999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 8,
-        "osmid": "2165560329"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.9860226,
-          49.4811833
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 90,
+        "area_id": 93,
         "osmid": "4855634954"
       },
       "geometry": {
@@ -2342,7 +3140,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 49,
+        "area_id": 70,
         "osmid": "776436754"
       },
       "geometry": {
@@ -2370,7 +3168,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 65,
+        "area_id": 64,
         "osmid": "8121418772"
       },
       "geometry": {
@@ -2398,7 +3196,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 97,
+        "area_id": 105,
         "osmid": "8121418774"
       },
       "geometry": {
@@ -2426,7 +3224,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 157,
+        "area_id": 181,
         "osmid": "4354085917"
       },
       "geometry": {
@@ -2440,7 +3238,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "7294645278"
       },
       "geometry": {
@@ -2510,14 +3308,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 35,
-        "osmid": "279379001"
+        "area_id": 13,
+        "osmid": "8493786172"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9922588,
-          49.47469859999999
+          5.960129900000002,
+          49.486200099999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 13,
+        "osmid": "8493786173"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.960017500000001,
+          49.486030699999986
         ]
       }
     },
@@ -2566,7 +3378,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 118,
         "osmid": "7872552008"
       },
       "geometry": {
@@ -2580,21 +3392,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 63,
-        "osmid": "412445770"
+        "area_id": 46,
+        "osmid": "2704555083"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.997259800000002,
-          49.46309149999999
+          6.046381700000001,
+          49.460721499999984
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 64,
+        "area_id": 63,
         "osmid": "412445775"
       },
       "geometry": {
@@ -2608,7 +3420,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "1163693139"
       },
       "geometry": {
@@ -2622,7 +3434,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 159,
+        "area_id": 184,
         "osmid": "4571472980"
       },
       "geometry": {
@@ -2650,7 +3462,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 65,
+        "area_id": 47,
+        "osmid": "6425316445"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.052314100000002,
+          49.481005999999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "9010195557"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.045156,
+          49.47437919999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 64,
         "osmid": "412445798"
       },
       "geometry": {
@@ -2658,6 +3498,20 @@
         "coordinates": [
           5.9880182,
           49.46747909999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "295167082"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.060310399999999,
+          49.47571369999999
         ]
       }
     },
@@ -2678,7 +3532,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 113,
+        "area_id": 129,
         "osmid": "1633922162"
       },
       "geometry": {
@@ -2686,6 +3540,20 @@
         "coordinates": [
           5.978576500000001,
           49.48195439999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "2631105656"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.043971800000001,
+          49.45230469999998
         ]
       }
     },
@@ -2706,7 +3574,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 72,
+        "area_id": 138,
         "osmid": "3423349900"
       },
       "geometry": {
@@ -2720,7 +3588,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 145,
+        "area_id": 168,
         "osmid": "4291204246"
       },
       "geometry": {
@@ -2790,6 +3658,34 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 46,
+        "osmid": "9010195633"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.053731700000001,
+          49.4689542
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "9482024130"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986565100000001,
+          49.498858999999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 13,
         "osmid": "412445897"
       },
@@ -2804,7 +3700,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 175,
+        "area_id": 201,
         "osmid": "6872308938"
       },
       "geometry": {
@@ -2818,7 +3714,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 130,
+        "area_id": 152,
         "osmid": "4878556366"
       },
       "geometry": {
@@ -2826,6 +3722,34 @@
         "coordinates": [
           5.990880100000001,
           49.47881589999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "9482024147"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9880432,
+          49.49778169999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "9482024153"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9881962,
+          49.49749539999998
         ]
       }
     },
@@ -2846,6 +3770,34 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 11,
+        "osmid": "9482024157"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.987660100000002,
+          49.4970053
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 68,
+        "osmid": "1594629344"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.009663,
+          49.46840469999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 3,
         "osmid": "2980869352"
       },
@@ -2860,7 +3812,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
+        "area_id": 89,
         "osmid": "3353099502"
       },
       "geometry": {
@@ -2874,7 +3826,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
+        "area_id": 112,
+        "osmid": "1428819183"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.023747,
+          49.46739159999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 176,
+        "osmid": "3698726135"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.037182399999999,
+          49.46579650000001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 89,
         "osmid": "3353099511"
       },
       "geometry": {
@@ -2916,35 +3896,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 72,
-        "osmid": "470562065"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.000556200000002,
-          49.46181799999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 32,
-        "osmid": "279381272"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.006603599999999,
-          49.476263599999996
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 137,
+        "area_id": 159,
         "osmid": "7674762522"
       },
       "geometry": {
@@ -2972,6 +3924,48 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 8,
+        "osmid": "863173916"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986054800000002,
+          49.48145339999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 52,
+        "osmid": "3061134626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0411055000000005,
+          49.46504249999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 52,
+        "osmid": "3061134627"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.040659200000001,
+          49.46498549999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 57,
         "osmid": "863173925"
       },
@@ -2986,7 +3980,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 95,
+        "area_id": 46,
+        "osmid": "322088236"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.060714599999999,
+          49.4757339
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 102,
         "osmid": "9482024242"
       },
       "geometry": {
@@ -3014,7 +4022,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 46,
+        "osmid": "322575674"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0460525,
+          49.4747604
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 103,
         "osmid": "1828506940"
       },
       "geometry": {
@@ -3028,7 +4050,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 46,
+        "osmid": "12752813374"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0393035,
+          49.454140499999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 103,
         "osmid": "1828506944"
       },
       "geometry": {
@@ -3056,21 +4092,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
-        "osmid": "1828506957"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.0079225,
-          49.4891366
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 55,
+        "area_id": 56,
         "osmid": "3509851478"
       },
       "geometry": {
@@ -3084,7 +4106,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 170,
+        "area_id": 196,
         "osmid": "9482024281"
       },
       "geometry": {
@@ -3092,6 +4114,20 @@
         "coordinates": [
           5.979989400000001,
           49.490409499999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "1405873499"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0584014,
+          49.4778857
         ]
       }
     },
@@ -3112,6 +4148,20 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 46,
+        "osmid": "322573662"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.050594600000001,
+          49.4637556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 2,
         "osmid": "1914451295"
       },
@@ -3126,42 +4176,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 63,
-        "osmid": "1319918964"
+        "area_id": 47,
+        "osmid": "1405873534"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9967741,
-          49.463689099999996
+          6.0615235,
+          49.47796109999999
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 63,
-        "osmid": "1319918968"
+        "area_id": 46,
+        "osmid": "676537729"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9954339,
-          49.463544299999995
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 7,
-        "osmid": "1606643069"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.9875522000000005,
-          49.489061
+          6.0346806,
+          49.4547379
         ]
       }
     },
@@ -3182,7 +4218,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 67,
+        "area_id": 47,
+        "osmid": "1405873541"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.061996099999999,
+          49.4775373
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "320677259"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.060451300000001,
+          49.47549769999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 94,
         "osmid": "813493644"
       },
       "geometry": {
@@ -3196,7 +4260,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 142,
+        "area_id": 164,
         "osmid": "3304361357"
       },
       "geometry": {
@@ -3224,7 +4288,49 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 172,
+        "area_id": 46,
+        "osmid": "320677263"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0582899,
+          49.473257699999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 47,
+        "osmid": "9113894287"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.057322300000001,
+          49.4828793
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "320677268"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.057256099999999,
+          49.46894549999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 198,
         "osmid": "6514795925"
       },
       "geometry": {
@@ -3238,7 +4344,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 133,
+        "osmid": "1699495318"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.021269600000001,
+          49.474987899999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 47,
+        "osmid": "1405873562"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0646762999999995,
+          49.4765466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 103,
         "osmid": "1915106736"
       },
       "geometry": {
@@ -3252,7 +4386,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 55,
+        "area_id": 56,
         "osmid": "2756079026"
       },
       "geometry": {
@@ -3266,7 +4400,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 137,
+        "area_id": 47,
+        "osmid": "296211896"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.056829600000001,
+          49.4793544
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 159,
         "osmid": "2685492667"
       },
       "geometry": {
@@ -3274,6 +4422,34 @@
         "coordinates": [
           5.991755500000001,
           49.49332219999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 98,
+        "osmid": "897101244"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0247292,
+          49.47926969999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 148,
+        "osmid": "1955032511"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.962427500000002,
+          49.4850757
         ]
       }
     },
@@ -3294,7 +4470,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 138,
+        "area_id": 160,
         "osmid": "4287520195"
       },
       "geometry": {
@@ -3302,6 +4478,48 @@
         "coordinates": [
           5.995838700000001,
           49.485258099999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "6023609800"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986764,
+          49.50072419999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "6023609802"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986595100000001,
+          49.50203479999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 11,
+        "osmid": "6023609803"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.986508800000001,
+          49.50260939999998
         ]
       }
     },
@@ -3322,21 +4540,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 98,
-        "osmid": "4304123344"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.014443300000001,
-          49.45773419999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 112,
+        "area_id": 127,
         "osmid": "7233983960"
       },
       "geometry": {
@@ -3350,7 +4554,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
+        "area_id": 89,
         "osmid": "2817619423"
       },
       "geometry": {
@@ -3378,7 +4582,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 167,
+        "area_id": 193,
         "osmid": "4855729651"
       },
       "geometry": {
@@ -3406,7 +4610,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "4438410757"
       },
       "geometry": {
@@ -3420,7 +4624,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 104,
+        "area_id": 83,
+        "osmid": "1447923207"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027529800000001,
+          49.479912899999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "1447923210"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.028385000000001,
+          49.47831449999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 118,
         "osmid": "4438410772"
       },
       "geometry": {
@@ -3428,6 +4660,20 @@
         "coordinates": [
           6.005023400000002,
           49.49236529999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 113,
+        "osmid": "1896420884"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.018103000000001,
+          49.474680199999995
         ]
       }
     },
@@ -3448,7 +4694,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 113,
+        "area_id": 83,
+        "osmid": "1447923223"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.028039499999999,
+          49.479721199999986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "1447923228"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0307847,
+          49.478225099999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 129,
         "osmid": "5412458013"
       },
       "geometry": {
@@ -3462,7 +4736,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 138,
+        "area_id": 31,
+        "osmid": "1447923239"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029435499999999,
+          49.4786386
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 33,
+        "osmid": "1814584873"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.025340500000001,
+          49.467907499999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 160,
         "osmid": "2845582914"
       },
       "geometry": {
@@ -3476,7 +4778,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 173,
+        "osmid": "3492736579"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9928368,
+          49.47110639999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 25,
         "osmid": "273079877"
       },
       "geometry": {
@@ -3490,7 +4806,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 100,
+        "area_id": 113,
+        "osmid": "1896420934"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0210805,
+          49.476483599999995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 108,
         "osmid": "1385875022"
       },
       "geometry": {
@@ -3504,7 +4834,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 112,
+        "osmid": "1428588115"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0239104,
+          49.465545199999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 103,
         "osmid": "6564460128"
       },
       "geometry": {
@@ -3518,21 +4862,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
-        "osmid": "5494982243"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.007873300000001,
-          49.48992269999999
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 91,
+        "area_id": 95,
         "osmid": "813500003"
       },
       "geometry": {
@@ -3546,7 +4876,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 41,
+        "area_id": 103,
         "osmid": "5494982244"
       },
       "geometry": {
@@ -3574,7 +4904,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 96,
+        "area_id": 104,
         "osmid": "1304630895"
       },
       "geometry": {
@@ -3588,7 +4918,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 54,
+        "area_id": 55,
         "osmid": "2682545777"
       },
       "geometry": {
@@ -3602,21 +4932,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 115,
-        "osmid": "2638538354"
+        "area_id": 31,
+        "osmid": "3688185462"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.983434300000001,
-          49.48754
+          6.028264600000001,
+          49.47835609999999
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 112,
+        "area_id": 127,
         "osmid": "1632925304"
       },
       "geometry": {
@@ -3630,7 +4960,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 109,
+        "area_id": 124,
         "osmid": "1628706425"
       },
       "geometry": {
@@ -3658,7 +4988,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 123,
+        "area_id": 144,
         "osmid": "1917488778"
       },
       "geometry": {
@@ -3672,7 +5002,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 123,
+        "area_id": 144,
         "osmid": "1917488779"
       },
       "geometry": {
@@ -3680,6 +5010,34 @@
         "coordinates": [
           5.9990726,
           49.48709569999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "676544141"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.036544600000003,
+          49.45449039999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 67,
+        "osmid": "7195170450"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0096221,
+          49.470581299999985
         ]
       }
     },
@@ -3694,6 +5052,34 @@
         "coordinates": [
           6.003273900000001,
           49.49817359999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 101,
+        "osmid": "1397173912"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.014291100000001,
+          49.4834146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 101,
+        "osmid": "1397173913"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0144286,
+          49.48295809999999
         ]
       }
     },
@@ -3728,21 +5114,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 8,
-        "osmid": "7673964201"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.981659400000001,
-          49.484292
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 138,
+        "area_id": 160,
         "osmid": "2682740397"
       },
       "geometry": {
@@ -3756,7 +5128,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 109,
+        "area_id": 124,
         "osmid": "5377445558"
       },
       "geometry": {
@@ -3770,7 +5142,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 117,
+        "area_id": 52,
+        "osmid": "1555779257"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.040887600000001,
+          49.464570099999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 135,
         "osmid": "1768414910"
       },
       "geometry": {
@@ -3798,7 +5184,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 113,
+        "area_id": 129,
         "osmid": "5377445571"
       },
       "geometry": {
@@ -3806,6 +5192,62 @@
         "coordinates": [
           5.982099900000001,
           49.489684399999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 33,
+        "osmid": "3644427972"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027781400000001,
+          49.46855509999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 113,
+        "osmid": "1428817608"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.017818500000001,
+          49.4746062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 67,
+        "osmid": "4838581966"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.008344700000002,
+          49.47220449999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 165,
+        "osmid": "4838581967"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0086048,
+          49.47010499999999
         ]
       }
     },
@@ -3820,6 +5262,20 @@
         "coordinates": [
           5.971272399999999,
           49.47451149999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 33,
+        "osmid": "3644427989"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.027463400000002,
+          49.468825599999995
         ]
       }
     },
@@ -3854,7 +5310,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 117,
+        "area_id": 135,
         "osmid": "1768414948"
       },
       "geometry": {
@@ -3896,6 +5352,34 @@
     {
       "type": "Feature",
       "properties": {
+        "area_id": 117,
+        "osmid": "1430726385"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.026141100000001,
+          49.4796615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "676546292"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0378349,
+          49.44956229999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "area_id": 13,
         "osmid": "726161141"
       },
@@ -3910,14 +5394,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 56,
-        "osmid": "9700345606"
+        "area_id": 51,
+        "osmid": "321535767"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.983814500000002,
-          49.48748319999999
+          6.043009900000001,
+          49.471051499999994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 51,
+        "osmid": "321535770"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.042005700000001,
+          49.47024489999998
         ]
       }
     },
@@ -3938,7 +5436,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 172,
+        "area_id": 198,
         "osmid": "6743893794"
       },
       "geometry": {
@@ -3946,6 +5444,20 @@
         "coordinates": [
           5.981713300000002,
           49.485900499999985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "692721446"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.045225000000001,
+          49.453721399999985
         ]
       }
     },
@@ -3966,7 +5478,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 26,
+        "area_id": 25,
         "osmid": "493619006"
       },
       "geometry": {
@@ -3980,7 +5492,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 150,
+        "area_id": 174,
         "osmid": "5414078273"
       },
       "geometry": {
@@ -3988,6 +5500,20 @@
         "coordinates": [
           5.9797993,
           49.47835009999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 114,
+        "osmid": "7196174147"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.014339400000001,
+          49.474237599999995
         ]
       }
     },
@@ -4009,20 +5535,6 @@
       "type": "Feature",
       "properties": {
         "area_id": 0,
-        "osmid": "2707715918"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.996483900000001,
-          49.49554219999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 0,
         "osmid": "2139965262"
       },
       "geometry": {
@@ -4036,21 +5548,49 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 87,
-        "osmid": "3353075540"
+        "area_id": 0,
+        "osmid": "2707715918"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.9746923,
-          49.46859249999999
+          5.996483900000001,
+          49.49554219999998
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "area_id": 133,
+        "area_id": 31,
+        "osmid": "6796109648"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029341700000001,
+          49.478900799999984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 114,
+        "osmid": "7196174172"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.016232400000001,
+          49.469048799999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 155,
         "osmid": "2448072549"
       },
       "geometry": {
@@ -4058,6 +5598,20 @@
         "coordinates": [
           6.000088,
           49.49377760000001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "322088812"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0456152,
+          49.47478739999999
         ]
       }
     },
@@ -4078,20 +5632,6 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 98,
-        "osmid": "1593329529"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          6.012953799999999,
-          49.457734
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "area_id": 76,
         "osmid": "493606783"
       },
@@ -4100,6 +5640,20 @@
         "coordinates": [
           5.9899917,
           49.48657339999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 51,
+        "osmid": "2696834945"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.041852499999999,
+          49.4707125
         ]
       }
     },
@@ -4134,7 +5688,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 33,
+        "area_id": 32,
         "osmid": "776419212"
       },
       "geometry": {
@@ -4148,7 +5702,35 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 90,
+        "area_id": 117,
+        "osmid": "416333712"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.022390100000001,
+          49.4782748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "4367773585"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.036945700000001,
+          49.457411199999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 93,
         "osmid": "1593329556"
       },
       "geometry": {
@@ -4176,34 +5758,6 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 115,
-        "osmid": "2415863711"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.983732000000001,
-          49.4876811
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 56,
-        "osmid": "2415863715"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.983889800000001,
-          49.487238499999975
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "area_id": 8,
         "osmid": "2415863721"
       },
@@ -4212,34 +5766,6 @@
         "coordinates": [
           5.982884500000002,
           49.484466299999994
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 8,
-        "osmid": "2415863724"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.981525900000001,
-          49.48427639999998
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "area_id": 8,
-        "osmid": "2415863735"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          5.982495500000001,
-          49.4851955
         ]
       }
     },
@@ -4260,7 +5786,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 27,
+        "area_id": 26,
         "osmid": "273080257"
       },
       "geometry": {
@@ -4274,7 +5800,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 28,
+        "area_id": 56,
+        "osmid": "8151470038"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.990581700000002,
+          49.48810189999998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 27,
         "osmid": "273080279"
       },
       "geometry": {
@@ -4288,7 +5828,7 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 90,
+        "area_id": 93,
         "osmid": "1593329628"
       },
       "geometry": {
@@ -4302,7 +5842,91 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 153,
+        "area_id": 31,
+        "osmid": "7684569053"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029285300000001,
+          49.47882459999999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "7684569054"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.029567400000001,
+          49.478816099999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "897109987"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0204931,
+          49.473608399999996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 46,
+        "osmid": "2879860711"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.058461,
+          49.4736822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 31,
+        "osmid": "7684114419"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0295267,
+          49.4787209
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 66,
+        "osmid": "412446709"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0102469,
+          49.4528402
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 178,
         "osmid": "9500264439"
       },
       "geometry": {
@@ -4316,7 +5940,21 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 67,
+        "area_id": 46,
+        "osmid": "4149139451"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.058577100000003,
+          49.478161499999985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 94,
         "osmid": "6491301884"
       },
       "geometry": {
@@ -4330,14 +5968,28 @@
     {
       "type": "Feature",
       "properties": {
-        "area_id": 68,
-        "osmid": "412446718"
+        "area_id": 190,
+        "osmid": "6319054845"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.005315800000001,
-          49.47625319999999
+          6.008511600000001,
+          49.4673488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "area_id": 99,
+        "osmid": "897110015"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.019233400000001,
+          49.47268149999999
         ]
       }
     }

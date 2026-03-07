@@ -1,6 +1,7 @@
 export interface Settings{
     showDeadends: boolean
     showAreaBBox: boolean
+    showFrequencyHeatmap: boolean
     showDebugOverlay: boolean
     tileService: string
 }
@@ -9,6 +10,7 @@ let settingsPane: HTMLElement
 let deadendsInput: HTMLInputElement
 let showAreaBoundingBox: HTMLInputElement
 let showDebugOverlay: HTMLInputElement
+let showFreqHeatmapOverlay: HTMLInputElement
 
 let listener: ((s: Settings) => void) | null
 
@@ -35,11 +37,13 @@ export function settingsInit(element: string, l: ((s: Settings) => void) | null)
     deadendsInput = document.getElementById("settings-deadends")! as HTMLInputElement
     showAreaBoundingBox = document.getElementById("settings-area-bbox")! as HTMLInputElement
     showDebugOverlay = document.getElementById("settings-show-debug")! as HTMLInputElement
+    showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
 
     const storedSettings = loadSettings()
     deadendsInput.checked = storedSettings.showAreaBBox
     showAreaBoundingBox.checked = storedSettings.showAreaBBox
     showDebugOverlay.checked = storedSettings.showDebugOverlay
+    showFreqHeatmapOverlay.checked = storedSettings.showFrequencyHeatmap
     applyRadioSelection("mapService", storedSettings.tileService)
 
     if(listener) listener(storedSettings)
@@ -55,6 +59,7 @@ function settingsCloseListener(event:MouseEvent){
     const settings: Settings={
         showDeadends: deadendsInput.checked,
         showAreaBBox: showAreaBoundingBox.checked,
+        showFrequencyHeatmap: showFreqHeatmapOverlay.checked,
         showDebugOverlay: showDebugOverlay.checked,
         tileService: getSelectedRadio("mapService") ?? "osm"
     }
@@ -71,6 +76,7 @@ function settingsCloseListener(event:MouseEvent){
 const defaultSettings: Settings ={
     showDeadends: true,
     showAreaBBox: true,
+    showFrequencyHeatmap: true,
     showDebugOverlay: false,
     tileService: "osm"
 }
