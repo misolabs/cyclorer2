@@ -30,6 +30,18 @@ body{
 #description{
     position: absolute;
     z-index: 1001;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#directions{
+    position: absolute;
+    z-index: 1001;
     top: 5px;
     left: 0;
     width: 100%;

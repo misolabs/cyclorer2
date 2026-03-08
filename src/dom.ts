@@ -18,6 +18,10 @@ export function setDescription(text: string){
     setTextContent("description", text)
 }
 
+export function setDirections(text: string){
+    setTextContent("directions", text)
+}
+
 export function setDebug(text: string){
     setTextContent("debug", text)
 }

@@ -21,7 +21,7 @@ import {AreaFinder} from "./routing/areafinder.ts"
 import {RoutingEngine} from "./routing/routing.ts";
 import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
-import {formatDistance, setDebug, setDescription} from "./dom.ts";
+import {formatDistance, setDebug, setDescription, setDirections} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
 import {type Settings, settingsInit, settingsShow} from "./settings.ts";
@@ -138,18 +138,22 @@ function updateRouting(){
 
     // 1. Unvisited territory
     if(closestEdge.edge.ride_count == 0 && closestEdge.edge.area_id != undefined){
-      setDescription("GO Explore!")
-      console.log("Unvisited territory")
+      setDirections("GO Explore!")
+      const area = areaFinder.areaInfoById(closestEdge.edge.area_id)
+      setDescription(formatDistance(area.totalLength))
+      previewMap.setArea(area)
+
       currentRoute = null
-      // TODO Determine area we are visiting and show preview
       trackingMap.clearRoute()
     }
     else{
       // 2. If we are still on the same edge, no need to recompute everything
       if(closestEdge.edge == currentEdge && currentRoute){
-        console.log("Staying on ame route")
+        console.log("Staying on same route")
         trackingMap.setSnappedEdge(segments)
         trackingMap.setRoute(currentRoute)
+        const totalDistance = accDistances(splitXY) + currentRoute.totalLength
+        setDirections(formatDistance(totalDistance))
       }else {
         // 3. Find close-by areas
         const entrypointCandidates = areaFinder.findNeighbours(posLatLon)
@@ -193,12 +197,13 @@ function updateRouting(){
           if(foundRoute && currentRoute){
             trackingMap.setSnappedEdge(segments)
             trackingMap.setRoute(currentRoute)
+
             if(currentEntrypoint){
               const areaInfo = areaFinder.areaInfoById(currentEntrypoint.area_id)
               previewMap.setArea(areaInfo)
-              setDescription(formatDistance(areaInfo.totalLength))
+              setDescription(`Area size: ${areaInfo.totalLength.toFixed(0)}m`)
               const totalDistance = accDistances(splitXY) + currentRoute.totalLength
-              // TODO display distance to target
+              setDirections(formatDistance(totalDistance))
             }
           }
         } else {
@@ -209,13 +214,18 @@ function updateRouting(){
         }
       }
     }
+    currentEdge = closestEdge.edge
   }else{
     // We are completely lost -> hide everything
+    setDescription("Nothing around...")
+    setDirections("")
+
     trackingMap.clearRoute()
     previewMap.clearArea()
     trackingMap.clearAreaMarker()
 
     console.log("No trail close to current position")
+    currentEdge = null
   }
 }
 
