@@ -205,19 +205,26 @@ function updateRouting(){
               const totalDistance = accDistances(splitXY) + currentRoute.totalLength
               setDirections(formatDistance(totalDistance))
             }
+          }else{
+            setDescription("Nothing ahead...")
+            setDirections("")
+            trackingMap.clearRoute()
           }
         } else {
           // We have no target
           currentEntrypoint = null
           currentRoute = null
           trackingMap.clearRoute()
+
+          setDescription("Nothing around...")
+          setDirections("")
         }
       }
     }
     currentEdge = closestEdge.edge
   }else{
     // We are completely lost -> hide everything
-    setDescription("Nothing around...")
+    setDescription("The middle of Nowhere")
     setDirections("")
 
     trackingMap.clearRoute()

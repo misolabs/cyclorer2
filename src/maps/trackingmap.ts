@@ -82,8 +82,17 @@ export class TrackingMap{
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
-        this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
-        this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9}).addTo(this.map)
+        // Create a custom pane on top of the path network and heatmap
+        // Holds current route and markers (overlay pane is default polyline pane @ 450)
+        this.map.createPane("routePane", this.map.getPane("overlayPane"))
+        const el = this.map.getPane("routePane")
+        if(el){
+            el.style.zIndex = "460"
+            el.style.pointerEvents = "none"
+        }
+
+        this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9, pane:"routePane"}).addTo(this.map)
+        this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9, pane: "routePane"}).addTo(this.map)
         this.headingIcon = new L.Icon({
             iconUrl: import.meta.env.BASE_URL + 'assets/sign-merge-right.png',
             iconSize: [32, 32],
