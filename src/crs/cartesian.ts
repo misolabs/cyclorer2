@@ -25,3 +25,23 @@ export function pointToSegmentDistance(P: Cartesian, A: Cartesian, B: Cartesian)
         t: t,
     }
 }
+
+export function interpolateCartesian(a: Cartesian, b: Cartesian, t: number): Cartesian{
+    return {
+        x: a.x * t + b.x * (1 - t),
+        y: a.y * t + b.y * (1 - t),
+    }
+}
+
+export function accDistances(p: Cartesian[]): number{
+    let lastP = p[0]
+    let accDist = 0
+
+    for(let i = 1; i < p.length; i++){
+        const dx = p[i].x - lastP.x
+        const dy = p[i].y - lastP.y
+        accDist +=Math.sqrt(dx * dx + dy * dy)
+        lastP = p[i]
+    }
+    return accDist
+}

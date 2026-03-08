@@ -8,7 +8,7 @@ await loadLegacyPlugins()
 import type {StatsJson} from './models/geo.ts'
 import {
   type AreaNode,
-  type BoundingBox,
+  type BoundingBox, type Cartesian,
   type Edge,
   type LatLon,
   NodeId,
@@ -25,6 +25,7 @@ import {formatDistance, setDebug, setDescription} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
 import {type Settings, settingsInit, settingsShow} from "./settings.ts";
+import {accDistances, interpolateCartesian} from "./crs/cartesian.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
@@ -116,13 +117,22 @@ function updateRouting(){
     // Prepare for routing - Starting node and heading
     let startNode: NodeId
     let segments: LatLon[]
+    let splitXY: Cartesian[]
     if (edgeDirection == TravelDirection.U_TO_V) {
+      // Split current edge for drawing
       segments = closestEdge.edge.coordinates.slice(closestEdge.segmentIndex)
       segments[0] = interpolateLatLon(segments[0], segments[1], closestEdge.t)
+      // Split projection for distance
+      splitXY = closestEdge.edge.cartesian.slice(closestEdge.segmentIndex)
+      splitXY[0] = interpolateCartesian(splitXY[0], splitXY[1], closestEdge.t)
       startNode = NodeId(closestEdge.edge.v)
     } else { // u
+      // Split current edge for drawing
       segments = closestEdge.edge.coordinates.slice(0, closestEdge.segmentIndex + 2).reverse()
       segments[0] = interpolateLatLon(segments[0], segments[1], 1 - closestEdge.t)
+      // Split projection for distance
+      splitXY = closestEdge.edge.cartesian.slice(0, closestEdge.segmentIndex + 2)
+      splitXY[0] = interpolateCartesian(splitXY[0], splitXY[1], 1 - closestEdge.t)
       startNode = NodeId(closestEdge.edge.u)
     }
 
@@ -187,6 +197,8 @@ function updateRouting(){
               const areaInfo = areaFinder.areaInfoById(currentEntrypoint.area_id)
               previewMap.setArea(areaInfo)
               setDescription(formatDistance(areaInfo.totalLength))
+              const totalDistance = accDistances(splitXY) + currentRoute.totalLength
+              // TODO display distance to target
             }
           }
         } else {
