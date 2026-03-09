@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './css/map.css'
 import './css/settings.css'
+import './css/splash.css'
 
 import L, { loadLegacyPlugins } from './leaflet-legacy'
 await loadLegacyPlugins()
@@ -26,6 +27,8 @@ import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
 import {type Settings, settingsInit, settingsShow} from "./settings.ts";
 import {accDistances, interpolateCartesian} from "./crs/cartesian.ts";
+import "./views/splash.ts"
+import {splashSetStats} from "./views/splash.ts";
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
@@ -246,9 +249,7 @@ async function loadConfig(url: string) {
     regionBBox = mapBBox(statsData.bbox)
     projection = new CartesianProjection(bbCenter(regionBBox))
 
-    //uiUpdateStats(statsData["total_length"], statsData["areas"])
-    //document.getElementById("stats-total-length").classList.add("fadein-slow")
-    //document.getElementById("stats-areas-count").classList.add("fadein-slow")
+    splashSetStats(statsData["total_length"], statsData["areas"])
   } catch (err) {
     console.error("Failed to load Stats json:", err);
   }
