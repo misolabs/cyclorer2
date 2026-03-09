@@ -30,6 +30,12 @@ import {accDistances, interpolateCartesian} from "./crs/cartesian.ts";
 import "./views/splash.ts"
 import {splashSetStats} from "./views/splash.ts";
 
+import { registerSW } from "virtual:pwa-register"
+
+registerSW({
+  immediate: true
+})
+
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
 

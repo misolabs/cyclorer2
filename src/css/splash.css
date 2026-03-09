@@ -2,7 +2,7 @@
     position: fixed;
     inset: 0;
 
-    background-image: url("public/assets/splash02.jpg");
+    background-image: url("../../public/assets/splash02.jpg");
     background-size: cover;
     background-position: center;
     opacity: 1.0;
