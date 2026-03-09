@@ -1,0 +1,20 @@
+{
+  "name": "Cyclorer 2",
+  "short_name": "Cyclorer2",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "F67D31",
+  "theme_color": "F67D31",
+  "icons": [
+    {
+      "src": "public/assets/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "public/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
