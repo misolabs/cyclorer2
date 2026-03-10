@@ -9,16 +9,16 @@ export default defineConfig({
             registerType: "autoUpdate",
 
             manifest: {
-                name: "Cyclorer",
-                short_name: "Cyclorer",
+                name: "Cyclorer 2",
+                short_name: "Cyclorer2",
                 description: "Cycling navigation and exploration",
 
                 theme_color: "#1e88e5",
                 background_color: "#ffffff",
                 display: "standalone",
 
-                start_url: "/",
-                scope: "/",
+                start_url: "/cyclorer2/",
+                scope: "/cyclorer2/",
 
                 icons: [
                     {
