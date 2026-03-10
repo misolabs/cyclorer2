@@ -20,7 +20,7 @@ import {mapBBox} from './models/mapping.ts'
 import {TrackingMap} from './maps/trackingmap'
 import {AreaFinder} from "./routing/areafinder.ts"
 import {RoutingEngine} from "./routing/routing.ts";
-import {bbCenter, geoToLatLon, interpolateLatLon} from "./crs/latlonmath.ts";
+import {bbCenter, geoToLatLon, haversineDistance, interpolateLatLon} from "./crs/latlonmath.ts";
 import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDebug, setDescription, setDirections} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
@@ -62,9 +62,13 @@ const previewMap: PreviewMap = new PreviewMap("preview-map")
 
 let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
+let lastPosLatLon: LatLon = geoToLatLon(ellergronnGPS)
 
 var watchId: number = -1
 var trackingEnabled = isMobileLike // Enable on mobile
+var exploring = false
+var score = 0
+const scoreEl = document.getElementById("score")!
 
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
@@ -88,6 +92,8 @@ function moveListener(e: L.DragEndEvent) {
 
   e.target.bindPopup(`Coordinates: <br/><b>${posLatLon.lat.toFixed(0)}<br/>${posLatLon.lon.toFixed(0)}</b>`)
   updateRouting()
+
+  keepScore()
 }
 
 function trackingListener(pos: GeolocationPosition){
@@ -101,6 +107,30 @@ function trackingListener(pos: GeolocationPosition){
 
   setDebug(`Angle: ${heading.getBearing()} \n Dir: (${heading.getDirection()?.x}, ${heading.getDirection()?.y})`)
   updateRouting()
+
+  keepScore()
+}
+
+function keepScore(){
+  // Update score
+  if(exploring) {
+    if (currentEdge && currentEdge.area_id != undefined){
+      // Add distance to score
+      score += haversineDistance(posLatLon, lastPosLatLon)
+      scoreEl.textContent = `${score.toFixed(0)}m`
+    }else{
+      // We just re-entered known routes
+      exploring = false
+      setTimeout(() => {scoreEl.classList.remove("counting")}, 5000)
+    }
+  }else{
+    // We just enetered unknown territory
+    if (currentEdge && currentEdge.area_id != undefined) {
+      exploring = true
+      scoreEl.classList.add("counting")
+    }
+  }
+  lastPosLatLon = posLatLon
 }
 
 function registerTrackingListener(){
