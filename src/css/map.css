@@ -29,6 +29,8 @@ body{
     font-family: sans-serif;
     color: white;
     background-color: darkslategrey;
+
+    border-top: 4px solid darkorange;
 }
 
 #description{
@@ -110,15 +112,18 @@ body{
 
     justify-content: center;
     align-items: center;
+    line-height: 1;
 
     font-size: 2rem;
-    font-weight: bold;
-    color: white;
+    font-weight: normal;
+    text-shadow: 2px 2px darkgreen;
+    color: darkorange;
 }
 
 #score{
-
+    transition: font-size 0.4s ease, font-weight 0.4s ease;
 }
+
 /* Make score font bigger when something happens */
 #score.counting{
     font-size: 4rem;
