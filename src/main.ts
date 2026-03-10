@@ -145,6 +145,8 @@ var currentEntrypoint: AreaNode|null
 var currentEdge: Edge|null
 var currentRoute: Route|null
 var heading: HeadingExp = new HeadingExp()
+var entrypointCandidates: AreaNode[] = []
+var forceRecalculation = false
 
 function updateRouting(){
   const closestEdge = routingEngine.findClosestEdge(posLatLon)
@@ -187,7 +189,7 @@ function updateRouting(){
     }
     else{
       // 2. If we are still on the same edge, no need to recompute everything
-      if(closestEdge.edge == currentEdge && currentRoute){
+      if(closestEdge.edge == currentEdge && currentRoute && !forceRecalculation){
         console.log("Staying on same route")
         trackingMap.setSnappedEdge(segments)
         trackingMap.setRoute(currentRoute)
@@ -195,7 +197,7 @@ function updateRouting(){
         setDirections(formatDistance(totalDistance))
       }else {
         // 3. Find close-by areas
-        const entrypointCandidates = areaFinder.findNeighbours(posLatLon)
+        entrypointCandidates = areaFinder.findNeighbours(posLatLon)
         console.log("Found entrypoints", entrypointCandidates)
         trackingMap.setAreaMarker(entrypointCandidates)
 
@@ -222,7 +224,7 @@ function updateRouting(){
             for(const entrypoint of entrypointCandidates){
               const routeCandidate = routingEngine.findRoute(startNode, NodeId(entrypoint.osmid), closestEdge.edge)
               console.log("Checking candidate...", routeCandidate)
-              if (routeCandidate && routeCandidate.inTravelDirection) {
+              if (routeCandidate && (routeCandidate.inTravelDirection || forceRecalculation)) {
                 console.log("Found new route to new entrypoint")
                 foundRoute = true
                 currentRoute = routeCandidate
@@ -260,6 +262,7 @@ function updateRouting(){
         }
       }
     }
+    forceRecalculation = false
     currentEdge = closestEdge.edge
   }else{
     // We are completely lost -> hide everything
@@ -274,6 +277,30 @@ function updateRouting(){
     currentEdge = null
   }
 }
+
+document.getElementById("next-area")!.addEventListener("click", (e) => {
+  let nextIndex = 0
+  const numCandidates = entrypointCandidates.length
+  if(currentEntrypoint) {
+    const curIndex = entrypointCandidates.indexOf(currentEntrypoint)
+    nextIndex = curIndex + 1
+  }
+  nextIndex = (nextIndex + numCandidates) % numCandidates
+  currentEntrypoint = entrypointCandidates[nextIndex]
+  forceRecalculation = true
+})
+
+document.getElementById("previous-area")!.addEventListener("click", (e) => {
+  let nextIndex = 0
+  const numCandidates = entrypointCandidates.length
+  if(currentEntrypoint) {
+    const curIndex = entrypointCandidates.indexOf(currentEntrypoint)
+    nextIndex = curIndex - 1
+  }
+  nextIndex = (nextIndex + numCandidates) % numCandidates
+  currentEntrypoint = entrypointCandidates[nextIndex]
+  forceRecalculation = true
+})
 
 async function loadConfig(url: string) {
   try {

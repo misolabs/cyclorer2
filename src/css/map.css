@@ -133,3 +133,29 @@ body{
 .label-small{
     font-size: 1rem;
 }
+
+#next-area{
+    left: 80%;
+    width: 20%;
+}
+
+#previous-area{
+    left: 0;
+    width: 20%;
+}
+
+.area-arrow{
+    position: absolute;
+    top: 0;
+    height: 100%;
+
+    font-size: xx-large;
+    background-color: slategray;
+
+    display: flex;
+    justify-content: center;  /* horizontal center */
+    align-items: center;      /* vertical center */
+
+    cursor: pointer;
+    user-select: none;
+}

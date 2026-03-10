@@ -22,7 +22,8 @@
     top: 20px;
     right:20px;
     z-index: 2500;
-    background-color: var(--bs-primary);
+    background-color: darkslategray;
+    color: white;
 }
 
 /* Card background */
