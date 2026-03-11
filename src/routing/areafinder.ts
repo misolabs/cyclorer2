@@ -29,6 +29,7 @@ export class AreaFinder{
             // Build spatial index
             for(const geoNode of this.entrypointsGeoData.features){
                 const node = mapGeoAreaNode(geoNode)
+                this.areaData.get(node.area_id)?.nodes.push(node)
                 this.grid.addFeature(node)
             }
             console.log("Area Finder initialised")

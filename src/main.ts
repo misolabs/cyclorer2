@@ -31,6 +31,7 @@ import "./views/splash.ts"
 import {splashSetStats} from "./views/splash.ts";
 
 import { registerSW } from "virtual:pwa-register"
+import {initAreaView} from "./views/arealist.ts";
 
 registerSW({
   immediate: true
@@ -46,7 +47,7 @@ var statsData: StatsJson
 
 var regionBBox: BoundingBox
 var routingEngine!: RoutingEngine
-var areaFinder!: AreaFinder
+export var areaFinder!: AreaFinder
 export var projection: CartesianProjection
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
@@ -372,3 +373,5 @@ settingsInit("settings", onSettingsChanged)
 
 const settingsButton = document.getElementById("settings-open")!
 settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})
+
+initAreaView(areaFinder)

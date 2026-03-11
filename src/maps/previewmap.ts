@@ -9,11 +9,14 @@ export class PreviewMap {
     constructor(elName: string) {
         this.map = L.map(elName, {
             zoomControl: false,
+            attributionControl: false,
+            rotateControl: false,
             dragging: false,
             scrollWheelZoom: false,
-            rotate: false,
-            rotateControl: false,
-            attributionControl: false})
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false,
+            touchZoom: false})
         this.previewArea = L.geoJSON([], {style: {color: "lightseagreen", weight: 3}}).addTo(this.map)
     }
 

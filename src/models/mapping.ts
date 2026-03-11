@@ -74,6 +74,7 @@ export function mapGeoArea(feature: GeoJsonArea): Area{
     edgeCount: feature.properties.edge_count,
     geoData: feature,
     //coordinates: mapCoordinates(feature.geometry.coordinates),
-    bbox: mapBBox(feature.properties.bbox)
+    bbox: mapBBox(feature.properties.bbox),
+    nodes: []
   }
 }

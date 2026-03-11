@@ -58,6 +58,8 @@ export interface Area{
   totalLength: number
   edgeCount: number
   bbox: BoundingBox
+
+  nodes: AreaNode[]
 }
 
 export interface AdjacencyInfo {
