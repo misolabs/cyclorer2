@@ -25,7 +25,7 @@ import {PreviewMap} from "./maps/previewmap.ts";
 import {formatDistance, setDebug, setDescription, setDirections} from "./dom.ts";
 import {HeadingExp} from "./routing/heading.ts";
 import {CartesianProjection} from "./helpers.ts";
-import {type Settings, settingsInit, settingsShow} from "./settings.ts";
+import {type Settings, settingsInit, settingsShow} from "./views/settings.ts";
 import {accDistances, interpolateCartesian} from "./crs/cartesian.ts";
 import "./views/splash.ts"
 import {splashSetStats} from "./views/splash.ts";
@@ -40,7 +40,6 @@ registerSW({
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
 
-const homeGPS = new L.LatLng(49.4986211, 5.9763811)
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 
 var statsData: StatsJson
@@ -51,7 +50,6 @@ export var areaFinder!: AreaFinder
 export var projection: CartesianProjection
 
 const trackingMap: TrackingMap = new TrackingMap("tracking-map")
-//trackingMap.initBaseLayer(ellergronnGPS, 16)
 // TODO - Integrate zoom level into settings
 trackingMap.map.setView(ellergronnGPS, 16)
 

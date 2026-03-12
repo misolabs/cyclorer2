@@ -53,10 +53,12 @@ interface TileService{
 
 const osmTileService: TileService = {url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
 const cyclosmTileService: TileService = {url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", attribution: "CyclOSM"}
+const openTopoTileService: TileService = {url: "https://c.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "OpenTopoMap"}
 
 const tileServices:Map<string, TileService> = new Map([
     ["osm", osmTileService],
     ["cyclosm", cyclosmTileService],
+    ["opentopo", openTopoTileService],
 ])
 
 let currentTileService: TileService | null = null
