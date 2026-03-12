@@ -2,7 +2,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 350px;
     height: 100%;
 
     overflow-y: auto;   /* vertical scrolling */
@@ -15,6 +15,12 @@
 
 #area-view.hide-list{
     display: none;
+}
+
+@media (max-width: 768px) {
+    #area-view {
+        width: 100%;
+    }
 }
 
 /* List item */

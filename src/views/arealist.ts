@@ -5,8 +5,17 @@ import * as L from "leaflet";
 
 const list = document.getElementById("area-view")!
 
+function navigateToArea(areaId: number) {
+    const event = new CustomEvent("cycNavigateArea", {
+        detail: { areaId }
+    })
+
+    window.dispatchEvent(event)
+    setTimeout(()=>{list.classList.add("hide-list")}, 250)
+}
+
 function selectArea(areaId: number) {
-    const event = new CustomEvent("areaSelected", {
+    const event = new CustomEvent("cycSelectArea", {
         detail: { areaId }
     })
 
@@ -26,12 +35,12 @@ function addItem(area: Area) {
         </div>
         <div class="area-list-preview"></div>
         <div class="area-list-buttons">
-            <div class="btn btn-primary mb-2 highlight-area">
+            <div class="btn btn-primary mb-2 cyc-highlight-area">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103M10 1.91l-4-.8v12.98l4 .8zm1 12.98 4-.8V1.11l-4 .8zm-6-.8V1.11l-4 .8v12.98z"/>
                 </svg>
             </div>
-            <div class="btn btn-secondary">
+            <div class="btn btn-secondary cyc-navigate-area">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-crosshair" viewBox="0 0 16 16">
                 <path d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
                 </svg>
@@ -39,8 +48,11 @@ function addItem(area: Area) {
         </div>`
 
     // Add event listeners
-    const highlightButton = item.querySelector(".highlight-area")!
+    const highlightButton = item.querySelector(".cyc-highlight-area")!
     highlightButton.addEventListener("click", () => {selectArea(area.area_id)})
+
+    const navigateButton = item.querySelector(".cyc-navigate-area")!
+    navigateButton.addEventListener("click", () => {navigateToArea(area.area_id)})
 
     const mapPreview = item.querySelector(".area-list-preview")! as HTMLDivElement
 

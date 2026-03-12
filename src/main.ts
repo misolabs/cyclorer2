@@ -374,12 +374,21 @@ settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})
 
 document.getElementById("arealist-open")!.addEventListener("click", (_:MouseEvent)=>{initAreaView(areaFinder)})
 
-window.addEventListener("areaSelected", (e) =>{
+window.addEventListener("cycSelectArea", (e) =>{
   const event = e as CustomEvent
   const area = areaFinder.areaInfoById(event.detail.areaId)
 
   trackingMap.highlightArea(area)
   trackingMap.setAreaMarker(area.nodes)
+
+  trackingMap.map.invalidateSize()
+})
+
+window.addEventListener("cycNavigateArea", (e) =>{
+  const event = e as CustomEvent
+  const area = areaFinder.areaInfoById(event.detail.areaId)
+
+  // TODO Set Navigation mode to area
 
   trackingMap.map.invalidateSize()
 })
