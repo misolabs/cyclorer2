@@ -374,4 +374,14 @@ settingsInit("settings", onSettingsChanged)
 const settingsButton = document.getElementById("settings-open")!
 settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})
 
-initAreaView(areaFinder)
+document.getElementById("arealist-open")!.addEventListener("click", (_:MouseEvent)=>{initAreaView(areaFinder)})
+
+window.addEventListener("areaSelected", (e) =>{
+  const event = e as CustomEvent
+  const area = areaFinder.areaInfoById(event.detail.areaId)
+
+  trackingMap.highlightArea(area)
+  trackingMap.setAreaMarker(area.nodes)
+
+  trackingMap.map.invalidateSize()
+})

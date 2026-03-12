@@ -13,14 +13,42 @@
     z-index: 3000;
 }
 
+#area-view.hide-list{
+    display: none;
+}
+
+/* List item */
+
 .area-list-item{
     padding: 12px;
     border-bottom: 1px solid #ddd;
     font-size: 1rem;
-    height: 150px;
+    /*height: 150px;*/
+    display: flex;
+    flex-direction: row;
     pointer-events: none;
 }
 
 .area-list-item:active{
     background-color: #eee;
+}
+
+/* Columns */
+.area-list-info{
+    margin-right: 10px;
+}
+
+.area-list-preview{
+    pointer-events: none;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    margin-right: 10px;
+}
+
+.area-list-buttons{
+    right: 20px;
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
 }

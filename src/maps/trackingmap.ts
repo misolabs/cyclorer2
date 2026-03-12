@@ -1,7 +1,7 @@
 import L from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 
-import type {AreaNode, LatLon, Route} from "../models/models.ts";
+import type {Area, AreaNode, LatLon, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 import 'leaflet/dist/leaflet.css'
@@ -76,6 +76,7 @@ export class TrackingMap{
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
     deadendsLayerGroup: L.LayerGroup = L.layerGroup()
     freqHeatmapLayerGroup: L.LayerGroup = L.layerGroup()
+    areaHighlightLG: L.LayerGroup = L.layerGroup()
 
     constructor(elName: string){
         this.map = L.map(elName, { rotate: true, rotateControl: false })
@@ -108,6 +109,7 @@ export class TrackingMap{
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
+        this.areaHighlightLG.addTo(this.map)
     }
 
     setBaseLayer(id: string){
@@ -207,6 +209,16 @@ export class TrackingMap{
             this.headingMarker.addEventListener("dragend", listener)
     }
 
+    highlightArea(area: Area | null){
+        this.areaHighlightLG.clearLayers()
+        if(area){
+            const areaLayer = L.geoJSON(area.geoData, {
+                //filter: (feature) => {return feature.properties.area_id == area.area_id},
+                style: {color: "yellow", weight: 7}
+            }).addTo(this.areaHighlightLG)
+            this.map.fitBounds(areaLayer.getBounds(), {padding: [50, 50]})
+        }
+    }
     setAreaMarker(areas: AreaNode[]): void{
         // If we need more markers, add them
         const nMarker = this.neighbourMarker.length
