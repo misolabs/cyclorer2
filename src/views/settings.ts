@@ -3,6 +3,7 @@ export interface Settings{
     showAreaBBox: boolean
     showFrequencyHeatmap: boolean
     showDebugOverlay: boolean
+    toggleOverlaysWhenRiding: boolean
     tileService: string
 }
 
@@ -11,6 +12,7 @@ let deadendsInput: HTMLInputElement
 let showAreaBoundingBox: HTMLInputElement
 let showDebugOverlay: HTMLInputElement
 let showFreqHeatmapOverlay: HTMLInputElement
+let toggleOverlaysWhenRiding: HTMLInputElement
 
 let listener: ((s: Settings) => void) | null
 
@@ -38,12 +40,14 @@ export function settingsInit(element: string, l: ((s: Settings) => void) | null)
     showAreaBoundingBox = document.getElementById("settings-area-bbox")! as HTMLInputElement
     showDebugOverlay = document.getElementById("settings-show-debug")! as HTMLInputElement
     showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
+    toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
 
     const storedSettings = loadSettings()
     deadendsInput.checked = storedSettings.showAreaBBox
     showAreaBoundingBox.checked = storedSettings.showAreaBBox
     showDebugOverlay.checked = storedSettings.showDebugOverlay
     showFreqHeatmapOverlay.checked = storedSettings.showFrequencyHeatmap
+    toggleOverlaysWhenRiding.checked = storedSettings.toggleOverlaysWhenRiding
     applyRadioSelection("mapService", storedSettings.tileService)
 
     if(listener) listener(storedSettings)
@@ -61,6 +65,7 @@ function settingsCloseListener(event:MouseEvent){
         showAreaBBox: showAreaBoundingBox.checked,
         showFrequencyHeatmap: showFreqHeatmapOverlay.checked,
         showDebugOverlay: showDebugOverlay.checked,
+        toggleOverlaysWhenRiding: toggleOverlaysWhenRiding.checked,
         tileService: getSelectedRadio("mapService") ?? "osm"
     }
 
@@ -78,6 +83,7 @@ const defaultSettings: Settings ={
     showAreaBBox: true,
     showFrequencyHeatmap: true,
     showDebugOverlay: false,
+    toggleOverlaysWhenRiding: true,
     tileService: "osm"
 }
 

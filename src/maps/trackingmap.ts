@@ -279,9 +279,10 @@ export class TrackingMap{
         this.snappedEdge.setLatLngs([])
     }
 
-    setPosition(pos: LatLon){
+    setPosition(pos: LatLon, centerView: boolean){
         const leafPos = new LatLng(pos.lat, pos.lon)
-        this.map.setView(leafPos)
+        if(centerView)
+            this.map.setView(leafPos)
         this.positionMarker?.setLatLng(leafPos)
     }
 

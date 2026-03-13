@@ -63,6 +63,7 @@ let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let lastPosLatLon: LatLon = geoToLatLon(ellergronnGPS)
 
+var viewFollowTracking = true
 var watchId: number = -1
 var trackingEnabled = isMobileLike // Enable on mobile
 var exploring = false
@@ -95,16 +96,43 @@ function moveListener(e: L.DragEndEvent) {
   keepScore()
 }
 
+// Hide UI when we ride
+// Elements to toggle are marked with a css class
+var isUIOverlayVisible = true
+function toggleUIOverlays(speed: number) {
+  const overlayElements = document.querySelectorAll(".ui-overlay-element")
+  // Slowing down -> show
+  if(speed < 0.5 && !isUIOverlayVisible) {
+    overlayElements.forEach(overlayElement => {
+      overlayElement.classList.remove("hide")
+    })
+    // TODO: Hide zoom control on map
+    isUIOverlayVisible = true
+  // Speeding up -> hide
+  }else if(speed > 1.0 && isUIOverlayVisible) {}
+  for(const el of overlayElements){
+    if(!el.classList.contains("hide")){
+      el.classList.add("hide")
+    }
+    isUIOverlayVisible = false
+  }
+}
+
 function trackingListener(pos: GeolocationPosition){
+  if(currentSettings.toggleOverlaysWhenRiding && pos.coords.speed)
+    toggleUIOverlays(pos.coords.speed)
+
   posLatLon = {lat: pos.coords.latitude, lon: pos.coords.longitude}
-  trackingMap.setPosition(posLatLon)
+  trackingMap.setPosition(posLatLon, viewFollowTracking)
 
   const posXY = projection.fromLatlon(posLatLon)
   heading.update(posXY, pos.coords.speed)
   const smoothBearing = Math.round(heading.getBearing() / 5 ) * 5
-  trackingMap.map.setBearing(smoothBearing)
 
-  setDebug(`Angle: ${heading.getBearing()} \n Dir: (${heading.getDirection()?.x}, ${heading.getDirection()?.y})`)
+  if(viewFollowTracking)
+    trackingMap.map.setBearing(smoothBearing)
+
+  //setDebug(`Angle: ${heading.getBearing()} \n Dir: (${heading.getDirection()?.x}, ${heading.getDirection()?.y})`)
   updateRouting()
 
   keepScore()
@@ -351,9 +379,11 @@ setDebug("System ready...")
 // SETTINGS
 //=========
 
+var currentSettings: Settings
 function onSettingsChanged(s:Settings) {
   console.log("Settings changed...")
   console.log(s)
+  currentSettings = s
 
   // Configure tracking map display
   trackingMap.toggleAreaBoundingBoxes(s.showAreaBBox)
@@ -391,4 +421,16 @@ window.addEventListener("cycNavigateArea", (e) =>{
   // TODO Set Navigation mode to area
 
   trackingMap.map.invalidateSize()
+})
+
+// Stop following tracking if we pan the map, show button to re-center
+const centerBtnEl = document.getElementById("center-btn")
+centerBtnEl?.addEventListener("click", (e) =>{
+  viewFollowTracking = true
+  centerBtnEl.classList.add("hidden")
+})
+
+trackingMap.map.on("movestart", (e) => {
+  viewFollowTracking = false
+  centerBtnEl?.classList.remove("hidden")
 })

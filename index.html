@@ -23,7 +23,7 @@
         </div>
       </div>
       <!--    <div id="gps" class="gps-icon"></div>-->
-      <button id="settings-open" class="btn btn-lg settings-button">
+      <button id="settings-open" class="btn btn-lg settings-button ui-overlay-element">
         <svg xmlns="http://www.w3.org/2000/svg"
              width="24"
              height="24"
@@ -33,12 +33,13 @@
                 d="M2 4h12v1H2V4zm0 3h12v1H2V7zm0 3h12v1H2v-1z"/>
         </svg>
       </button>
-      <button id="arealist-open" class = "btn btn-lg arealist-button">
+      <button id="arealist-open" class = "btn btn-lg arealist-button ui-overlay-element">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
           <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
           <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
         </svg>
       </button>
+      <button id="center-btn" class="btn btn-danger hidden">Center View</button>
 
       <div id="preview-map">
         <div id="directions"></div>
@@ -87,7 +88,7 @@
             <input class="form-check-input" type="radio" name="mapService" id="settings-osm-tiles" value="osm">
             <label class="form-check-label" for="settings-osm-tiles">OpenStreetMap</label>
           </div>
-          <div class="form-check">
+          <div class="form-check mb-3">
             <input class="form-check-input" type="radio" name="mapService" id="settings-cyclosm-tiles" value="cyclosm">
             <label class="form-check-label" for="settings-cyclosm-tiles">Cyclosm</label>
           </div>
@@ -101,9 +102,13 @@
       <div class="card mb-3">
         <div class="card-header">Misc</div>
         <div class="card-body">
-          <div class="form-check form-switch">
+          <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" id="settings-show-debug">
             <label class="form-check-label" for="settings-show-debug">Show Debug Info</label><br>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="settings-toggle-overlays">
+            <label class="form-check-label" for="settings-toggle-overlays">Hide Overlays when riding</label><br>
           </div>
         </div>
       </div>

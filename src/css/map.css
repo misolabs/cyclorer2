@@ -101,6 +101,18 @@ body{
     color: white;
 }
 
+#center-btn{
+    position: absolute;
+    top:120px;
+    left:45%;
+    width: 10%;
+    z-index: 2500;
+}
+
+#center-btn.hidden{
+    display: none;
+}
+
 #gps{
     position: absolute;
     z-index: 1001;
@@ -191,3 +203,9 @@ body{
     cursor: pointer;
     user-select: none;
 }
+
+.hide{
+    display: none;
+}
+
+.ui-overlay-element{}
