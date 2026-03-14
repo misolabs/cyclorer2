@@ -101,3 +101,10 @@ export interface Route{
   routeEdges: Edge[]
   inTravelDirection?: boolean
 }
+
+export const NavigationMode = {
+  TM_NONE: 0,
+  TM_EXPLORE: 1,
+  TM_AREA: 2,
+}
+export type NavigationMode = typeof NavigationMode[keyof typeof NavigationMode];
