@@ -104,8 +104,8 @@ body{
 #center-btn{
     position: absolute;
     top:120px;
-    left:45%;
-    width: 10%;
+    left:35%;
+    width: 30%;
     z-index: 2500;
 }
 

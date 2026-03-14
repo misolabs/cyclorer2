@@ -108,10 +108,11 @@ function toggleUIOverlays(speed: number) {
     // TODO: Hide zoom control on map
     isUIOverlayVisible = true
   // Speeding up -> hide
-  }else if(speed > 1.0 && isUIOverlayVisible) {}
-  for(const el of overlayElements){
-    if(!el.classList.contains("hide")){
-      el.classList.add("hide")
+  }else if(speed > 1.0 && isUIOverlayVisible) {
+    for(const el of overlayElements) {
+      if (!el.classList.contains("hide")) {
+        el.classList.add("hide")
+      }
     }
     isUIOverlayVisible = false
   }
@@ -138,6 +139,8 @@ function trackingListener(pos: GeolocationPosition){
 }
 
 function keepScore(){
+  console.log(currentEdge?.area_id)
+
   // Update score
   if(exploring) {
     if (currentEdge && currentEdge.area_id != undefined){
@@ -327,6 +330,8 @@ function updateRouting2(){
     if(currentRoute){
       drawRoute(closestEdge, edgeDirection)
     }
+
+    currentEdge = closestEdge.edge
   }else{
     // We don't really know where we are
     // We leave the route until we hit a graph edge
@@ -384,8 +389,6 @@ function drawRoute(closestEdge: EdgeIntersection, edgeDirection: TravelDirection
     trackingMap.setSnappedEdge([])
     trackingMap.clearRoute()
   }
-
-  currentEdge = closestEdge.edge
 }
 
 document.getElementById("next-area")!.addEventListener("click", (e) => {
