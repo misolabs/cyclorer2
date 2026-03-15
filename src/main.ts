@@ -85,6 +85,8 @@ function simulationListener(){
   const posXY = projection.fromLatlon(posLatLon)
   const headingXY = projection.fromLatlon(headingLatLon)
 
+  //console.log("posXY", posXY)
+
   // Set bearing
   heading.reinit(posXY, headingXY, 2.0)
   //console.log(headingXY)
@@ -178,6 +180,7 @@ var heading: HeadingExp = new HeadingExp()
 var entrypointCandidates: AreaNode[] = []
 var forceRecalculation = false
 
+// Keep for now for reference
 function updateRouting(){
   const closestEdge = routingEngine.findClosestEdge(posLatLon)
 
@@ -366,8 +369,9 @@ function drawRoute(closestEdge: EdgeIntersection, edgeDirection: TravelDirection
     const nextEdge = currentRoute.routeEdges[0]
     if(nextEdge == closestEdge.edge){
       console.log("Progressing along route")
-      currentEdge = nextEdge
+      //currentEdge = nextEdge
       currentRoute.routeEdges.splice(0, 1) // Pop first edge
+      currentRoute.totalLength -= nextEdge.length
     }else
     {
       // If we are off-route -> invalidate
@@ -507,6 +511,12 @@ window.addEventListener("cycNavigateArea", (e) =>{
   // Temporary solution -> navigate to the first entrypoint
   if(area.nodes.length > 0){
     currentTarget = area.nodes[0]
+    trackingMap.highlightArea(area)
+    trackingMap.setAreaMarker(area.nodes)
+    previewMap.setArea(area)
+
+    entrypointCandidates = area.nodes
+
     forceRecalculation = true
   }
 
