@@ -89,7 +89,7 @@ function simulationListener(){
 
   // Set bearing
   heading.reinit(posXY, headingXY, 2.0)
-  //console.log(headingXY)
+  //console.log(posXY, headingXY)
   trackingMap.map.setBearing(heading.getBearing())
 
   // Update routing
@@ -322,7 +322,7 @@ function updateRouting2(){
         const startNode = (edgeDirection == TravelDirection.U_TO_V) ? NodeId(closestEdge.edge.v) : NodeId(closestEdge.edge.u)
         const routeCandidate = routingEngine.findRoute(startNode, NodeId(currentTarget.osmid), closestEdge.edge)
 
-        if(routeCandidate && routeCandidate.inTravelDirection){
+        if(routeCandidate){
           currentRoute = routeCandidate
           forceRecalculation = false
         }
@@ -390,8 +390,8 @@ function drawRoute(closestEdge: EdgeIntersection, edgeDirection: TravelDirection
   }else{
     setDescription("No valid route found")
     setDirections("")
-    trackingMap.setSnappedEdge([])
-    trackingMap.clearRoute()
+    //trackingMap.setSnappedEdge([])
+    //trackingMap.clearRoute()
   }
 }
 
@@ -507,6 +507,7 @@ window.addEventListener("cycSelectArea", (e) =>{
 window.addEventListener("cycNavigateArea", (e) =>{
   const event = e as CustomEvent
   const area = areaFinder.areaInfoById(event.detail.areaId)
+  console.log("Navigate to area " + area.area_id)
 
   // Temporary solution -> navigate to the first entrypoint
   if(area.nodes.length > 0){

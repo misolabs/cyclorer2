@@ -46,6 +46,10 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   layer.bindPopup(html)
 }
 
+function navigateTo(areaId: number){
+    window.dispatchEvent(new CustomEvent('cycSelectArea', {detail: { areaId }}))
+}
+
 interface TileService{
     attribution: string
     url: string
@@ -173,7 +177,9 @@ export class TrackingMap{
 
             // Bounding rectangle
             L.rectangle(bounds,{weight:1, color: (features[i].properties.total_length > 200 ? "Purple": "Blue")})
-            .bindPopup(`area: <b>${features[i].properties.area_id}</b>`)
+            .bindPopup(`area: <b>${features[i].properties.area_id}</b><br/>
+                <div class="btn btn-danger" onclick="window.dispatchEvent(new CustomEvent('cycNavigateArea', {detail: { areaId: ${features[i].properties.area_id} }}))">Navigate</div>`
+            )
             .addTo(this.areaBBoxLayerGroup)
         }
     
@@ -218,7 +224,17 @@ export class TrackingMap{
                 //filter: (feature) => {return feature.properties.area_id == area.area_id},
                 style: {color: "yellow", weight: 7}
             }).addTo(this.areaHighlightLG)
-            this.map.fitBounds(areaLayer.getBounds(), {padding: [50, 50]})
+
+            // Calculate bounds of area with current position
+            const prevCenter = this.map.getCenter()
+            const prevZoom = this.map.getZoom()
+
+            // Show preview of the full route
+            const extBounds = areaLayer.getBounds().extend(this.positionMarker!.getLatLng())
+            this.map.fitBounds(extBounds, {padding: [50, 50]})
+
+            // Return to current view
+            setTimeout(()=>{this.map.setView(prevCenter, prevZoom)}, 5000)
         }
     }
     setAreaMarker(areas: AreaNode[]): void{
