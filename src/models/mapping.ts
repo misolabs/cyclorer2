@@ -1,6 +1,7 @@
 import {type GeoJsonArea, type GeoJsonBBox, type GeoJsonEntrypoint, type GeoJsonRouting} from "./geo.ts";
 import {type Edge, type LatLon, type BoundingBox, type AreaNode, type Area} from "./models.ts";
 import type {Position} from "geojson";
+import {LatLng} from "leaflet";
 
 // Recursive structure
 type NestedPositions = Position | NestedPositions[];

@@ -32,6 +32,7 @@ import {splashSetStats} from "./views/splash.ts";
 
 import { registerSW } from "virtual:pwa-register"
 import {initAreaView} from "./views/arealist.ts";
+import {LatLng} from "leaflet";
 
 registerSW({
   immediate: true
@@ -49,7 +50,7 @@ var routingEngine!: RoutingEngine
 export var areaFinder!: AreaFinder
 export var projection: CartesianProjection
 
-const trackingMap: TrackingMap = new TrackingMap("tracking-map")
+const trackingMap: TrackingMap = new TrackingMap("tracking-map", isMobileLike)
 // TODO - Integrate zoom level into settings
 trackingMap.map.setView(ellergronnGPS, 16)
 
@@ -140,6 +141,7 @@ function trackingListener(pos: GeolocationPosition){
   keepScore()
 }
 
+var scoreTimerId = -1
 function keepScore(){
   console.log(currentEdge?.area_id)
 
@@ -149,16 +151,26 @@ function keepScore(){
       // Add distance to score
       score += haversineDistance(posLatLon, lastPosLatLon)
       scoreEl.textContent = `${score.toFixed(0)}m`
+      trackingMap.extendSnailTrail(new LatLng(posLatLon.lat, posLatLon.lon))
     }else{
       // We just re-entered known routes
       exploring = false
-      setTimeout(() => {scoreEl.classList.remove("counting")}, 5000)
+      scoreTimerId = setTimeout(() => {
+        scoreEl.classList.remove("counting")
+        scoreTimerId = -1
+      }, 5000)
     }
   }else{
     // We just enetered unknown territory
     if (currentEdge && currentEdge.area_id != undefined) {
+      if(scoreTimerId != -1){
+        clearTimeout(scoreTimerId)
+        scoreTimerId = -1
+      }
+
       exploring = true
       scoreEl.classList.add("counting")
+      trackingMap.startSnailTrail(new LatLng(posLatLon.lat, posLatLon.lon))
     }
   }
   lastPosLatLon = posLatLon

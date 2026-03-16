@@ -83,9 +83,13 @@ export class TrackingMap{
     deadendsLayerGroup: L.LayerGroup = L.layerGroup()
     freqHeatmapLayerGroup: L.LayerGroup = L.layerGroup()
     areaHighlightLG: L.LayerGroup = L.layerGroup()
+    snailTrailLG: L.LayerGroup = L.layerGroup()
 
-    constructor(elName: string){
-        this.map = L.map(elName, { zoomControl: false, rotate: true, rotateControl: false })
+    snailTrailLayer!: L.Polyline
+    snailTrailPoly: LatLng[] = []
+
+    constructor(elName: string, mobileMode: boolean){
+        this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false })
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
@@ -116,6 +120,7 @@ export class TrackingMap{
         // Always visible
         this.areasLayerGroup.addTo(this.map)
         this.areaHighlightLG.addTo(this.map)
+        this.snailTrailLG.addTo(this.map)
     }
 
     setBaseLayer(id: string){
@@ -315,5 +320,22 @@ export class TrackingMap{
     toggleFrequencyHeatmap(show: boolean){
         if(show) this.freqHeatmapLayerGroup.addTo(this.map)
         else this.freqHeatmapLayerGroup.removeFrom(this.map)
+    }
+
+    clearSnailTrails(){
+        this.snailTrailLG.clearLayers()
+    }
+
+    startSnailTrail(startPos:LatLng){
+        this.snailTrailPoly = [startPos]
+    }
+
+    extendSnailTrail(pos: LatLng){
+        this.snailTrailPoly.push(pos)
+        if(this.snailTrailPoly.length == 2){
+            this.snailTrailLayer = L.polyline(this.snailTrailPoly, {weight: 5, color: "#2FA4D7", opacity: 0.9}).addTo(this.map)
+        }else{
+            this.snailTrailLayer!.setLatLngs(this.snailTrailPoly)
+        }
     }
 }
