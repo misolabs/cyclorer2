@@ -103,8 +103,8 @@ body{
 #arealist-open{
     visibility: visible;
     position: absolute;
-    top: 20px;
-    right:120px;
+    top: 80px;
+    right: 20px;
     z-index: 2500;
     background-color: darkslategray;
     color: white;

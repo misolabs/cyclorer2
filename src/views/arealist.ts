@@ -3,7 +3,12 @@ import type {AreaFinder} from "../routing/areafinder.ts";
 import type {Area} from "../models/models.ts";
 import * as L from "leaflet";
 
-const list = document.getElementById("area-view")!
+var mobileMode = false
+
+const view = document.getElementById("area-view")!
+const list = document.getElementById("area-list")!
+
+document.getElementById("area-view-close-btn")!.addEventListener("click", () => {view.classList.add("hide-list");})
 
 function navigateToArea(areaId: number) {
     const event = new CustomEvent("cycNavigateArea", {
@@ -11,7 +16,8 @@ function navigateToArea(areaId: number) {
     })
 
     window.dispatchEvent(event)
-    setTimeout(()=>{list.classList.add("hide-list")}, 250)
+    if(mobileMode)
+        setTimeout(()=>{view.classList.add("hide-list")}, 250)
 }
 
 function selectArea(areaId: number) {
@@ -20,7 +26,8 @@ function selectArea(areaId: number) {
     })
 
     window.dispatchEvent(event)
-    setTimeout(()=>{list.classList.add("hide-list")}, 250)
+    if(mobileMode)
+        setTimeout(()=>{view.classList.add("hide-list")}, 250)
 }
 
 function addItem(area: Area) {
@@ -60,9 +67,11 @@ function addItem(area: Area) {
     return mapPreview
 }
 
-export function initAreaView(areaFinder: AreaFinder){
+export function initAreaView(areaFinder: AreaFinder, isMobileMode: boolean){
+    mobileMode = isMobileMode
+
     list.replaceChildren()
-    list.classList.remove("hide-list")
+    view.classList.remove("hide-list")
 
     for(const area of areaFinder.areaData.values()){
         const elPreview = addItem(area)
