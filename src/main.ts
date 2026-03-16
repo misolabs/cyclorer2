@@ -504,7 +504,7 @@ settingsInit("settings", onSettingsChanged)
 const settingsButton = document.getElementById("settings-open")!
 settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})
 
-document.getElementById("arealist-open")!.addEventListener("click", (_:MouseEvent)=>{initAreaView(areaFinder)})
+document.getElementById("arealist-open")!.addEventListener("click", (_:MouseEvent)=>{initAreaView(areaFinder, isMobileLike)})
 
 window.addEventListener("cycSelectArea", (e) =>{
   const event = e as CustomEvent
@@ -534,6 +534,10 @@ window.addEventListener("cycNavigateArea", (e) =>{
   }
 
   trackingMap.map.invalidateSize()
+})
+
+window.addEventListener("invalidateMap", (e) =>{
+  trackingMap.map.invalidateSize(true)
 })
 
 // Stop following tracking if we pan the map, show button to re-center

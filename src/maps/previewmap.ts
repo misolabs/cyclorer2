@@ -2,6 +2,22 @@ import * as L from "leaflet";
 import type {Area} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
+// TODO - Clean-up, preview should not know tracking-map
+const trackingContainer = document.getElementById("tracking-map")!
+const previewContainer = document.getElementById("preview-map")!
+
+document.getElementById("preview-minimise")!.addEventListener("click", () => {
+    if(previewContainer.classList.contains("minipreview")) {
+        previewContainer.classList.remove("minipreview")
+        trackingContainer.classList.remove("minipreview")
+    }
+    else {
+        previewContainer.classList.add("minipreview")
+        trackingContainer.classList.add("minipreview")
+    }
+    window.dispatchEvent(new CustomEvent("invalidateMap", {}))
+})
+
 export class PreviewMap {
     map: L.Map
     previewArea: L.GeoJSON

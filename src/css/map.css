@@ -64,6 +64,14 @@ body{
     }
 }
 
+#preview-minimise{
+    position: absolute;
+    top: 0;
+    left: 10px;
+    color: darkslategray;
+    z-index: 1001;
+}
+
 #description{
     position: absolute;
     z-index: 1001;
