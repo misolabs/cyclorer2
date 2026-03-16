@@ -53,6 +53,15 @@ body{
 
         border-top: 4px solid darkorange;
     }
+
+    #tracking-map.minipreview{
+        height: calc(100vh - 100px);
+    }
+
+    #preview-map.minipreview{
+        top: calc(100vh - 100px);
+        height: 100px;
+    }
 }
 
 #description{
@@ -103,14 +112,19 @@ body{
 
 #center-btn{
     position: absolute;
-    top:120px;
-    left:35%;
-    width: 30%;
+    top:10px;
+    left:10px;
+
     z-index: 2500;
 }
 
 #center-btn.hidden{
     display: none;
+}
+
+.bi-crosshair{
+    width: 32px;
+    height: 32px;
 }
 
 #gps{

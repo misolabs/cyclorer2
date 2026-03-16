@@ -85,7 +85,7 @@ export class TrackingMap{
     areaHighlightLG: L.LayerGroup = L.layerGroup()
 
     constructor(elName: string){
-        this.map = L.map(elName, { rotate: true, rotateControl: false })
+        this.map = L.map(elName, { zoomControl: false, rotate: true, rotateControl: false })
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
