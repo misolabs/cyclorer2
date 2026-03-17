@@ -75,7 +75,7 @@ body{
 #description{
     position: absolute;
     z-index: 1001;
-    bottom: 10px;
+    bottom: 60px;
     left: 0;
     width: 100%;
 
@@ -132,7 +132,7 @@ body{
 
 #route-buttons{
     position: absolute;
-    bottom: 40px;
+    bottom: 20px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -146,33 +146,6 @@ body{
 .bi-crosshair{
     width: 32px;
     height: 32px;
-}
-
-#gps{
-    position: absolute;
-    z-index: 1001;
-    top: 20px;
-    right: 20px;
-}
-
-.gps-icon {
-    width: 40px;
-    height: 40px;
-
-    background-color: green; /* ← your icon color */
-
-    mask: url("../assets/gps-circle.svg") no-repeat center;
-    mask-size: contain;
-
-    -webkit-mask: url("../assets/gps-circle.svg") no-repeat center;
-    -webkit-mask-size: contain;
-}
-
-.icon-btn {
-    width: 40px;
-    height: 40px;
-    background: url('../assets/gps.svg') center/20px no-repeat;
-    color: darkgreen;
 }
 
 .deactivated{

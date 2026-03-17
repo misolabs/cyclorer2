@@ -35,13 +35,13 @@ import { registerSW } from "virtual:pwa-register"
 import {initAreaView} from "./views/arealist.ts";
 import {LatLng} from "leaflet";
 import {SetUtils} from "./setutils.ts";
+import {TrackingView} from "./views/trackingview.ts";
 
 registerSW({
   immediate: true
 })
 
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
-//const isMobileLike = true
 
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 
@@ -69,7 +69,6 @@ let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let lastPosLatLon: LatLon = geoToLatLon(ellergronnGPS)
 
 var viewFollowTracking = true
-var watchId: number = -1
 var trackingEnabled = isMobileLike // Enable on mobile
 var exploring = false
 var score = 0
@@ -77,12 +76,10 @@ const scoreEl = document.getElementById("score")!
 
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
-  //simulationListener()
 }
 
 function positionMarkerListener(e: L.DragEndEvent) {
   posLatLon = geoToLatLon(e.target.getLatLng())
-  //simulationListener()
 }
 
 function simulationListener(){
@@ -94,40 +91,17 @@ function simulationListener(){
   heading.reinit(posXY, headingXY, 2.0)
   trackingMap.map.setBearing(heading.getBearing())
 
-  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget)
+  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget && !exploring)
     exploreNearbyAreas()
 
   // Update routing
-  updateRouting2()
+  handleNavigation()
   keepScore()
-}
-
-// Hide UI when we ride
-// Elements to toggle are marked with a css class
-var isUIOverlayVisible = true
-function toggleUIOverlays(speed: number) {
-  const overlayElements = document.querySelectorAll(".ui-overlay-element")
-  // Slowing down -> show
-  if(speed < 0.5 && !isUIOverlayVisible) {
-    overlayElements.forEach(overlayElement => {
-      overlayElement.classList.remove("hide")
-    })
-    // TODO: Hide zoom control on map
-    isUIOverlayVisible = true
-  // Speeding up -> hide
-  }else if(speed > 1.0 && isUIOverlayVisible) {
-    for(const el of overlayElements) {
-      if (!el.classList.contains("hide")) {
-        el.classList.add("hide")
-      }
-    }
-    isUIOverlayVisible = false
-  }
 }
 
 function trackingListener(pos: GeolocationPosition){
   if(currentSettings.toggleOverlaysWhenRiding && pos.coords.speed)
-    toggleUIOverlays(pos.coords.speed)
+    TrackingView.toggleUIOverlays(pos.coords.speed)
 
   posLatLon = {lat: pos.coords.latitude, lon: pos.coords.longitude}
   trackingMap.setPosition(posLatLon, viewFollowTracking)
@@ -139,17 +113,15 @@ function trackingListener(pos: GeolocationPosition){
   if(viewFollowTracking)
     trackingMap.map.setBearing(smoothBearing)
 
-  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget)
+  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget && !exploring)
     exploreNearbyAreas()
 
-  updateRouting2()
+  handleNavigation()
   keepScore()
 }
 
 var scoreTimerId = -1
 function keepScore(){
-  //console.log(currentEdge?.area_id)
-
   // Update score
   if(exploring) {
     if (currentEdge && currentEdge.area_id != undefined){
@@ -182,7 +154,7 @@ function keepScore(){
 }
 
 function registerTrackingListener(){
-  watchId = navigator.geolocation.watchPosition(
+  navigator.geolocation.watchPosition(
       trackingListener,
       (err) => console.warn("Geolocation error:", err.message),
       { enableHighAccuracy: true }
@@ -233,138 +205,7 @@ function dismissArea(){
   trackingMap.clearRoute()
 }
 
-// Keep for now for reference
-function updateRouting(){
-  const closestEdge = routingEngine.findClosestEdge(posLatLon)
-
-  if(closestEdge){
-//    const edgeDirection = routingEngine.travelDirection(posLatLon, headingLatLon, closestEdge)
-    const edgeDirection = routingEngine.travelDirectionVector(heading.getDirection(), closestEdge)
-
-    // Prepare for routing - Starting node and heading
-    let startNode: NodeId
-    let segments: LatLon[]
-    let splitXY: Cartesian[]
-    if (edgeDirection == TravelDirection.U_TO_V) {
-      // Split current edge for drawing
-      segments = closestEdge.edge.coordinates.slice(closestEdge.segmentIndex)
-      segments[0] = interpolateLatLon(segments[0], segments[1], closestEdge.t)
-      // Split projection for distance
-      splitXY = closestEdge.edge.cartesian.slice(closestEdge.segmentIndex)
-      splitXY[0] = interpolateCartesian(splitXY[0], splitXY[1], closestEdge.t)
-      startNode = NodeId(closestEdge.edge.v)
-    } else { // u
-      // Split current edge for drawing
-      segments = closestEdge.edge.coordinates.slice(0, closestEdge.segmentIndex + 2).reverse()
-      segments[0] = interpolateLatLon(segments[0], segments[1], 1 - closestEdge.t)
-      // Split projection for distance
-      splitXY = closestEdge.edge.cartesian.slice(0, closestEdge.segmentIndex + 2)
-      splitXY[0] = interpolateCartesian(splitXY[0], splitXY[1], 1 - closestEdge.t)
-      startNode = NodeId(closestEdge.edge.u)
-    }
-
-    // 1. Unvisited territory
-    if(closestEdge.edge.ride_count == 0 && closestEdge.edge.area_id != undefined){
-      setDirections("GO Explore!")
-      const area = areaFinder.areaInfoById(closestEdge.edge.area_id)
-      setDescription(formatDistance(area.totalLength))
-      previewMap.setArea(area)
-
-      currentRoute = null
-      trackingMap.clearRoute()
-    }
-    else{
-      // 2. If we are still on the same edge, no need to recompute everything
-      if(closestEdge.edge == currentEdge && currentRoute && !forceRecalculation){
-        console.log("Staying on same route")
-        trackingMap.setSnappedEdge(segments)
-        trackingMap.setRoute(currentRoute)
-        const totalDistance = accDistances(splitXY) + currentRoute.totalLength
-        setDirections(formatDistance(totalDistance))
-      }else {
-        // 3. Find close-by areas
-        entrypointCandidates = areaFinder.findNeighbours(posLatLon)
-        console.log("Found entrypoints", entrypointCandidates)
-        trackingMap.setAreaMarker(entrypointCandidates)
-
-        if (entrypointCandidates.length > 0) {
-          let foundRoute: boolean = false
-
-          // 3.A Stay on the same target if possible
-          if (currentTarget != null && entrypointCandidates.find(ep => ep === currentTarget)) {
-            console.log("Same entrypoint, new route")
-            const routeCandidate = routingEngine.findRoute(startNode, NodeId(currentTarget.osmid), closestEdge.edge)
-            if (routeCandidate && routeCandidate.inTravelDirection) {
-              foundRoute = true
-              currentRoute = routeCandidate
-            }
-          }
-
-          // 3.B Find a new best candidate - Criterium: Area size and heading direction
-          if (!foundRoute) {
-            console.log("Trying to find new entrypoint to largest area")
-            entrypointCandidates.sort((a, b) =>
-              areaFinder.areaInfoById(a.area_id).totalLength - areaFinder.areaInfoById(b.area_id).totalLength).reverse()
-
-            // Try candidates from largest to smallest
-            for(const entrypoint of entrypointCandidates){
-              const routeCandidate = routingEngine.findRoute(startNode, NodeId(entrypoint.osmid), closestEdge.edge)
-              console.log("Checking candidate...", routeCandidate)
-              if (routeCandidate && (routeCandidate.inTravelDirection || forceRecalculation)) {
-                console.log("Found new route to new entrypoint")
-                foundRoute = true
-                currentRoute = routeCandidate
-                currentTarget = entrypoint
-                break
-              }
-            }
-          }
-
-          // We have a valid new route
-          if(foundRoute && currentRoute){
-            trackingMap.setSnappedEdge(segments)
-            trackingMap.setRoute(currentRoute)
-
-            if(currentTarget){
-              const areaInfo = areaFinder.areaInfoById(currentTarget.area_id)
-              previewMap.setArea(areaInfo)
-              setDescription(`Area size: ${areaInfo.totalLength.toFixed(0)}m`)
-              const totalDistance = accDistances(splitXY) + currentRoute.totalLength
-              setDirections(formatDistance(totalDistance))
-            }
-          }else{
-            setDescription("Nothing ahead...")
-            setDirections("")
-            trackingMap.clearRoute()
-          }
-        } else {
-          // We have no target
-          currentTarget = null
-          currentRoute = null
-          trackingMap.clearRoute()
-
-          setDescription("Nothing around...")
-          setDirections("")
-        }
-      }
-    }
-    forceRecalculation = false
-    currentEdge = closestEdge.edge
-  }else{
-    // We are completely lost -> hide everything
-    setDescription("The middle of Nowhere")
-    setDirections("")
-
-    trackingMap.clearRoute()
-    previewMap.clearArea()
-    trackingMap.clearAreaMarker()
-
-    console.log("No trail close to current position")
-    currentEdge = null
-  }
-}
-
-function updateRouting2(){
+function handleNavigation(){
   const closestEdge = routingEngine.findClosestEdge(posLatLon)
   if(closestEdge) {
     const edgeDirection = routingEngine.travelDirectionVector(heading.getDirection(), closestEdge)
@@ -380,6 +221,12 @@ function updateRouting2(){
           forceRecalculation = false
         }
       }
+    }else{
+      previewMap.clearArea()
+      setDescription("")
+      setDirections("")
+      trackingMap.clearRoute()
+      trackingMap.setSnappedEdge([])
     }
 
     // Draw route on map
@@ -441,7 +288,7 @@ function drawRoute(closestEdge: EdgeIntersection, edgeDirection: TravelDirection
     const totalDistance = accDistances(splitXY) + currentRoute.totalLength
     setDirections(formatDistance(totalDistance))
   }else{
-    setDescription("No valid route found")
+    //setDescription("No valid route found")
     setDirections("")
     //trackingMap.setSnappedEdge([])
     //trackingMap.clearRoute()
@@ -471,6 +318,9 @@ document.getElementById("previous-area")!.addEventListener("click", (e) => {
   currentTarget = entrypointCandidates[nextIndex]
   forceRecalculation = true
 })
+
+// Application data
+//=================
 
 async function loadConfig(url: string) {
   try {
@@ -545,6 +395,8 @@ settingsInit("settings", onSettingsChanged)
 const settingsButton = document.getElementById("settings-open")!
 settingsButton.addEventListener("click", (_:MouseEvent)=>{settingsShow()})
 
+// -------------------------
+
 document.getElementById("arealist-open")!.addEventListener("click", (_:MouseEvent)=>{initAreaView(areaFinder, isMobileLike)})
 
 window.addEventListener("cycSelectArea", (e) =>{
@@ -565,12 +417,16 @@ window.addEventListener("cycNavigateArea", (e) =>{
   // Temporary solution -> navigate to the first entrypoint
   if(currentArea.nodes.length > 0){
     currentTarget = currentArea.nodes[0]
+
     trackingMap.highlightArea(currentArea)
     trackingMap.setAreaMarker(currentArea.nodes)
     previewMap.setArea(currentArea)
+    setDescription(`Area size: ${formatDistance(currentArea.totalLength)}`)
+
+    TrackingView.toggleDismissButton(true)
+    TrackingView.toggleEngageButton(true)
 
     entrypointCandidates = currentArea.nodes
-
     forceRecalculation = true
   }
 
@@ -579,6 +435,7 @@ window.addEventListener("cycNavigateArea", (e) =>{
 
 window.addEventListener("invalidateMap", (e) =>{
   trackingMap.map.invalidateSize(true)
+  previewMap.map.invalidateSize(true)
 })
 
 // Stop following tracking if we pan the map, show button to re-center
