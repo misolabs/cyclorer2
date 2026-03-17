@@ -112,6 +112,7 @@ export class HeadingExp {
 
     reinit(lastPos: Cartesian, newPos: Cartesian, speed: number){
         this.lastPos = lastPos
+        this.currentDirection = null
         this.update(newPos, speed)
     }
 

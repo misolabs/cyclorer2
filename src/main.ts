@@ -8,6 +8,7 @@ await loadLegacyPlugins()
 
 import type {StatsJson} from './models/geo.ts'
 import {
+  type Area,
   type AreaNode,
   type BoundingBox, type Cartesian,
   type Edge, type EdgeIntersection,
@@ -33,6 +34,7 @@ import {splashSetStats} from "./views/splash.ts";
 import { registerSW } from "virtual:pwa-register"
 import {initAreaView} from "./views/arealist.ts";
 import {LatLng} from "leaflet";
+import {SetUtils} from "./setutils.ts";
 
 registerSW({
   immediate: true
@@ -75,10 +77,12 @@ const scoreEl = document.getElementById("score")!
 
 function headingMarkerListener(e: L.DragEndEvent){
   headingLatLon = geoToLatLon(e.target.getLatLng())
+  //simulationListener()
 }
 
 function positionMarkerListener(e: L.DragEndEvent) {
   posLatLon = geoToLatLon(e.target.getLatLng())
+  //simulationListener()
 }
 
 function simulationListener(){
@@ -86,12 +90,12 @@ function simulationListener(){
   const posXY = projection.fromLatlon(posLatLon)
   const headingXY = projection.fromLatlon(headingLatLon)
 
-  //console.log("posXY", posXY)
-
   // Set bearing
   heading.reinit(posXY, headingXY, 2.0)
-  //console.log(posXY, headingXY)
   trackingMap.map.setBearing(heading.getBearing())
+
+  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget)
+    exploreNearbyAreas()
 
   // Update routing
   updateRouting2()
@@ -143,7 +147,7 @@ function trackingListener(pos: GeolocationPosition){
 
 var scoreTimerId = -1
 function keepScore(){
-  console.log(currentEdge?.area_id)
+  //console.log(currentEdge?.area_id)
 
   // Update score
   if(exploring) {
@@ -184,13 +188,49 @@ function registerTrackingListener(){
   );
 }
 
-var navigationMode: NavigationMode = NavigationMode.TM_NONE
+var navigationMode: NavigationMode = NavigationMode.TM_EXPLORE
+var currentArea: Area|null = null
 var currentTarget: AreaNode|null
 var currentEdge: Edge|null
 var currentRoute: Route|null
 var heading: HeadingExp = new HeadingExp()
 var entrypointCandidates: AreaNode[] = []
 var forceRecalculation = false
+
+const dismissed:Set<number> = new Set()
+function exploreNearbyAreas(){
+  // Find all entrypoints in the neighbourhood and reduce to area ids
+  const entries = areaFinder.findNeighbours(posLatLon)
+  const areas: Set<number> = new Set()
+  entries.forEach(c => areas.add(c.area_id))
+
+  // Filter out the ones we have dismissed
+  const candidates = SetUtils.difference(areas, dismissed)
+  console.log(candidates.size)
+
+  // Pick random candidate
+  if(candidates.size > 0) {
+    const i = Math.floor(Math.random() * (candidates.size - 1))
+    const areaId = Array.from(candidates)[i]
+    console.log(i)
+    window.dispatchEvent(new CustomEvent("cycNavigateArea", {detail: {areaId: areaId}}))
+
+    // TODO If we don't lock-onto the target within 10s, we auto-dismis
+    setTimeout(dismissArea, 20000)
+  }
+}
+
+document.getElementById("dismiss-area-btn")!.addEventListener("click", dismissArea)
+
+function dismissArea(){
+  currentTarget = null
+  currentRoute = null
+
+  if(currentArea)
+    dismissed.add(currentArea.area_id)
+  currentArea = null
+  trackingMap.clearRoute()
+}
 
 // Keep for now for reference
 function updateRouting(){
@@ -518,17 +558,17 @@ window.addEventListener("cycSelectArea", (e) =>{
 
 window.addEventListener("cycNavigateArea", (e) =>{
   const event = e as CustomEvent
-  const area = areaFinder.areaInfoById(event.detail.areaId)
-  console.log("Navigate to area " + area.area_id)
+  currentArea = areaFinder.areaInfoById(event.detail.areaId)
+  console.log("Navigate to area " + currentArea.area_id)
 
   // Temporary solution -> navigate to the first entrypoint
-  if(area.nodes.length > 0){
-    currentTarget = area.nodes[0]
-    trackingMap.highlightArea(area)
-    trackingMap.setAreaMarker(area.nodes)
-    previewMap.setArea(area)
+  if(currentArea.nodes.length > 0){
+    currentTarget = currentArea.nodes[0]
+    trackingMap.highlightArea(currentArea)
+    trackingMap.setAreaMarker(currentArea.nodes)
+    previewMap.setArea(currentArea)
 
-    entrypointCandidates = area.nodes
+    entrypointCandidates = currentArea.nodes
 
     forceRecalculation = true
   }

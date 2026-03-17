@@ -130,6 +130,19 @@ body{
     display: none;
 }
 
+#route-buttons{
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#route-buttons button{
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .bi-crosshair{
     width: 32px;
     height: 32px;
