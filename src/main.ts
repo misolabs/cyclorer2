@@ -139,9 +139,10 @@ function trackingListener(pos: GeolocationPosition){
   if(viewFollowTracking)
     trackingMap.map.setBearing(smoothBearing)
 
-  //setDebug(`Angle: ${heading.getBearing()} \n Dir: (${heading.getDirection()?.x}, ${heading.getDirection()?.y})`)
-  updateRouting2()
+  if(navigationMode == NavigationMode.TM_EXPLORE && !currentTarget)
+    exploreNearbyAreas()
 
+  updateRouting2()
   keepScore()
 }
 
