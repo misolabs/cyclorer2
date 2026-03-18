@@ -76,6 +76,10 @@ function settingsCloseListener(event:MouseEvent){
         listener(settings)
 }
 
+document.getElementById("nm-navigation")!.addEventListener("click", (event:MouseEvent) => {
+    dispatchEvent(new CustomEvent("cycShowAreaList", {}))
+})
+
 // Persistence
 
 const defaultSettings: Settings ={

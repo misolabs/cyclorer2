@@ -97,6 +97,19 @@ function simulationListener(){
   // Update routing
   handleNavigation()
   keepScore()
+
+  // If we are currently exploring an area, show our position on the preview map
+  // Else revert to the navigation target area
+  if(exploring){
+    if(currentEdge && currentEdge.area_id){
+      previewMap.setArea(areaFinder.areaInfoById(currentEdge.area_id))
+      previewMap.setPosition(posLatLon)
+    }
+  }else{
+    if(currentArea){
+      previewMap.setArea(currentArea)
+    }
+  }
 }
 
 function trackingListener(pos: GeolocationPosition){
@@ -437,6 +450,9 @@ window.addEventListener("invalidateMap", (e) =>{
   trackingMap.map.invalidateSize(true)
   previewMap.map.invalidateSize(true)
 })
+
+// Listen for events from settings view to open area list
+window.addEventListener("cycShowAreaList", (e) =>{initAreaView(areaFinder, isMobileLike)})
 
 // Stop following tracking if we pan the map, show button to re-center
 const centerBtnEl = document.getElementById("center-btn")
