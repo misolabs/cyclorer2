@@ -1,0 +1,12 @@
+.icon-danger {
+    width: 80px;
+    height: 80px;
+
+    background-color: green; /* ← your icon color */
+
+    mask: url("../../public/assets/noun-gear.svg") no-repeat center;
+    mask-size: contain;
+
+    -webkit-mask: url("../../public/assets/noun-gear.svg") no-repeat center;
+    -webkit-mask-size: contain;
+}

@@ -108,3 +108,8 @@ export const NavigationMode = {
   TM_AREA: 2,
 }
 export type NavigationMode = typeof NavigationMode[keyof typeof NavigationMode];
+
+export interface POI{
+  pos: LatLon,
+  type: string
+}

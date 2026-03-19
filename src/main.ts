@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './css/icons.css'
 import './css/map.css'
 import './css/settings.css'
 import './css/splash.css'
@@ -65,7 +66,7 @@ if(!isMobileLike) {
 const previewMap: PreviewMap = new PreviewMap("preview-map")
 
 let headingLatLon: LatLon = geoToLatLon(ellergronnGPS)
-let posLatLon: LatLon = geoToLatLon(ellergronnGPS)
+export var posLatLon: LatLon = geoToLatLon(ellergronnGPS)
 let lastPosLatLon: LatLon = geoToLatLon(ellergronnGPS)
 
 var viewFollowTracking = true

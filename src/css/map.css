@@ -217,3 +217,12 @@ body{
 }
 
 .ui-overlay-element{}
+
+/* Mid-Ride Menu */
+#ui-midride-menu{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}

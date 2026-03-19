@@ -7,7 +7,12 @@
     <title>Cyclorer 2</title>
   </head>
   <body>
-    <!-- VIEW - Spashscreen -->
+  <!-- Overlay - MidRide Menu -->
+  <div id="ui-midride-menu">
+    <button id="drop-pin-danger" class="btn btn-danger ui-midride-element icon-danger">Danger</button>
+  </div>
+
+    <!-- VIEW - Splashscreen -->
     <div id="splash-view">
       <div class="splash-content">
         <div id="stats-wrapper">Explore <span class="stats-value" id="stats-area-count">192</span> areas with <span class="stats-value" id="stats-total-length">247km</span> of trails.</div>
@@ -66,7 +71,7 @@
 
 
     <!-- VIEW - Settings -->
-    <div id="settings" class="mb-7">
+    <div id="settings-view" class="mb-7">
       <h3>Settings</h3>
 
       <div class="mb-3">
@@ -136,7 +141,7 @@
         </div>
       </div>
 
-      <button id="settings-close" class="btn btn-danger btn-lg w-100">Close</button>
+      <button id="settings-close-btn" class="btn btn-danger btn-lg w-100">Close</button>
     </div>
 
     <!-- VIEW - List of areas -->
@@ -154,6 +159,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/app.ts"></script>
   </body>
 </html>
