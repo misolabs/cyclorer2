@@ -184,6 +184,7 @@ var entrypointCandidates: AreaNode[] = []
 var forceRecalculation = false
 
 const dismissed:Set<number> = new Set()
+var dismissTimerId = -1
 function exploreNearbyAreas(){
   // Find all entrypoints in the neighbourhood and reduce to area ids
   const entries = areaFinder.findNeighbours(posLatLon)
@@ -199,23 +200,62 @@ function exploreNearbyAreas(){
     const i = Math.floor(Math.random() * (candidates.size - 1))
     const areaId = Array.from(candidates)[i]
     console.log(i)
-    window.dispatchEvent(new CustomEvent("cycNavigateArea", {detail: {areaId: areaId}}))
 
-    // TODO If we don't lock-onto the target within 10s, we auto-dismis
-    setTimeout(dismissArea, 20000)
+    // Propose a new target area
+    window.dispatchEvent(new CustomEvent("cycNavigateArea", {detail: {areaId: areaId}}))
+    TrackingView.toggleEngageButton(true)
+    TrackingView.toggleStopNavigationButton(false)
+    TrackingView.toggleDismissButton(true)
+
+    // If we don't lock-onto the target within a certain time, we auto-dismis
+    dismissTimerId = setTimeout(dismissArea, 60000)
   }
 }
 
 document.getElementById("dismiss-area-btn")!.addEventListener("click", dismissArea)
 
+document.getElementById("engage-area-btn")!.addEventListener("click", () => {
+  if(dismissTimerId != -1) {
+    clearTimeout(dismissTimerId)
+    dismissTimerId = -1
+  }
+
+  TrackingView.toggleEngageButton(false)
+  TrackingView.toggleStopNavigationButton(true)
+  TrackingView.toggleDismissButton(false)
+})
+
+document.getElementById("stop-navigation-btn")!.addEventListener("click", () => {
+  currentTarget = null
+  currentRoute = null
+  currentArea = null
+
+  trackingMap.clearRoute()
+  trackingMap.setSnappedEdge([])
+  trackingMap.highlightArea(null)
+
+  TrackingView.toggleStopNavigationButton(false)
+})
+
 function dismissArea(){
+  if(dismissTimerId != -1) {
+    clearTimeout(dismissTimerId)
+    dismissTimerId = -1
+  }
+
   currentTarget = null
   currentRoute = null
 
   if(currentArea)
     dismissed.add(currentArea.area_id)
   currentArea = null
+
   trackingMap.clearRoute()
+  trackingMap.setSnappedEdge([])
+  trackingMap.highlightArea(null)
+
+  TrackingView.toggleEngageButton(false)
+  TrackingView.toggleDismissButton(false)
 }
 
 function handleNavigation(){
