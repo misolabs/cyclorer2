@@ -10,6 +10,10 @@ type Events = {
     "splash:show": void
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void
+
+    "geolocation:enable": boolean
+    "geolocation:update": GeolocationPosition
+    "geolocation:ready": void
 };
 
 export class EventBus {
