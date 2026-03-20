@@ -1,7 +1,7 @@
 import type { Feature, FeatureCollection, MultiLineString, Point, LineString } from 'geojson';
 
 // Stats and config
-export interface StatsJson{
+export interface RoutingStatsJson {
     bbox: GeoJsonBBox
     areas: number
     entrypoints: number

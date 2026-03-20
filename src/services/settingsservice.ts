@@ -28,6 +28,7 @@ export class SettingsService{
 
         // Register listeners
         this.bus.on("settings:init", this.initSettings.bind(this))
+        this.bus.on("settings:updated", this.saveSettings.bind(this))
         this.bus.on("settings:save", this.saveSettings.bind(this))
     }
 

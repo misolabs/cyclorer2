@@ -1,5 +1,6 @@
 // Splash screen
 import type {EventBus} from "../eventbus.ts";
+import type {RoutingStatsJson} from "../models/geo.ts";
 
 export class SplashScreen {
     bus: EventBus
@@ -12,19 +13,21 @@ export class SplashScreen {
         this.bus = bus
 
         bus.on("splash:show", this.show.bind(this))
-        bus.on("splash:stats", this.stats.bind(this))
+        bus.on("rds:stats:loaded", this.stats.bind(this))
 
         this.splash.addEventListener("click", () => {this.hideSplash()})
     }
 
+    // Does currently nothing, splash screen is visible by default
     show(){
     }
 
-    stats(stats: {totalLength: number, areaCount: number}) {
-        console.log("Showing splash screen")
-        this.statsTotalLength.textContent = `${stats.totalLength}km`
-        this.statsAreaCount.textContent = `${stats.areaCount}`
+    // Show stats only after they have been loaded
+    stats(stats: RoutingStatsJson) {
+        this.statsTotalLength.textContent = `${stats.total_length}km`
+        this.statsAreaCount.textContent = `${stats.areas}`
 
+        // Fade-in for visual effect
         this.statsTotalLength.classList.add("fadein-fast")
         this.statsAreaCount.classList.add("fadein-fast")
     }

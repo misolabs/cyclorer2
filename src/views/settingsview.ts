@@ -21,7 +21,7 @@ export class SettingsView {
         this.showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
         this.toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
 
-        document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener)
+        document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener.bind(this))
 
         this.bus.on("settings:loaded", this.init.bind(this))
         this.bus.on("settings:show", this.show.bind(this))

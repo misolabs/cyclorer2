@@ -12,12 +12,14 @@ export class GeoLocationService{
     }
 
     enableGeolocation(enable: boolean) {
-        this.watchId = navigator.geolocation.watchPosition(
-            this.trackingListener.bind(this),
-            (err) => console.warn("Geolocation error:", err.message),
-            { enableHighAccuracy: true }
-        )
-        this.bus.emit("geolocation:ready")
+        if("geolocation" in navigator) {
+            this.watchId = navigator.geolocation.watchPosition(
+                this.trackingListener.bind(this),
+                (err) => console.warn("Geolocation error:", err.message),
+                {enableHighAccuracy: true}
+            )
+            this.bus.emit("geolocation:ready")
+        }else console.warn("Geolocation not supported")
     }
 
     trackingListener(pos: GeolocationPosition){

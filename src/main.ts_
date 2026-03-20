@@ -7,7 +7,7 @@ import './css/splash.css'
 import L, { loadLegacyPlugins } from './leaflet-legacy'
 await loadLegacyPlugins()
 
-import type {StatsJson} from './models/geo.ts'
+import type {RoutingStatsJson} from './models/geo.ts'
 import {
   type Area,
   type AreaNode,
@@ -46,7 +46,7 @@ const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 
-var statsData: StatsJson
+var statsData: RoutingStatsJson
 
 var regionBBox: BoundingBox
 var routingEngine!: RoutingEngine

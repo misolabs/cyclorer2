@@ -1,4 +1,10 @@
 import type {Settings} from "./services/settingsservice.ts";
+import type {
+    GeoJsonAreaCollection,
+    GeoJsonEntrypointCollection,
+    GeoJsonRoutingollection,
+    RoutingStatsJson
+} from "./models/geo.ts";
 
 type Events = {
     "settings:init": void
@@ -14,6 +20,13 @@ type Events = {
     "geolocation:enable": boolean
     "geolocation:update": GeolocationPosition
     "geolocation:ready": void
+
+    "debug:log": string
+
+    "rds:stats:loaded": RoutingStatsJson
+    "rds:loaderror": string
+    "rds:routing:loaded": GeoJsonRoutingollection
+    "rds:areas:loaded": [GeoJsonAreaCollection, GeoJsonEntrypointCollection]
 };
 
 export class EventBus {
