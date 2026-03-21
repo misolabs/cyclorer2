@@ -1,5 +1,7 @@
 import type {EventBus} from "../eventbus.ts";
 
+export interface GeolocationLight{ coords: {latitude: number, longitude: number }}
+
 export class GeoLocationService{
     bus: EventBus
     watchId: number

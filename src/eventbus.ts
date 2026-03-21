@@ -5,6 +5,8 @@ import type {
     GeoJsonRoutingollection,
     RoutingStatsJson
 } from "./models/geo.ts";
+import type {GeolocationLight} from "./services/geolocationservice.ts";
+import type {AnnotationCategory, LatLon, LocationAnnotation} from "./models/models.ts";
 
 type Events = {
     "settings:init": void
@@ -21,12 +23,18 @@ type Events = {
     "geolocation:update": GeolocationPosition
     "geolocation:ready": void
 
+    "geolocsim:update": LatLon
+
     "debug:log": string
 
     "rds:stats:loaded": RoutingStatsJson
     "rds:loaderror": string
     "rds:routing:loaded": GeoJsonRoutingollection
     "rds:areas:loaded": [GeoJsonAreaCollection, GeoJsonEntrypointCollection]
+    "rds:annotations:loaded": LocationAnnotation[]
+
+    "annotation:location:add": AnnotationCategory
+    "annotation:location:added": LocationAnnotation
 };
 
 export class EventBus {

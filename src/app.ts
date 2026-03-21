@@ -5,20 +5,23 @@ import './css/settings.css'
 import './css/splash.css'
 
 import {EventBus} from "./eventbus.ts";
-import {SettingsService} from "./services/settingsservice.ts";
+
 import {SettingsView} from "./views/settingsview.ts";
 import {SplashScreen} from "./views/splash.ts";
+import {TrackingView} from "./views/trackingview.ts";
+
+import {SettingsService} from "./services/settingsservice.ts";
 import {GeoLocationService} from "./services/geolocationservice.ts";
 import {RoutingDataService} from "./services/routingdataservice.ts";
 
 // Prepare leaflet and plugins
-// TODO: Check if we can move this to TrackingView
-import L, { loadLegacyPlugins } from './leaflet-legacy'
-import {TrackingView} from "./views/trackingview.ts";
+import { loadLegacyPlugins } from './leaflet-legacy'
+import {NavigationService} from "./services/navigationservice.ts";
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
+//const isMobileLike = true
 
 // App-wide event bus, shared by all components
 export const appBus: EventBus = new EventBus()
@@ -27,6 +30,7 @@ export const appBus: EventBus = new EventBus()
 const settingsService: SettingsService = new SettingsService(appBus)
 const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
 const routingDataService: RoutingDataService = new RoutingDataService(appBus)
+const navigationService: NavigationService = new NavigationService(appBus)
 
 // Create views
 const settingsView: SettingsView = new SettingsView("settings-view", appBus)

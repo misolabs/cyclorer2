@@ -2,7 +2,8 @@ import type {EventBus} from "../eventbus.ts";
 import {TrackingMap} from "../maps/trackingmap.ts";
 import {PreviewMap} from "../maps/previewmap.ts";
 
-import L from "../leaflet-legacy.ts";
+import L from "leaflet"
+
 import type {
     GeoJsonAreaCollection,
     GeoJsonEntrypointCollection,
@@ -10,6 +11,15 @@ import type {
     RoutingStatsJson
 } from "../models/geo.ts";
 import type {Settings} from "../services/settingsservice.ts";
+import {geoToLatLon} from "../crs/latlonmath.ts";
+import type {GeolocationLight} from "../services/geolocationservice.ts";
+import type {LocationAnnotation} from "../models/models.ts";
+
+/*  TODO
+    - heading
+    - dragging position marker
+    - heading marker?
+ */
 
 var isUIOverlayVisible = true
 
@@ -22,12 +32,13 @@ export class TrackingView {
 
     trackingMap: TrackingMap
     previewMap: PreviewMap
-
+    viewFollowTracking: boolean
     maxRideCount: number = 0
 
     constructor(bus: EventBus, isMobileLike: boolean) {
         this.bus = bus;
         this.mobileMode = isMobileLike;
+        this.viewFollowTracking = true
 
         this.trackingMap = new TrackingMap("tracking-map", isMobileLike)
         this.previewMap = new PreviewMap("preview-map")
@@ -39,11 +50,30 @@ export class TrackingView {
         this.bus.on("settings:updated", this.onSettingsChanged.bind(this))
         this.bus.on("settings:loaded", this.onSettingsChanged.bind(this))
 
+        this.bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
+
+        this.bus.on("annotation:location:added", this.onAnnotationAdded.bind(this))
+
         // Show this when splash screen starts fading out
         this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
 
         // Hook up buttons
+        // TODO Move these to the menu classes
         document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emit("settings:show", true)})
+        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "DANGER")})
+
+        // View follow tracking
+        // Stop following tracking if we pan the map, show button to re-center
+        const centerBtnEl = document.getElementById("center-btn")
+        centerBtnEl?.addEventListener("click", (e) =>{
+            this.viewFollowTracking = true
+            centerBtnEl.classList.add("hidden")
+        })
+
+        this.trackingMap.map.on("dragstart", (e) => {
+            this.viewFollowTracking = false
+            centerBtnEl?.classList.remove("hidden")
+        })
     }
 
     init() {
@@ -76,7 +106,13 @@ export class TrackingView {
     }
 
     onPositionMarkerDragged(e: L.DragEndEvent) {
-        //posLatLon = geoToLatLon(e.target.getLatLng())
+        this.bus.emit("geolocsim:update", {lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng })
+    }
+
+    onGeoPositionChanged(geo: GeolocationPosition){
+        this.trackingMap.setPosition({lat:geo.coords.latitude, lon: geo.coords.longitude}, this.viewFollowTracking)
+        if(geo.coords.heading)
+            this.trackingMap.setHeading(geo.coords.heading)
     }
 
     // TODO - Move this somewhere else?
@@ -88,6 +124,10 @@ export class TrackingView {
         this.trackingMap.toggleDeadends(settings.showDeadends)
         this.trackingMap.toggleAreaBoundingBoxes(settings.showAreaBBox)
         this.trackingMap.toggleFrequencyHeatmap(settings.showFrequencyHeatmap)
+    }
+
+    onAnnotationAdded(annotation: LocationAnnotation){
+        this.trackingMap.addAnnotation(annotation)
     }
 
     toggleDismissButton(show: boolean) {

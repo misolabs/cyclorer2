@@ -1,7 +1,7 @@
 import L from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 
-import type {Area, AreaNode, LatLon, Route} from "../models/models.ts";
+import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 import 'leaflet/dist/leaflet.css'
@@ -84,9 +84,12 @@ export class TrackingMap{
     freqHeatmapLayerGroup: L.LayerGroup = L.layerGroup()
     areaHighlightLG: L.LayerGroup = L.layerGroup()
     snailTrailLG: L.LayerGroup = L.layerGroup()
+    annotationsLG: L.LayerGroup = L.layerGroup()
 
     snailTrailLayer!: L.Polyline
     snailTrailPoly: LatLng[] = []
+
+    heading: number = 0
 
     constructor(elName: string, mobileMode: boolean){
         this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false })
@@ -121,6 +124,7 @@ export class TrackingMap{
         this.areasLayerGroup.addTo(this.map)
         this.areaHighlightLG.addTo(this.map)
         this.snailTrailLG.addTo(this.map)
+        this.annotationsLG.addTo(this.map)
     }
 
     setBaseLayer(id: string){
@@ -153,7 +157,7 @@ export class TrackingMap{
     }
 
     addFrequencyHeatmap(routingGeoData: GeoJsonRoutingollection, maxRideCount: number){
-        // Drawedges with custom color depending on ride_count
+        // Draw edges with custom color depending on ride_count
         L.geoJSON(routingGeoData.features, {
             onEachFeature: (feature: GeoJsonRouting, layer: L.Polyline) => {
                 const vLog = Math.log(feature.properties.ride_count + 1) / Math.log(maxRideCount + 1)
@@ -305,6 +309,21 @@ export class TrackingMap{
         if(centerView)
             this.map.setView(leafPos)
         this.positionMarker?.setLatLng(leafPos)
+    }
+
+    setHeading(angle: number){
+        const alpha = 0.9
+        this.heading = this.heading * alpha + angle * (1 - alpha)
+        this.heading = Math.round(this.heading / 10) * 10
+        this.map.setBearing(this.heading)
+    }
+
+    addAnnotation(annotation: LocationAnnotation){
+        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {}).addTo(this.annotationsLG)
+    }
+
+    clearAnnotations(){
+        this.annotationsLG.clearLayers()
     }
 
     toggleAreaBoundingBoxes(show: boolean){
