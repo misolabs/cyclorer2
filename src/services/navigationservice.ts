@@ -9,6 +9,7 @@ import type {
 } from "../models/geo.ts";
 import {mapBBox} from "../models/mapping.ts";
 import {AreaFinder} from "../routing/areafinder.ts";
+import {haversineDistance} from "../crs/latlonmath.ts";
 
 export class NavigationService{
     bus: EventBus;
@@ -18,8 +19,10 @@ export class NavigationService{
     areaFinder: AreaFinder|undefined = undefined
 
     currentPosition!: LatLon
+    lastPosition!: LatLon
 
     exploring = false
+    score = 0
 
     constructor(bus: EventBus) {
         this.bus = bus;
@@ -35,12 +38,14 @@ export class NavigationService{
 
     // Position update from simulation mode
     onGeoSimPositionChanged(p: LatLon){
+        this.lastPosition = this.currentPosition
         this.currentPosition = p
         this.update()
     }
 
     // Position update from GPS
     onGeoPositionChanged(geo: GeolocationPosition) {
+        this.lastPosition = this.currentPosition
         this.currentPosition = {lat: geo.coords.latitude, lon: geo.coords.longitude}
         this.update()
     }
@@ -83,7 +88,8 @@ export class NavigationService{
                 this.bus.emit("exploration:started", area)
             }else if(this.exploring){
                 if(closestEdge.edge.area_id){
-                    //todo calculate score
+                    this.score += haversineDistance(this.lastPosition, this.currentPosition)
+                    this.bus.emit("exploration:score:updated", this.score)
                 }
                 else{
                     this.exploring = false
