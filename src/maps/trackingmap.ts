@@ -77,6 +77,8 @@ export class TrackingMap{
     headingIcon: L.Icon
     positionIcon: L.Icon
 
+    glyphIcon: L.Icon.Glyph
+
     baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
@@ -119,6 +121,8 @@ export class TrackingMap{
             iconAnchor: [24, 24],
             popupAnchor: [0, 0],
         })
+
+        this.glyphIcon = new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "green"})
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
@@ -319,7 +323,7 @@ export class TrackingMap{
     }
 
     addAnnotation(annotation: LocationAnnotation){
-        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {}).addTo(this.annotationsLG)
+        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcon}).addTo(this.annotationsLG)
     }
 
     clearAnnotations(){
