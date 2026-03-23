@@ -42,8 +42,8 @@ export class PreviewMap {
     }
 
     setArea(area: Area) {
-        if (this.areaId == null || area.area_id != this.areaId) {
-            this.areaId = area.area_id
+        if (this.areaId == null || area.areaId != this.areaId) {
+            this.areaId = area.areaId
 
             // path network
             this.previewArea.clearLayers()

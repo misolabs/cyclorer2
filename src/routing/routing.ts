@@ -35,6 +35,11 @@ export class RoutingEngine{
         this.projection = new CartesianProjection(bbCenter(regionBB))
     }
 
+    init(data: GeoJsonRoutingollection){
+        this.routingGeoData = data
+        this.buildDataStructures()
+    }
+
     addToAdjacency(edge: Edge):void{
         // Add edge to adjacency map
         const u = NodeId(edge.u)
@@ -47,18 +52,6 @@ export class RoutingEngine{
         if(!this.nodesAdjacency.get(v))
             this.nodesAdjacency.set(v, [])
         this.nodesAdjacency.get(v)?.push({node: u, distance: edge.length, edge:edge})
-    }
-
-    async loadRoutingEdges(url: string) {
-        try {
-            // Fetch area network data
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Network error");
-            this.routingGeoData = await response.json();
-            console.log("Routing edges", this.routingGeoData.features.length)
-        } catch (err: unknown) {
-            logError(err, "Failed to load routing edges:");
-        }
     }
 
     buildDataStructures(){
@@ -90,11 +83,6 @@ export class RoutingEngine{
             if(!edge.deadend)
                 this.addToAdjacency(edge)
         }
-    }
-
-    async init(){
-        await this.loadRoutingEdges(import.meta.env.BASE_URL + "data/routing_edges.geojson")
-        this.buildDataStructures()
     }
 
     // Find closest edge

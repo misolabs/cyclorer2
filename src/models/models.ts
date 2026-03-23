@@ -51,8 +51,9 @@ export interface AreaNode extends Node{
   position: LatLon
 }
 
+export type AreaId = number
 export interface Area{
-  area_id: number
+  areaId: AreaId
 
   geoData: GeoJsonArea
   totalLength: number

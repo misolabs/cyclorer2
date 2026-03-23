@@ -2,6 +2,22 @@ body{
     margin: 0;
 }
 
+/* Google Roboto Web Font */
+.roboto-font{
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings:
+         "wdth" 100;
+}
+
+.material-symbols-rounded{
+    font-size: 40px;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    text-align: center;
+}
+
 #map-view{
     position: absolute;
     top: 0;
@@ -218,11 +234,3 @@ body{
 
 .ui-overlay-element{}
 
-/* Mid-Ride Menu */
-#ui-midride-menu{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2000;
-}

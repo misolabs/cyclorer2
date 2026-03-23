@@ -70,7 +70,7 @@ export function mapGeoAreaNode(feature: GeoJsonEntrypoint): AreaNode{
 
 export function mapGeoArea(feature: GeoJsonArea): Area{
   return{
-    area_id: feature.properties.area_id,
+    areaId: feature.properties.area_id,
     totalLength: feature.properties.total_length,
     edgeCount: feature.properties.edge_count,
     geoData: feature,

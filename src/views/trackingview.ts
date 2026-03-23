@@ -2,7 +2,7 @@ import type {EventBus} from "../eventbus.ts";
 import {TrackingMap} from "../maps/trackingmap.ts";
 import {PreviewMap} from "../maps/previewmap.ts";
 
-import L from "leaflet"
+import L, {LatLng} from "leaflet"
 
 import type {
     GeoJsonAreaCollection,
@@ -13,7 +13,7 @@ import type {
 import type {Settings} from "../services/settingsservice.ts";
 import {geoToLatLon} from "../crs/latlonmath.ts";
 import type {GeolocationLight} from "../services/geolocationservice.ts";
-import type {LocationAnnotation} from "../models/models.ts";
+import type {Area, AreaId, LocationAnnotation} from "../models/models.ts";
 
 /*  TODO
     - heading
@@ -35,6 +35,8 @@ export class TrackingView {
     viewFollowTracking: boolean
     maxRideCount: number = 0
 
+    scoreTimerId: number = -1
+
     constructor(bus: EventBus, isMobileLike: boolean) {
         this.bus = bus;
         this.mobileMode = isMobileLike;
@@ -54,13 +56,16 @@ export class TrackingView {
 
         this.bus.on("annotation:location:added", this.onAnnotationAdded.bind(this))
 
+        this.bus.on("exploration:started", this.onExplorationStarted.bind(this))
+        this.bus.on("exploration:ended", this.onExplorationEnded.bind(this))
+        this.bus.on("exploration:score:updated", this.onScoreUpdated.bind(this))
+
         // Show this when splash screen starts fading out
         this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
 
         // Hook up buttons
         // TODO Move these to the menu classes
         document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emit("settings:show", true)})
-        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "DANGER")})
 
         // View follow tracking
         // Stop following tracking if we pan the map, show button to re-center
@@ -80,10 +85,10 @@ export class TrackingView {
         this.trackingMap.map.setView(ellergronnGPS, defaultZoomLevel)
 
         this.trackingMap.addPositionMarker(ellergronnGPS, (this.mobileMode ? null : this.onPositionMarkerDragged.bind(this)))
-        if(!this.mobileMode) {
+        /*if(!this.mobileMode) {
             this.trackingMap.addHeadingMarker(ellergronnGPS, this.onHeadingMarkerDragged.bind(this))
             setInterval(this.onSimulationTimer.bind(this), 2000)
-        }
+        }*/
     }
 
     onStatsDataLoaded(stats: RoutingStatsJson) {
@@ -130,6 +135,28 @@ export class TrackingView {
         this.trackingMap.addAnnotation(annotation)
     }
 
+    onExplorationStarted(area: Area){
+        if(this.scoreTimerId != -1){
+            clearTimeout(this.scoreTimerId)
+            this.scoreTimerId = -1
+        }
+
+        document.getElementById("score")!.classList.add("counting")
+        this.previewMap.setArea(area)
+    }
+
+    onExplorationEnded(){
+        this.scoreTimerId = setTimeout(() => {
+            document.getElementById("score")!.classList.remove("counting")
+            this.scoreTimerId = -1
+        }, 5000)
+    }
+
+    onScoreUpdated(score: number){
+        document.getElementById("score")!.textContent = `${score.toFixed(0)}m`
+    }
+
+    // TODO: Still needed?
     toggleDismissButton(show: boolean) {
         if(show)
             document.getElementById("dismiss-area-btn")!.classList.remove("hide")

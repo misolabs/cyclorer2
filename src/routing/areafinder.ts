@@ -19,12 +19,16 @@ export class AreaFinder{
         this.grid = new NodeGrid<AreaNode>(regionBB, GRID_RESOLUTION)
     }
 
-    async init(){
-        // Areas and entrypoints
-        await Promise.all([
-            this.loadAreas(import.meta.env.BASE_URL + "data/unvisited_areas.geojson"),
-            this.loadEntrypoints(import.meta.env.BASE_URL + "data/unvisited_junctions.geojson")
-        ])
+    init(areaData: GeoJsonAreaCollection, entrypointsData: GeoJsonEntrypointCollection) {
+        this.entrypointsGeoData = entrypointsData
+        this.areaGeoData = areaData
+
+        // Store areas in map for easy retrieval
+        for(const geoArea of this.areaGeoData.features){
+            const area = mapGeoArea(geoArea)
+            this.areaData.set(area.areaId, area)
+        }
+
         if(this.entrypointsGeoData && this.areaGeoData) {
             // Build spatial index
             for(const geoNode of this.entrypointsGeoData.features){
@@ -35,38 +39,6 @@ export class AreaFinder{
             console.log("Area Finder initialised")
         }
         else console.error("Error loading area or entrypoint data")
-    }
-
-    async loadAreas(url: string) {
-        try {
-            // Fetch area network data
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Network error");
-            this.areaGeoData = await response.json();
-
-            // Store areas in map for easy retrieval
-            for(const geoArea of this.areaGeoData.features){
-                const area = mapGeoArea(geoArea)
-                this.areaData.set(area.area_id, area)
-            }
-
-            if(this.areaGeoData)
-                console.log("Areas", this.areaGeoData.features.length)
-        } catch (err:unknown) {
-            logError(err, "Failed to load areas:");
-        }
-    }
-    async loadEntrypoints(url: string) {
-        try {
-            // Fetch area network data
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Network error");
-            this.entrypointsGeoData = await response.json();
-            if(this.entrypointsGeoData)
-                console.log("Entrypoints", this.entrypointsGeoData.features.length)
-        } catch (err: unknown) {
-            logError(err, "Error loading entry points")
-        }
     }
 
     findNeighbours(pos: LatLon): AreaNode[]{

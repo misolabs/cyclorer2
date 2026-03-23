@@ -6,7 +6,7 @@ import type {
     RoutingStatsJson
 } from "./models/geo.ts";
 import type {GeolocationLight} from "./services/geolocationservice.ts";
-import type {AnnotationCategory, LatLon, LocationAnnotation} from "./models/models.ts";
+import type {AnnotationCategory, Area, AreaId, LatLon, LocationAnnotation} from "./models/models.ts";
 
 type Events = {
     "settings:init": void
@@ -35,6 +35,10 @@ type Events = {
 
     "annotation:location:add": AnnotationCategory
     "annotation:location:added": LocationAnnotation
+
+    "exploration:started": Area
+    "exploration:ended": void
+    "exploration:score:updated": number
 };
 
 export class EventBus {

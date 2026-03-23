@@ -33,10 +33,10 @@ function selectArea(areaId: number) {
 function addItem(area: Area) {
     const item = document.createElement("div")
     item.className = "area-list-item"
-    item.id = "area-item-" + area.area_id
+    item.id = "area-item-" + area.areaId
     item.innerHTML = `
         <div class="area-list-info">
-            <strong>Area ${area.area_id}</strong>
+            <strong>Area ${area.areaId}</strong>
             <br>${area.totalLength.toFixed(0)}m
             <br>${area.nodes.length} entrypoints
         </div>
@@ -56,10 +56,10 @@ function addItem(area: Area) {
 
     // Add event listeners
     const highlightButton = item.querySelector(".cyc-highlight-area")!
-    highlightButton.addEventListener("click", () => {selectArea(area.area_id)})
+    highlightButton.addEventListener("click", () => {selectArea(area.areaId)})
 
     const navigateButton = item.querySelector(".cyc-navigate-area")!
-    navigateButton.addEventListener("click", () => {navigateToArea(area.area_id)})
+    navigateButton.addEventListener("click", () => {navigateToArea(area.areaId)})
 
     const mapPreview = item.querySelector(".area-list-preview")! as HTMLDivElement
 
