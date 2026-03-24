@@ -77,7 +77,7 @@ export class TrackingMap{
     headingIcon: L.Icon
     positionIcon: L.Icon
 
-    glyphIcon: L.Icon.Glyph
+    glyphIcons: Map<string, L.Icon.Glyph> = new Map()
 
     baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
@@ -122,7 +122,10 @@ export class TrackingMap{
             popupAnchor: [0, 0],
         })
 
-        this.glyphIcon = new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "green"})
+        this.glyphIcons.set( "EXPLORE", new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "blue"}))
+        this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "red"}))
+        this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "green"}))
+        this.glyphIcons.set( "AVOID", new L.Icon.Glyph({glyph:"cancel", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "orange"}))
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
@@ -323,7 +326,7 @@ export class TrackingMap{
     }
 
     addAnnotation(annotation: LocationAnnotation){
-        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcon}).addTo(this.annotationsLG)
+        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcons.get(annotation.category)}).addTo(this.annotationsLG)
     }
 
     clearAnnotations(){
