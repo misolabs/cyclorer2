@@ -127,7 +127,7 @@ body{
 #arealist-open{
     visibility: visible;
     position: absolute;
-    top: 80px;
+    top: 100px;
     right: 20px;
     z-index: 2500;
     background-color: darkslategray;
@@ -136,8 +136,11 @@ body{
 
 #center-btn{
     position: absolute;
-    top:10px;
-    left:10px;
+    top:120px;
+    left:20px;
+
+    width: 80px;
+    height: 80px;
 
     z-index: 2500;
 }

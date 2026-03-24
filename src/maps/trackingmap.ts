@@ -122,10 +122,10 @@ export class TrackingMap{
             popupAnchor: [0, 0],
         })
 
-        this.glyphIcons.set( "EXPLORE", new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "blue"}))
-        this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "red"}))
-        this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "green"}))
-        this.glyphIcons.set( "AVOID", new L.Icon.Glyph({glyph:"cancel", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "17px", markerColor: "orange"}))
+        this.glyphIcons.set( "EXPLORE", new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "blue"}))
+        this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "red"}))
+        this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "green"}))
+        this.glyphIcons.set( "CLIMB", new L.Icon.Glyph({glyph:"elevation", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "purple"}))
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
@@ -319,9 +319,9 @@ export class TrackingMap{
     }
 
     setHeading(angle: number){
-        const alpha = 0.9
+        const alpha = 0.8
         this.heading = this.heading * alpha + angle * (1 - alpha)
-        this.heading = Math.round(this.heading / 10) * 10
+        this.heading = Math.round(this.heading / 12) * 12
         this.map.setBearing(this.heading)
     }
 

@@ -13,7 +13,7 @@ export class InRideMenu{
         document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "DANGER"); this.hide()})
         document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "EXPLORE"); this.hide()})
         document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "FAVORITE"); this.hide()})
-        document.getElementById("drop-pin-avoid")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "AVOID"); this.hide()})
+        document.getElementById("drop-pin-climb")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "CLIMB"); this.hide()})
 
         document.getElementById("open-inride-menu")!.addEventListener("click", () => {
             if(this.container.classList.contains("hide")){

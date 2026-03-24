@@ -31,8 +31,8 @@
       <button id="drop-pin-explore" class="btn btn-warning ui-midride-element mb-3">
         <span class="material-symbols-rounded">not_listed_location</span>
       </button>
-      <button id="drop-pin-avoid" class="btn btn-danger ui-midride-element">
-        <span class="material-symbols-rounded">cancel</span>
+      <button id="drop-pin-climb" class="btn btn-danger ui-midride-element">
+        <span class="material-symbols-rounded">elevation</span>
       </button>
     </div>
   </div>
@@ -48,9 +48,7 @@
     <div id="map-view">
       <div id="tracking-map" class="minipreview">
         <button id="center-btn" class="btn btn-danger hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-crosshair" viewBox="0 0 16 16">
-            <path d="M8.5.5a.5.5 0 0 0-1 0v.518A7 7 0 0 0 1.018 7.5H.5a.5.5 0 0 0 0 1h.518A7 7 0 0 0 7.5 14.982v.518a.5.5 0 0 0 1 0v-.518A7 7 0 0 0 14.982 8.5h.518a.5.5 0 0 0 0-1h-.518A7 7 0 0 0 8.5 1.018zm-6.48 7A6 6 0 0 1 7.5 2.02v.48a.5.5 0 0 0 1 0v-.48a6 6 0 0 1 5.48 5.48h-.48a.5.5 0 0 0 0 1h.48a6 6 0 0 1-5.48 5.48v-.48a.5.5 0 0 0-1 0v.48A6 6 0 0 1 2.02 8.5h.48a.5.5 0 0 0 0-1zM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
-          </svg>
+          <span class="material-symbols-rounded">my_location</span>
         </button>
 
         <div id="score-container">
@@ -59,17 +57,11 @@
         </div>
       </div>
       <!--    <div id="gps" class="gps-icon"></div>-->
-      <button id="settings-open" class="btn settings-button ui-overlay-element">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="32" height="32" viewBox="0 0 16 16">
-          <path fill-rule="evenodd"
-                d="M2 4h12v1H2V4zm0 3h12v1H2V7zm0 3h12v1H2v-1z"/>
-        </svg>
+      <button id="settings-open" class="btn btn-secondary settings-button ui-overlay-element">
+        <span class="material-symbols-rounded">menu</span>
       </button>
       <button id="arealist-open" class = "btn arealist-button ui-overlay-element">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-card-checklist" viewBox="0 0 16 16">
-          <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
-          <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"/>
-        </svg>
+        <span class="material-symbols-rounded">route</span>
       </button>
 
       <div id="preview-map" class="minipreview">

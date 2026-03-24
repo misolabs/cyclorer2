@@ -18,11 +18,17 @@
 
 .ui-midride-element{
     color: white;
+
+    width: 80px;
+    height: 80px;
+    padding: 0;
 }
 
 /* Open / Close Button */
 #open-inride-menu{
-
+    width: 80px;
+    height: 80px;
+    padding: 0;
 }
 
 #ui-midride-menu-content{
