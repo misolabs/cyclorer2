@@ -10,15 +10,19 @@ export class InRideMenu{
     }
 
     init(){
-        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "DANGER")})
-        document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "EXPLORE")})
-        document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "FAVORITE")})
-        document.getElementById("drop-pin-avoid")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "AVOID")})
+        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "DANGER"); this.hide()})
+        document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "EXPLORE"); this.hide()})
+        document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "FAVORITE"); this.hide()})
+        document.getElementById("drop-pin-avoid")!.addEventListener("click", () => {this.bus.emit("annotation:location:add", "AVOID"); this.hide()})
 
         document.getElementById("open-inride-menu")!.addEventListener("click", () => {
             if(this.container.classList.contains("hide")){
                 this.container.classList.remove("hide")
-            }else this.container.classList.add("hide")
+            }else this.hide()
         })
+    }
+
+    hide(){
+        this.container.classList.add("hide")
     }
 }
