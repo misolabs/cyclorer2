@@ -118,7 +118,7 @@ export class TrackingView {
     onGeoPositionChanged(geo: GeolocationPosition){
         this.trackingMap.setPosition({lat:geo.coords.latitude, lon: geo.coords.longitude}, this.viewFollowTracking)
         if(geo.coords.heading)
-            this.trackingMap.setHeading(geo.coords.heading)
+            this.trackingMap.setHeading(360 - geo.coords.heading)
     }
 
     // TODO - Move this somewhere else?
