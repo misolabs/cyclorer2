@@ -14,6 +14,7 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css"
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+import type {EventBus} from "../eventbus.ts";
 
 // Fix default icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -68,6 +69,8 @@ const tileServices:Map<string, TileService> = new Map([
 let currentTileService: TileService | null = null
 
 export class TrackingMap{
+    bus: EventBus
+
     map: L.Map
     positionMarker: L.Marker|null = null
     headingMarker: L.Marker|null = null
@@ -93,7 +96,8 @@ export class TrackingMap{
 
     heading: number = 0
 
-    constructor(elName: string, mobileMode: boolean){
+    constructor(elName: string, mobileMode: boolean, bus:EventBus){
+        this.bus = bus
         this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false })
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
@@ -326,7 +330,30 @@ export class TrackingMap{
     }
 
     addAnnotation(annotation: LocationAnnotation){
-        L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcons.get(annotation.category)}).addTo(this.annotationsLG)
+        const tsLabel = new Date(annotation.timestamp).toDateString()
+        const marker = L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcons.get(annotation.category)})
+            .addTo(this.annotationsLG)
+
+        const popupContent = document.createElement("div");
+
+        popupContent.innerHTML = `
+        <span class="roboto-font" style="font-weight: bold">
+            Created: ${tsLabel}
+        </span>
+        <br>
+        <button class="btn btn-sm btn-danger delete-btn">
+            <span class="material-symbols-rounded">delete</span>
+        </button>
+        `
+
+        // Attach listener AFTER DOM exists
+        const btn = popupContent.querySelector(".delete-btn")!;
+
+        btn.addEventListener("click", () => {
+            this.bus.emit("annotation:location:delete", annotation.id!);
+        });
+
+        marker.bindPopup(popupContent);
     }
 
     clearAnnotations(){

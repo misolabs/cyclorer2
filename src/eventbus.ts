@@ -35,6 +35,7 @@ type Events = {
 
     "annotation:location:add": AnnotationCategory
     "annotation:location:added": LocationAnnotation
+    "annotation:location:delete": number
 
     "exploration:started": Area
     "exploration:ended": void

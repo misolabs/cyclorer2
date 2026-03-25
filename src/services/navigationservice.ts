@@ -34,6 +34,7 @@ export class NavigationService{
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
 
         bus.on("annotation:location:add", this.onAddAnnotationRequest.bind(this))
+        bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
 
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
         bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
@@ -68,6 +69,10 @@ export class NavigationService{
 
         // Tell everyone about this one
         this.bus.emit("annotation:location:added", annotation)
+    }
+
+    onDeleteAnnotationRequest(id: number){
+        console.log("Delete annotation request", id)
     }
 
     onStatsLoaded(stats: RoutingStatsJson){

@@ -5,7 +5,7 @@ L.Icon.Glyph = L.Icon.extend({
     options: {
         iconSize: [70, 70],
         iconAnchor:  [35, 68],
-        popupAnchor: [1, -34],
+        popupAnchor: [1, -70],
         shadowSize:  [71, 71],
 // 		iconUrl: 'glyph-marker-icon.png',
 // 		iconSize: [35, 45],
