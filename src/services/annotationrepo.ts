@@ -38,17 +38,21 @@ export class AnnotationRepo{
         if(storedData){
             const list: LocationAnnotation[] = JSON.parse(storedData)
             // Calculate first unused id
-            this.nextId = list
-                .map(a => a.id)
-                .filter(id => id != undefined)
-                .reduce( (previousValue, currentValue): number => {
-                if(currentValue > previousValue) return currentValue
-                else return previousValue
-            }) + 1
+            if(list && list.length > 0) {
+                this.nextId = list
+                    .map(a => a.id)
+                    .filter(id => id != undefined)
+                    .reduce((previousValue, currentValue): number => {
+                        if (currentValue > previousValue) return currentValue
+                        else return previousValue
+                    }) + 1
 
-            // Transform into map for fast access
-            if(list){
-                list.forEach((e: LocationAnnotation) => {this.repo.set(e.id!, e)} )
+                // Transform into map for fast access
+                if (list) {
+                    list.forEach((e: LocationAnnotation) => {
+                        this.repo.set(e.id!, e)
+                    })
+                }
             }
         }
     }
