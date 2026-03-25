@@ -55,3 +55,6 @@ if(isMobileLike)
 
 // Async loading of all geo-data files
 await routingDataService.loadRegionData("ellergronn")
+
+// All ready
+appBus.emit("system:ready")

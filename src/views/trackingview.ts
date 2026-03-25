@@ -121,10 +121,6 @@ export class TrackingView {
             this.trackingMap.setHeading(360 - geo.coords.heading)
     }
 
-    // TODO - Move this somewhere else?
-    onSimulationTimer(){
-    }
-
     onSettingsChanged(settings: Settings) {
         this.trackingMap.setBaseLayer(settings.tileService)
         this.trackingMap.toggleDeadends(settings.showDeadends)

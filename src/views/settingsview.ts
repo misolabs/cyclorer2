@@ -28,7 +28,7 @@ export class SettingsView {
     }
 
     init(settings: Settings): void {
-        this.deadendsInput.checked = settings.showAreaBBox
+        this.deadendsInput.checked = settings.showDeadends
         this.showAreaBoundingBox.checked = settings.showAreaBBox
         this.showDebugOverlay.checked = settings.showDebugOverlay
         this.showFreqHeatmapOverlay.checked = settings.showFrequencyHeatmap

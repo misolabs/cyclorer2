@@ -10,6 +10,7 @@ import type {
 import {mapBBox} from "../models/mapping.ts";
 import {AreaFinder} from "../routing/areafinder.ts";
 import {haversineDistance} from "../crs/latlonmath.ts";
+import {AnnotationRepo} from "./annotationrepo.ts";
 
 export class NavigationService{
     bus: EventBus;
@@ -17,6 +18,7 @@ export class NavigationService{
     regionBB: BoundingBox|undefined
     routingEngine: RoutingEngine|undefined = undefined
     areaFinder: AreaFinder|undefined = undefined
+    annotationRepo: AnnotationRepo
 
     currentPosition!: LatLon
     lastPosition!: LatLon
@@ -26,14 +28,24 @@ export class NavigationService{
 
     constructor(bus: EventBus) {
         this.bus = bus;
+        this.annotationRepo = new AnnotationRepo()
 
         bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
+
         bus.on("annotation:location:add", this.onAddAnnotationRequest.bind(this))
 
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
         bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
         bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
+
+        bus.on("system:ready", this.onSystemReady.bind(this))
+    }
+
+    // Called when everything is in place
+    onSystemReady(){
+        // Add location annotations to the map
+        this.annotationRepo.getAll().forEach((a: LocationAnnotation) => {this.bus.emit("annotation:location:added", a)})
     }
 
     // Position update from simulation mode
@@ -51,8 +63,9 @@ export class NavigationService{
     }
 
     onAddAnnotationRequest(category: AnnotationCategory){
-        // TODO Add to repostory
-        const annotation: LocationAnnotation = {location: this.currentPosition, category: category}
+        const ts = new Date(Date.now()).toJSON()
+        const annotation = this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
+
         // Tell everyone about this one
         this.bus.emit("annotation:location:added", annotation)
     }

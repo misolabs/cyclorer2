@@ -39,6 +39,8 @@ type Events = {
     "exploration:started": Area
     "exploration:ended": void
     "exploration:score:updated": number
+
+    "system:ready": void
 };
 
 export class EventBus {

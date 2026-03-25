@@ -119,4 +119,6 @@ export type AnnotationCategory = string
 export interface LocationAnnotation{
   category: AnnotationCategory
   location: LatLon
+  timestamp: string
+  id?: number
 }
