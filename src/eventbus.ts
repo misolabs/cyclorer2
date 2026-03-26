@@ -15,6 +15,8 @@ type Events = {
     "settings:updated": Settings
     "settings:show": boolean
 
+    "data:sync": void
+
     "splash:show": void
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void

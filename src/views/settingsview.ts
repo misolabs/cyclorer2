@@ -22,6 +22,7 @@ export class SettingsView {
         this.toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
 
         document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener.bind(this))
+        document.getElementById("sync-data-btn")?.addEventListener("click", () => this.bus.emit("data:sync"))
 
         this.bus.on("settings:loaded", this.init.bind(this))
         this.bus.on("settings:show", this.show.bind(this))

@@ -41,6 +41,7 @@ export class NavigationService{
         bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
 
         bus.on("system:ready", this.onSystemReady.bind(this))
+        bus.on("data:sync", this.onDataSync.bind(this))
     }
 
     // Called when everything is in place
@@ -92,6 +93,20 @@ export class NavigationService{
         if(this.routingEngine) {
             this.routingEngine.init(routingData)
         }
+    }
+
+    onDataSync(){
+        // Collect data from all sources and sync with computer
+        // Currently send an email
+
+        const data = this.annotationRepo.getAll();
+        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+        const file = new File([blob], "annotations.json");
+
+        navigator.share({
+            title: "Cyclorer 2 Backup - Annotations",
+            files: [file]
+        });
     }
 
     // =========
