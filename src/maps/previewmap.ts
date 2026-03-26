@@ -1,31 +1,20 @@
 import * as L from "leaflet";
 import type {Area, LatLon} from "../models/models.ts";
 import {LatLng} from "leaflet";
-
-// TODO - Clean-up, preview should not know tracking-map
-const trackingContainer = document.getElementById("tracking-map")!
-const previewContainer = document.getElementById("preview-map")!
-
-document.getElementById("preview-minimise")!.addEventListener("click", () => {
-    if(previewContainer.classList.contains("minipreview")) {
-        previewContainer.classList.remove("minipreview")
-        trackingContainer.classList.remove("minipreview")
-    }
-    else {
-        previewContainer.classList.add("minipreview")
-        trackingContainer.classList.add("minipreview")
-    }
-    window.dispatchEvent(new CustomEvent("invalidateMap", {}))
-})
+import type {EventBus} from "../eventbus.ts";
 
 export class PreviewMap {
+    bus: EventBus
+
     areaId: number|null = null
     map: L.Map
     previewArea: L.GeoJSON
     entrypointsLG: L.LayerGroup
     positionMarker: L.CircleMarker
 
-    constructor(elName: string) {
+    constructor(elName: string, bus:EventBus) {
+        this.bus = bus
+
         this.map = L.map(elName, {
             zoomControl: false,
             attributionControl: false,
@@ -39,6 +28,10 @@ export class PreviewMap {
         this.previewArea = L.geoJSON([], {style: {color: "lightseagreen", weight: 3}}).addTo(this.map)
         this.entrypointsLG = L.layerGroup().addTo(this.map)
         this.positionMarker = L.circleMarker(new LatLng(0,0), {radius: 6, color: "red", fillColor: "red", fillOpacity: 0.5})
+
+        // Minimize button
+        bus.on("preview:minimize", this.onToggleMinimize.bind(this))
+        document.getElementById("preview-minimise")!.addEventListener("click", () => {this.bus.emit("preview:minimize")})
     }
 
     setArea(area: Area) {
@@ -72,5 +65,16 @@ export class PreviewMap {
     setPosition(pos: LatLon){
         if(this.areaId != null)
             this.positionMarker.setLatLng(new LatLng(pos.lat, pos.lon)).addTo(this.map)
+    }
+
+    onToggleMinimize(){
+        const previewContainer = document.getElementById("preview-map")!
+        if(previewContainer.classList.contains("minipreview")) {
+            previewContainer.classList.remove("minipreview")
+        }
+        else {
+            previewContainer.classList.add("minipreview")
+        }
+        this.map.invalidateSize()
     }
 }

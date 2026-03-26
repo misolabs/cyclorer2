@@ -44,7 +44,7 @@ export class TrackingView {
         this.viewFollowTracking = true
 
         this.trackingMap = new TrackingMap("tracking-map", isMobileLike, bus)
-        this.previewMap = new PreviewMap("preview-map")
+        this.previewMap = new PreviewMap("preview-map", bus)
 
         this.bus.on("rds:stats:loaded", this.onStatsDataLoaded.bind(this))
         this.bus.on("rds:routing:loaded", this.onRoutingDataLoaded.bind(this))

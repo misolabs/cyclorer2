@@ -126,6 +126,7 @@ export class TrackingMap{
             popupAnchor: [0, 0],
         })
 
+        // Glyph icons for annotations
         this.glyphIcons.set( "EXPLORE", new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "blue"}))
         this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "red"}))
         this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "green"}))
@@ -136,6 +137,9 @@ export class TrackingMap{
         this.areaHighlightLG.addTo(this.map)
         this.snailTrailLG.addTo(this.map)
         this.annotationsLG.addTo(this.map)
+
+        // Connect to event bus
+        this.bus.on("preview:minimize", this.onToggleMinimize.bind(this))
     }
 
     setBaseLayer(id: string){
@@ -323,7 +327,7 @@ export class TrackingMap{
     }
 
     setHeading(angle: number){
-        const alpha = 0.8
+        const alpha = 0.9
         this.heading = this.heading * alpha + angle * (1 - alpha)
         this.heading = Math.round(this.heading / 12) * 12
         this.map.setBearing(this.heading)
@@ -391,5 +395,16 @@ export class TrackingMap{
         }else{
             this.snailTrailLayer!.setLatLngs(this.snailTrailPoly)
         }
+    }
+
+    onToggleMinimize(){
+        const container = document.getElementById("tracking-map")!
+        if(container.classList.contains("minipreview")) {
+            container.classList.remove("minipreview")
+        }
+        else {
+            container.classList.add("minipreview")
+        }
+        this.map.invalidateSize()
     }
 }
