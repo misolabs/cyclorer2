@@ -105,6 +105,7 @@ export class NavigationService{
 
         navigator.share({
             title: "Cyclorer 2 Backup - Annotations",
+            text: "Cyclorer 2 Backup",
             files: [file]
         });
     }
