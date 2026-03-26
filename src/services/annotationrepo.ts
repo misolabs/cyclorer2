@@ -24,16 +24,23 @@ export class AnnotationRepo{
         return record
     }
 
+    delete(id: number){
+        if(this.repo.has(id)){
+            this.repo.delete(id)
+            this.save()
+        }
+    }
+
     getAll(){
         return this.toArray()
     }
 
-    save(){
+    private save(){
         const arr = this.toArray();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(arr))
     }
 
-    load(){
+    private load(){
         const storedData = localStorage.getItem(STORAGE_KEY)
         if(storedData){
             const list: LocationAnnotation[] = JSON.parse(storedData)
@@ -57,7 +64,7 @@ export class AnnotationRepo{
         }
     }
 
-    toArray(){
+    private toArray(){
         return [...this.repo].map(([name, value]) => value)
     }
 }

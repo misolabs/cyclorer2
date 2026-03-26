@@ -73,6 +73,7 @@ export class NavigationService{
 
     onDeleteAnnotationRequest(id: number){
         console.log("Delete annotation request", id)
+        this.annotationRepo.delete(id)
     }
 
     onStatsLoaded(stats: RoutingStatsJson){

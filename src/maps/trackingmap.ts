@@ -350,6 +350,7 @@ export class TrackingMap{
         const btn = popupContent.querySelector(".delete-btn")!;
 
         btn.addEventListener("click", () => {
+            this.map.removeLayer(marker)
             this.bus.emit("annotation:location:delete", annotation.id!);
         });
 
