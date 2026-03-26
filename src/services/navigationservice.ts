@@ -1,5 +1,13 @@
 import type {EventBus} from "../eventbus.ts";
-import type {AnnotationCategory, Area, BoundingBox, LatLon, LocationAnnotation} from "../models/models.ts";
+import {
+    NavigationMode,
+    type AnnotationCategory,
+    type Area, type AreaNode,
+    type BoundingBox, type Edge,
+    type LatLon,
+    type LocationAnnotation,
+    type Route
+} from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
     GeoJsonAreaCollection,
@@ -11,6 +19,8 @@ import {mapBBox} from "../models/mapping.ts";
 import {AreaFinder} from "../routing/areafinder.ts";
 import {haversineDistance} from "../crs/latlonmath.ts";
 import {AnnotationRepo} from "./annotationrepo.ts";
+import type {HeadingExp} from "../routing/heading.ts";
+import {SetUtils} from "../setutils.ts";
 
 export class NavigationService{
     bus: EventBus;
@@ -25,6 +35,16 @@ export class NavigationService{
 
     exploring = false
     score = 0
+
+    navigationMode: NavigationMode = NavigationMode.TM_EXPLORE
+    currentArea: Area|null = null
+    currentTarget: AreaNode|null = null
+    currentRoute: Route|null = null
+    entrypointCandidates: AreaNode[] = []
+    forceRecalculation = false
+
+    dismissed:Set<number> = new Set()
+    dismissTimerId = -1
 
     constructor(bus: EventBus) {
         this.bus = bus;
@@ -42,6 +62,9 @@ export class NavigationService{
 
         bus.on("system:ready", this.onSystemReady.bind(this))
         bus.on("data:sync", this.onDataSync.bind(this))
+
+        bus.on("navigation:target:area", this.onNavigateArea.bind(this))
+        bus.on("area:dismiss", this.onDismissArea.bind(this))
     }
 
     // Called when everything is in place
@@ -110,13 +133,37 @@ export class NavigationService{
         });
     }
 
+    onDismissArea(){
+        if(this.dismissTimerId != -1) {
+            clearTimeout(this.dismissTimerId)
+            this.dismissTimerId = -1
+        }
+
+        this.currentTarget = null
+        this.currentRoute = null
+
+        if(this.currentArea)
+            this.dismissed.add(this.currentArea.areaId)
+        this.currentArea = null
+    }
+
+    onNavigateArea(area: Area){
+        // Temporary solution -> navigate to the first entrypoint
+        if(area.nodes.length > 0){
+            this.currentTarget = area.nodes[0]
+
+            this.entrypointCandidates = area.nodes
+            this.forceRecalculation = true
+        }
+    }
+
     // =========
     update(){
         if(!this.routingEngine || !this.areaFinder) return
         const closestEdge = this.routingEngine.findClosestEdge(this.currentPosition)
 
         if(closestEdge){
-            // Are we exploring an unvisited area?
+            // Are we exploring an unvisited area? -> Keep score
             if(!this.exploring && closestEdge.edge.area_id){
                 this.exploring = true
                 const area: Area = this.areaFinder.areaInfoById(closestEdge.edge.area_id)
@@ -131,6 +178,38 @@ export class NavigationService{
                     this.bus.emit("exploration:ended")
                 }
             }
+
+            // If we are not exploring, we look for new targets in exploration mode
+            if(this.navigationMode == NavigationMode.TM_EXPLORE && !this.currentTarget && !this.exploring)
+                this.exploreNearbyAreas()
+        }
+    }
+
+    exploreNearbyAreas(){
+        if(this.areaFinder == undefined)
+            return
+
+        // Find all entrypoints in the neighbourhood and reduce to area ids
+        const entries = this.areaFinder.findNeighbours(this.currentPosition)
+        const areas: Set<number> = new Set()
+        entries.forEach(c => areas.add(c.area_id))
+
+        // Filter out the ones we have dismissed
+        const candidates = SetUtils.difference(areas, this.dismissed)
+        console.log(candidates.size)
+
+        // Pick random candidate
+        if(candidates.size > 0) {
+            const i = Math.floor(Math.random() * (candidates.size - 1))
+            const areaId = Array.from(candidates)[i]
+            console.log(i)
+
+            // Propose a new target area
+            this.currentArea = this.areaFinder.areaInfoById(areaId)
+            this.bus.emit("navigation:target:area", this.currentArea)
+
+            // If we don't lock-onto the target within a certain time, we auto-dismis
+            this.dismissTimerId = setTimeout( () => {this.bus.emit("area:dismiss")}, 60000)
         }
     }
 }

@@ -45,6 +45,11 @@ type Events = {
     "exploration:ended": void
     "exploration:score:updated": number
 
+    "navigation:target:area": Area
+    "navigation:stop": void
+    "area:dismiss": void
+    "area:engage": void
+
     "system:ready": void
 };
 

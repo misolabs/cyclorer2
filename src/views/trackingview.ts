@@ -15,6 +15,7 @@ import type {Settings} from "../services/settingsservice.ts";
 import {geoToLatLon} from "../crs/latlonmath.ts";
 import type {GeolocationLight} from "../services/geolocationservice.ts";
 import type {Area, AreaId, LocationAnnotation} from "../models/models.ts";
+import {formatDistance, setDescription} from "../dom.ts";
 
 /*  TODO
     - heading
@@ -61,12 +62,22 @@ export class TrackingView {
         this.bus.on("exploration:ended", this.onExplorationEnded.bind(this))
         this.bus.on("exploration:score:updated", this.onScoreUpdated.bind(this))
 
+        this.bus.on("area:dismiss", this.onAreaDismiss.bind(this))
+        this.bus.on("area:engage", this.onAreaEngage.bind(this))
+        this.bus.on("navigation:target:area", this.onNavigationArea.bind(this))
+        this.bus.on("navigation:stop", this.onNavigationStop.bind(this))
+
         // Show this when splash screen starts fading out
         this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
 
         // Hook up buttons
         // TODO Move these to the menu classes
         document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emit("settings:show", true)})
+
+        // Navigation control buttons
+        document.getElementById("dismiss-area-btn")!.addEventListener("click", () => {this.bus.emit("area:dismiss")})
+        document.getElementById("engage-area-btn")!.addEventListener("click", () => {this.bus.emit("area:engage")})
+        document.getElementById("stop-navigation-btn")!.addEventListener("click", () => {this.bus.emit("navigation:stop")})
 
         // View follow tracking
         // Stop following tracking if we pan the map, show button to re-center
@@ -153,7 +164,43 @@ export class TrackingView {
         document.getElementById("score")!.textContent = `${score.toFixed(0)}m`
     }
 
-    // TODO: Still needed?
+    onAreaDismiss(){
+        this.trackingMap.clearRoute()
+        this.trackingMap.setSnappedEdge([])
+        this.trackingMap.highlightArea(null)
+
+        this.previewMap.clearArea()
+        setDescription("")
+
+        this.toggleEngageButton(false)
+        this.toggleDismissButton(false)
+    }
+
+    onAreaEngage(){
+        this.toggleEngageButton(false)
+        this.toggleStopNavigationButton(true)
+        this.toggleDismissButton(false)
+    }
+
+    onNavigationArea(area: Area){
+        this.toggleEngageButton(true)
+        this.toggleStopNavigationButton(false)
+        this.toggleDismissButton(true)
+
+        this.trackingMap.highlightArea(area)
+        this.trackingMap.setAreaMarker(area.nodes)
+        this.previewMap.setArea(area)
+        setDescription(`Area size: ${formatDistance(area.totalLength)}`)
+    }
+
+    onNavigationStop(){
+        this.trackingMap.clearRoute()
+        this.trackingMap.setSnappedEdge([])
+        this.trackingMap.highlightArea(null)
+
+        this.toggleStopNavigationButton(false)
+    }
+
     toggleDismissButton(show: boolean) {
         if(show)
             document.getElementById("dismiss-area-btn")!.classList.remove("hide")
