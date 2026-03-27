@@ -19,6 +19,8 @@ import {RoutingDataService} from "./services/routingdataservice.ts";
 import { loadLegacyPlugins } from './leaflet-legacy'
 import {NavigationService} from "./services/navigationservice.ts";
 import {InRideMenu} from "./views/inridemenu.ts";
+import {WakeLockFeature} from "./wakelock.ts";
+import {DebugOverlay} from "./views/debugoverlay.ts";
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
@@ -26,7 +28,9 @@ const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 //const isMobileLike = true
 
 // App-wide event bus, shared by all components
-export const appBus: EventBus = new EventBus()
+const appBus: EventBus = new EventBus()
+const wakeLock = new WakeLockFeature(appBus)
+wakeLock.setup()
 
 // Create services
 const settingsService: SettingsService = new SettingsService(appBus)
@@ -36,6 +40,8 @@ const navigationService: NavigationService = new NavigationService(appBus)
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus)
+const debugOverlay = new DebugOverlay("debug", appBus)
+
 const settingsView: SettingsView = new SettingsView("settings-view", appBus)
 const splashScreen: SplashScreen = new SplashScreen(appBus)
 const trackingView = new TrackingView(appBus, isMobileLike)

@@ -30,6 +30,7 @@ type Events = {
     "geolocsim:update": LatLon
 
     "debug:log": string
+    "debug:clear": void
 
     "rds:stats:loaded": RoutingStatsJson
     "rds:loaderror": string
