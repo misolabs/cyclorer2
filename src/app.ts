@@ -29,6 +29,21 @@ const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 // App-wide event bus, shared by all components
 const appBus: EventBus = new EventBus()
 
+// Register service worker if possible
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/cyclorer2/sw.js', {
+            scope: '/cyclorer2/',
+        })
+            .then(reg => {
+                console.log('SW registered:', reg.scope);
+            })
+            .catch(err => {
+                console.error('SW registration failed:', err);
+            });
+    });
+}
+
 // Create services
 const settingsService: SettingsService = new SettingsService(appBus)
 const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
