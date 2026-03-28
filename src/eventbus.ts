@@ -51,6 +51,9 @@ type Events = {
     "area:dismiss": void
     "area:engage": void
 
+    "zoom:framed:area": Area
+    "zoom:frame:rider": void
+
     "system:ready": void
 };
 

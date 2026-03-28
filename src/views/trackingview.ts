@@ -67,6 +67,8 @@ export class TrackingView {
         this.bus.on("navigation:target:area", this.onNavigationArea.bind(this))
         this.bus.on("navigation:stop", this.onNavigationStop.bind(this))
 
+        this.bus.on("zoom:frame:rider", this.onZoomFrameRider.bind(this))
+
         // Show this when splash screen starts fading out
         this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
 
@@ -199,6 +201,10 @@ export class TrackingView {
         this.trackingMap.highlightArea(null)
 
         this.toggleStopNavigationButton(false)
+    }
+
+    onZoomFrameRider(){
+        this.trackingMap.zoomFrameRider()
     }
 
     toggleDismissButton(show: boolean) {

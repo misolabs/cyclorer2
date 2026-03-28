@@ -3,6 +3,9 @@ import { VitePWA } from "vite-plugin-pwa"
 
 // For github CI
 export default defineConfig({
+    server:{
+        allowedHosts:['macbook'],
+    },
     base: "/cyclorer2/",
     plugins: [
         VitePWA({

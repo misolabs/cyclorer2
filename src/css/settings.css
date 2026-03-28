@@ -17,7 +17,7 @@
 }
 
 @media (max-width: 768px) {
-    #settings {
+    #settings-view {
         width: 100vw;
         height: 100vh;
     }

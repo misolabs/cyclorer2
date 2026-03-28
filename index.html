@@ -21,6 +21,11 @@
     <button id="open-inride-menu" class="btn btn-secondary">
       <span class="material-symbols-rounded">add_location</span>
     </button>
+
+    <button id="zoom-frame-rider" class="btn btn-secondary hide">
+      <span class="material-symbols-rounded">center_focus_weak</span>
+    </button>
+
     <div id="ui-midride-menu-content" class="hide">
       <button id="drop-pin-danger" class="btn btn-danger ui-midride-element mb-3 mt-3">
         <span class="material-symbols-rounded">skull</span>
@@ -55,7 +60,12 @@
           <div class="label-small roboto-font">Score</div>
           <div class= "roboto-font" id="score">0m</div>
         </div>
+
+        <button id="preview-minimise" class="btn">
+          <span class="material-symbols-rounded">compress</span>
+        </button>
       </div>
+
       <!--    <div id="gps" class="gps-icon"></div>-->
       <button id="settings-open" class="btn btn-secondary settings-button ui-overlay-element">
         <span class="material-symbols-rounded">menu</span>
@@ -65,19 +75,15 @@
       </button>
 
       <div id="preview-map" class="minipreview">
-        <button id="preview-minimise" class="btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10"/>
-          </svg>
-        </button>
 
         <div id="directions"></div>
         <div id="description"></div>
 
         <div id="debug"></div>
 
-        <div id="next-area" class="area-arrow">▶</div>
-        <div id="previous-area" class="area-arrow">◀</div>
+        <div id="next-area" class="btn area-arrow"><span class="material-symbols-rounded">arrow_forward_ios</span></div>
+        <div id="previous-area" class="btn area-arrow"><span class="material-symbols-rounded">arrow_back_ios</span></div>
+
         <div id="route-buttons">
           <button id="dismiss-area-btn" class="btn btn-danger hide">Dismiss</button>
           <button id="stop-navigation-btn" class="btn btn-warning hide">Stop</button>

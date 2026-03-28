@@ -31,5 +31,16 @@
     padding: 0;
 }
 
+/* Return zoom to rider */
+#zoom-frame-rider{
+    position: absolute;
+
+    top:120px;
+
+    width: 80px;
+    height: 80px;
+    padding: 0;
+}
+
 #ui-midride-menu-content{
 }

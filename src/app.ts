@@ -19,7 +19,6 @@ import {RoutingDataService} from "./services/routingdataservice.ts";
 import { loadLegacyPlugins } from './leaflet-legacy'
 import {NavigationService} from "./services/navigationservice.ts";
 import {InRideMenu} from "./views/inridemenu.ts";
-import {WakeLockFeature} from "./wakelock.ts";
 import {DebugOverlay} from "./views/debugoverlay.ts";
 await loadLegacyPlugins()
 
@@ -29,8 +28,6 @@ const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
 
 // App-wide event bus, shared by all components
 const appBus: EventBus = new EventBus()
-const wakeLock = new WakeLockFeature(appBus)
-wakeLock.setup()
 
 // Create services
 const settingsService: SettingsService = new SettingsService(appBus)

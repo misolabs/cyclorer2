@@ -1,4 +1,4 @@
-import L from 'leaflet'
+import L, {LatLngBounds} from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 
 import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/models.ts";
@@ -93,6 +93,9 @@ export class TrackingMap{
 
     snailTrailLayer!: L.Polyline
     snailTrailPoly: LatLng[] = []
+
+    riderViewCenter: LatLng = new LatLng(0,0)
+    riderViewZoom = 17
 
     heading: number = 0
 
@@ -249,18 +252,11 @@ export class TrackingMap{
                 style: {color: "yellow", weight: 7}
             }).addTo(this.areaHighlightLG)
 
-            // Calculate bounds of area with current position
-            const prevCenter = this.map.getCenter()
-            const prevZoom = this.map.getZoom()
-
-            // Show preview of the full route
-            const extBounds = areaLayer.getBounds().extend(this.positionMarker!.getLatLng())
-            this.map.fitBounds(extBounds, {padding: [50, 50]})
-
-            // Return to current view
-            setTimeout(()=>{this.map.setView(prevCenter, prevZoom)}, 5000)
+            this.zoomFrameArea(areaLayer.getBounds())
+            this.bus.emit("zoom:framed:area", area)
         }
     }
+
     setAreaMarker(areas: AreaNode[]): void{
         // If we need more markers, add them
         const nMarker = this.neighbourMarker.length
@@ -406,5 +402,19 @@ export class TrackingMap{
             container.classList.add("minipreview")
         }
         this.map.invalidateSize()
+    }
+
+    zoomFrameArea(bounds: LatLngBounds){
+        // Calculate bounds of area with current position
+        this.riderViewCenter = this.map.getCenter()
+        this.riderViewZoom = this.map.getZoom()
+
+        // Show preview of the full route
+        const extBounds = bounds.extend(this.positionMarker!.getLatLng())
+        this.map.fitBounds(extBounds, {padding: [50, 50]})
+    }
+
+    zoomFrameRider(){
+        this.map.setView(this.riderViewCenter, this.riderViewZoom)
     }
 }
