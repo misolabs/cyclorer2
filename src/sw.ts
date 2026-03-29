@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 
+// Precaching using workbox
 import { precacheAndRoute } from 'workbox-precaching';
 
 declare let self: ServiceWorkerGlobalScope;
@@ -43,5 +44,13 @@ registerRoute(
     ({ url }) => url.pathname.startsWith('/cyclorer2/assets/'),
     new CacheFirst({
         cacheName: 'assets-cache'
+    })
+);
+
+// Geo Routing Data
+registerRoute(
+    ({ url }) => url.pathname.startsWith('/cyclorer2/data/'),
+    new CacheFirst({
+        cacheName: 'geodata-cache'
     })
 );
