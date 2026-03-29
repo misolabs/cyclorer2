@@ -9,7 +9,9 @@ export default defineConfig({
     base: "/cyclorer2/",
     plugins: [
         VitePWA({
-            registerType: "autoUpdate",
+            strategies: "injectManifest",
+            srcDir: 'src',
+            filename: 'sw.ts',
 
             manifest: {
                 name: "Cyclorer 2",
