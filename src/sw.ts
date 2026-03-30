@@ -1,5 +1,3 @@
-/// <reference lib="webworker" />
-
 // Precaching using workbox
 import { precacheAndRoute } from 'workbox-precaching';
 
@@ -14,7 +12,10 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 
+//---------------------
 // Leaflet tile caching
+//---------------------
+
 // TODO more complex strategy
 registerRoute(
     ({ url }) =>
@@ -31,6 +32,11 @@ registerRoute(
     })
 );
 
+//---------------------
+// APPLICATION ASSETS
+// Cache first strategy
+//---------------------
+
 // Navigation handling
 import { createHandlerBoundToURL } from 'workbox-precaching';
 import { NavigationRoute } from 'workbox-routing';
@@ -42,6 +48,22 @@ registerRoute(new NavigationRoute(handler));
 // Vite assets
 registerRoute(
     ({ url }) => url.pathname.startsWith('/cyclorer2/assets/'),
+    new CacheFirst({
+        cacheName: 'assets-cache'
+    })
+);
+
+// Material design assets
+registerRoute(
+    ({ url }) => url.pathname.includes('fonts.googleapis.com'),
+    new CacheFirst({
+        cacheName: 'assets-cache'
+    })
+);
+
+// Bootstrap
+registerRoute(
+    ({ url }) => url.pathname.includes('bootstrap/dist'),
     new CacheFirst({
         cacheName: 'assets-cache'
     })
