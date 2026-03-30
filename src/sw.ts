@@ -54,16 +54,13 @@ registerRoute(
 );
 
 // Material design assets
+// Bootstrap assets
 registerRoute(
-    ({ url }) => url.pathname.includes('fonts.googleapis.com'),
-    new CacheFirst({
-        cacheName: 'assets-cache'
-    })
-);
-
-// Bootstrap
-registerRoute(
-    ({ url }) => url.pathname.includes('bootstrap/dist'),
+    ({ url }) => {
+        url.pathname.includes('fonts.googleapis.com') ||
+        url.pathname.includes('fonts.gstatic.com') ||
+        url.pathname.includes('bootstrap/dist')
+    },
     new CacheFirst({
         cacheName: 'assets-cache'
     })
