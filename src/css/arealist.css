@@ -76,3 +76,8 @@
     flex-direction: column;
     margin-left: auto;
 }
+
+.bi-crosshair{
+    width: 32px;
+    height: 32px;
+}

@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import './css/icons.css'
+import './css/common.css'
 import './css/map.css'
 import './css/settings.css'
 import './css/splash.css'
@@ -76,3 +76,10 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
+
+// Experiment
+navigator.serviceWorker.addEventListener('message', (event) => {
+    console.log('Message from SW:', event.data);
+});
+console.log("event send to sw")
+navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})
