@@ -14,6 +14,14 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 
+export interface TileCacheStats{
+    type: string,
+    tilesCache: number,
+    offlineCache: number,
+    tilesCacheHits: number,
+    offlineCacheHits: number,
+}
+
 //---------------------
 // Leaflet tile caching
 //---------------------
@@ -29,6 +37,7 @@ function broadcastMessage(message: any){
 
 const retryQueue: Set<Request> = new Set();
 var retryRunning = false
+var tileCacheHits: number = 0
 
 async function handleRetryQueue(){
     // TODO - Make sure we don't execute multiple instances at the same time
@@ -68,6 +77,7 @@ registerRoute(
             const tilesCache = await caches.open('tiles-cache');
             const cachedResponse = await tilesCache.match(request)
             if(cachedResponse) {
+                tileCacheHits++
                 console.log("Found in cache level 1")
                 return cachedResponse
             }
@@ -178,6 +188,8 @@ self.addEventListener('message', async (event) => {
                 type: 'CACHE_STATS',
                 tilesCache: tilesKeys.length,
                 offlineCache: offlineKeys.length,
+                tilesCacheHits: tileCacheHits,
+                offlineCacheHits: 0,
             });
             break;
 

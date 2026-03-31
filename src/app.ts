@@ -77,11 +77,11 @@ await routingDataService.loadRegionData("ellergronn")
 // All ready
 appBus.emit("system:ready")
 
-// Experiment
+// Bridge between
 navigator.serviceWorker.addEventListener('message', (event) => {
     console.log('Message from SW:', event.data);
     if(event.data.type == "CACHE_STATS")
-        appBus.emit("debug:log", `Cache: offline=${event.data.offlineCache} regular=${event.data.tilesCache}`);
+        appBus.emit("cache:stats", event.data);
 });
 console.log("event send to sw")
 navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})

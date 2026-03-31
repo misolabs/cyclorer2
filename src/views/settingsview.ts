@@ -1,5 +1,6 @@
 import type {EventBus} from "../eventbus.ts";
 import type {Settings} from "../services/settingsservice.ts";
+import type {TileCacheStats} from "../sw.ts";
 
 export class SettingsView {
     bus: EventBus
@@ -26,6 +27,8 @@ export class SettingsView {
 
         this.bus.on("settings:loaded", this.init.bind(this))
         this.bus.on("settings:show", this.show.bind(this))
+
+        this.bus.on("cache:stats", this.onCacheStatsUpdated.bind(this))
     }
 
     init(settings: Settings): void {
@@ -39,6 +42,15 @@ export class SettingsView {
 
     show(show: boolean) {
         this.settingsPane.style.visibility = show ? "visible" : "hidden"
+
+        // Ask for updated stats
+        if(show)
+            navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})
+    }
+
+    onCacheStatsUpdated(stats: TileCacheStats): void {
+        const text = `Regular cache: ${stats.tilesCache}<br>Offline cache: ${stats.offlineCache}<br>Cache hits: ${stats.tilesCacheHits}`
+        document.getElementById("cache-stats")!.innerHTML = text
     }
 
     closeListener(event: MouseEvent) {

@@ -7,6 +7,7 @@ import type {
 } from "./models/geo.ts";
 import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {AnnotationCategory, Area, AreaId, LatLon, LocationAnnotation} from "./models/models.ts";
+import type {TileCacheStats} from "./sw.ts";
 
 type Events = {
     "settings:init": void
@@ -55,6 +56,8 @@ type Events = {
     "zoom:frame:rider": void
 
     "system:ready": void
+
+    "cache:stats": TileCacheStats
 };
 
 export class EventBus {
