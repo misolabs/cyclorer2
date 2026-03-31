@@ -3,18 +3,35 @@ body{
 }
 
 /* Google Roboto Web Font */
+/* Variations 100-900 */
+@font-face {
+    font-family: 'Roboto';
+    src: url('/cyclorer2/fonts/roboto.woff2') format('woff2');
+    /*font-weight: 400;*/
+    /*font-style: normal;*/
+}
+
 .roboto-font{
     font-family: "Roboto", sans-serif;
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
-    font-variation-settings:
-            "wdth" 100;
+    font-variation-settings: "wdth" 100;
+}
+
+/* family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0 */
+@font-face {
+    font-family: 'Material Symbols Rounded';
+    src: url('/cyclorer2/fonts/material-symbols-rounded.woff2') format('woff2');
+    font-weight: 100 700; /* 👈 important */
+    font-style: normal;
 }
 
 .material-symbols-rounded{
+    font-family: 'Material Symbols Rounded';
     font-size: 40px;
     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-feature-settings: 'liga';
     text-align: center;
 }
 

@@ -126,15 +126,29 @@ registerRoute(
 
 // Material design assets
 // Bootstrap assets
+/*
 registerRoute(
-    ({ url }) => {
-        url.hostname.includes('fonts.googleapis.com') ||
-        url.hostname.includes('fonts.gstatic.com') ||
-        url.pathname.includes('bootstrap/dist')
+    ({ url }):boolean  => {
+        return (url.hostname.includes('fonts.googleapis.com') ||
+                url.hostname.includes('fonts.gstatic.com') ||
+                url.pathname.includes('bootstrap/dist'));
     },
     new CacheFirst({
         cacheName: 'assets-cache'
     })
+);*/
+
+registerRoute(
+    ({ url }) => {
+        const match =
+            url.hostname.includes('fonts.googleapis.com') ||
+            url.hostname.includes('fonts.gstatic.com');
+
+        if (match) console.log('Matched asset:', url.href);
+
+        return match;
+    },
+    new CacheFirst({ cacheName: 'assets-cache' })
 );
 
 // Geo Routing Data
