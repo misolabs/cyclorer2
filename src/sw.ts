@@ -28,11 +28,13 @@ function broadcastMessage(message: any){
 }
 
 const retryQueue: Set<Request> = new Set();
+var retryRunning = false
 
 async function handleRetryQueue(){
     // TODO - Make sure we don't execute multiple instances at the same time
     let counter = 0;
-    if(retryQueue.size > 0){
+    if(retryQueue.size > 0 && !retryRunning){
+        retryRunning = true;
         (async() => {
             const pinnedCache = await caches.open('tiles-offline');
             for (const request of retryQueue) {
@@ -50,6 +52,7 @@ async function handleRetryQueue(){
             if(counter > 0){
                 broadcastMessage({type: "RETRY_QUEUE_EMPTIED", counter: counter});
             }
+            retryRunning = false
         })
     }
 }
@@ -166,10 +169,15 @@ self.addEventListener('message', async (event) => {
     switch (type) {
         case 'CACHE_STATS_REQUEST':
             const tilesCache: Cache = await self.caches.open("tiles-cache")
-            const keys = await tilesCache.keys()
+            const offlineCache: Cache = await self.caches.open("tiles-offline")
+
+            const tilesKeys = await tilesCache.keys()
+            const offlineKeys = await offlineCache.keys()
+
             event.source?.postMessage({
                 type: 'CACHE_STATS',
-                entriesCount: keys.length
+                tilesCache: tilesKeys.length,
+                offlineCache: offlineKeys.length,
             });
             break;
 

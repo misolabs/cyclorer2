@@ -80,6 +80,8 @@ appBus.emit("system:ready")
 // Experiment
 navigator.serviceWorker.addEventListener('message', (event) => {
     console.log('Message from SW:', event.data);
+    if(event.data.type == "CACHE_STATS")
+        appBus.emit("debug:log", `Cache: offline=${event.data.offlineCache} regular=${event.data.tilesCache}`);
 });
 console.log("event send to sw")
 navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})
