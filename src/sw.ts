@@ -1,19 +1,27 @@
+// Not gibberish! - Needed by TS
 /// <reference lib="webworker" />
 
 // Precaching using workbox
 import { precacheAndRoute } from 'workbox-precaching';
+import { CacheFirst } from 'workbox-strategies';
+import { registerRoute } from 'workbox-routing';
 
+// Working context
 declare const self: ServiceWorkerGlobalScope;
 
 // 👇 injected by Vite PWA plugin
 precacheAndRoute(self.__WB_MANIFEST);
 
-import { CacheFirst } from 'workbox-strategies';
+//----------------
+// Data Structures
+//----------------
 
-import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate } from 'workbox-strategies';
-import { ExpirationPlugin } from 'workbox-expiration';
+// TODO Cache names const
+// TODO Limit offline retry fetches
+// TODO Message types
+// TODO Remove console.log
 
+// Statistics on cache usage
 export interface TileCacheStats{
     type: string,
     tilesCache: number,
@@ -26,6 +34,11 @@ export interface TileCacheStats{
 // Leaflet tile caching
 //---------------------
 
+const retryQueue: Set<Request> = new Set();
+var retryRunning = false
+var tileCacheHits: number = 0
+var offlineCacheHits: number = 0
+
 // Send the same message to all tabs
 function broadcastMessage(message: any){
     self.clients.matchAll().then(clients => {
@@ -35,22 +48,17 @@ function broadcastMessage(message: any){
     });
 }
 
-const retryQueue: Set<Request> = new Set();
-var retryRunning = false
-var tileCacheHits: number = 0
-
 async function handleRetryQueue(){
-    // TODO - Make sure we don't execute multiple instances at the same time
     let counter = 0;
     if(retryQueue.size > 0 && !retryRunning){
         retryRunning = true;
         (async() => {
-            const pinnedCache = await caches.open('tiles-offline');
+            const offlineCache = await caches.open('tiles-offline');
             for (const request of retryQueue) {
                 try {
                     const response = await fetch(request);
                     if (response) {
-                        pinnedCache.put(request, response.clone());
+                        offlineCache.put(request, response.clone());
                         retryQueue.delete(request);
                         counter++
                     }
@@ -63,6 +71,27 @@ async function handleRetryQueue(){
             }
             retryRunning = false
         })
+    }
+}
+
+function clearTilesCache(){
+    self.caches.delete("tiles-cache")
+    self.caches.delete("tiles-offline")
+}
+
+async function calculateCacheStats(): Promise<TileCacheStats>{
+    const tilesCache: Cache = await self.caches.open("tiles-cache")
+    const offlineCache: Cache = await self.caches.open("tiles-offline")
+
+    const tilesKeys = await tilesCache.keys()
+    const offlineKeys = await offlineCache.keys()
+
+    return {
+        type: 'CACHE_STATS',
+        tilesCache: tilesKeys.length,
+        offlineCache: offlineKeys.length,
+        tilesCacheHits: tileCacheHits,
+        offlineCacheHits: offlineCacheHits,
     }
 }
 
@@ -86,6 +115,7 @@ registerRoute(
             const offlineCache = await caches.open('tiles-offline');
             const offlineResponse = await offlineCache.match(request);
             if (offlineResponse){
+                offlineCacheHits++
                 console.log("Found in cache level 2")
                 return offlineResponse
             }
@@ -137,20 +167,7 @@ registerRoute(
     })
 );
 
-// Material design assets
-// Bootstrap assets
-/*
-registerRoute(
-    ({ url }):boolean  => {
-        return (url.hostname.includes('fonts.googleapis.com') ||
-                url.hostname.includes('fonts.gstatic.com') ||
-                url.pathname.includes('bootstrap/dist'));
-    },
-    new CacheFirst({
-        cacheName: 'assets-cache'
-    })
-);*/
-
+/* We have integrated google fonts directly
 registerRoute(
     ({ url }) => {
         const match =
@@ -163,6 +180,7 @@ registerRoute(
     },
     new CacheFirst({ cacheName: 'assets-cache' })
 );
+*/
 
 // Geo Routing Data
 registerRoute(
@@ -178,25 +196,18 @@ self.addEventListener('message', async (event) => {
     console.log("message", event.data);
     switch (type) {
         case 'CACHE_STATS_REQUEST':
-            const tilesCache: Cache = await self.caches.open("tiles-cache")
-            const offlineCache: Cache = await self.caches.open("tiles-offline")
-
-            const tilesKeys = await tilesCache.keys()
-            const offlineKeys = await offlineCache.keys()
-
-            event.source?.postMessage({
-                type: 'CACHE_STATS',
-                tilesCache: tilesKeys.length,
-                offlineCache: offlineKeys.length,
-                tilesCacheHits: tileCacheHits,
-                offlineCacheHits: 0,
-            });
+            const stats = await calculateCacheStats()
+            event.source?.postMessage(stats)
             break;
 
-        case 'PIN_TILE':
+        case 'CACHE_CLEAR_TILES_REQUEST':
+            clearTilesCache()
             break;
     }
 });
+
+// FOR REFERENCE
+//--------------
 
 /* Send message to worker:
 navigator.serviceWorker.controller?.postMessage({

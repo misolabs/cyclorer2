@@ -49,7 +49,10 @@ export class SettingsView {
     }
 
     onCacheStatsUpdated(stats: TileCacheStats): void {
-        const text = `Regular cache: ${stats.tilesCache}<br>Offline cache: ${stats.offlineCache}<br>Cache hits: ${stats.tilesCacheHits}`
+        const text = `
+            <strong>Tile cache:</strong> ${stats.tilesCache}<br>
+            <strong>Offline cache: </strong> ${stats.offlineCache}<br>
+            <strong>Cache hits:</strong> ${stats.tilesCacheHits} / ${stats.offlineCacheHits}`
         document.getElementById("cache-stats")!.innerHTML = text
     }
 
