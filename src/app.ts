@@ -20,6 +20,7 @@ import { loadLegacyPlugins } from './leaflet-legacy'
 import {NavigationService} from "./services/navigationservice.ts";
 import {InRideMenu} from "./views/inridemenu.ts";
 import {DebugOverlay} from "./views/debugoverlay.ts";
+import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
@@ -49,6 +50,7 @@ const settingsService: SettingsService = new SettingsService(appBus)
 const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
 const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
+const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus)
@@ -76,12 +78,3 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
-
-// Bridge between
-navigator.serviceWorker.addEventListener('message', (event) => {
-    console.log('Message from SW:', event.data);
-    if(event.data.type == "CACHE_STATS")
-        appBus.emit("cache:stats", event.data);
-});
-console.log("event send to sw")
-navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})

@@ -24,6 +24,10 @@ export class SettingsView {
 
         document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener.bind(this))
         document.getElementById("sync-data-btn")?.addEventListener("click", () => this.bus.emit("data:sync"))
+        document.getElementById("clear-cache-btn")?.addEventListener("click", () => {
+            this.bus.emit("cache:clear")
+            this.bus.emit("cache:stats:request")
+        })
 
         this.bus.on("settings:loaded", this.init.bind(this))
         this.bus.on("settings:show", this.show.bind(this))
@@ -45,7 +49,7 @@ export class SettingsView {
 
         // Ask for updated stats
         if(show)
-            navigator.serviceWorker.controller?.postMessage({type: "CACHE_STATS_REQUEST"})
+            this.bus.emit("cache:stats:request")
     }
 
     onCacheStatsUpdated(stats: TileCacheStats): void {

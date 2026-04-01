@@ -57,7 +57,9 @@ type Events = {
 
     "system:ready": void
 
+    "cache:stats:request": void
     "cache:stats": TileCacheStats
+    "cache:clear": void
 };
 
 export class EventBus {

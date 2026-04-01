@@ -20,6 +20,8 @@ precacheAndRoute(self.__WB_MANIFEST);
 // TODO Limit offline retry fetches
 // TODO Message types
 // TODO Remove console.log
+// TODO Button for clearing caches
+// TODO Refactor SW Messaging Helper from app.ts
 
 // Statistics on cache usage
 export interface TileCacheStats{
