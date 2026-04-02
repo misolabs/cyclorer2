@@ -24,7 +24,7 @@ export class WakeLockService {
         // iOS fallback
         this.video = document.getElementById("wakelock-video") as HTMLVideoElement;
         this.video?.setAttribute("type", "video/mp4")
-        this.video?.setAttribute("src", TINY_MP4_BASE64)
+        this.video?.setAttribute("src", playbackVideoSourceBase64)
         await this.video?.play();
         console.log("Video paused?", this.video?.paused)
     }
