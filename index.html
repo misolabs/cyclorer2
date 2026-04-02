@@ -189,9 +189,10 @@
       <div id="area-list"></div>
     </div>
 
-<!--    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"-->
-<!--     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="-->
-<!--     crossorigin=""></script>-->
+    <!-- Hack to keep the screen active-->
+    <video id="wakelock-video" muted playsinline loop style="display:none"></video>
+
+    <!-- App entry point -->
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>

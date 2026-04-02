@@ -21,6 +21,7 @@ import {NavigationService} from "./services/navigationservice.ts";
 import {InRideMenu} from "./views/inridemenu.ts";
 import {DebugOverlay} from "./views/debugoverlay.ts";
 import {ServiceWorkerMessaging} from "./sw-messaging.ts";
+import {WakeLockService} from "./services/wakelock.ts";
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
@@ -51,6 +52,7 @@ const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
 const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
+const wakeLockService = new WakeLockService(appBus)
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus)
@@ -78,3 +80,6 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
+
+// FOR TESTING
+await wakeLockService.enable(true)
