@@ -190,7 +190,7 @@
     </div>
 
     <!-- Hack to keep the screen active-->
-    <video id="wakelock-video" muted playsinline loop style="display:none"></video>
+    <video id="wakelock-video" muted playsinline loop style="z-index: -1;"></video>
 
     <!-- App entry point -->
     <script type="module" src="/src/app.ts"></script>
