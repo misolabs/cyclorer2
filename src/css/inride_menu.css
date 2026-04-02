@@ -46,5 +46,17 @@
     background-color: rgba(200, 0, 0, 0.7);
 }
 
+#wake-lock-btn{
+    position: absolute;
+
+    top:200px;
+
+    width: 80px;
+    height: 80px;
+    padding: 0;
+
+    background-color: rgba(200, 200, 200, 0.7);
+}
+
 #ui-midride-menu-content{
 }

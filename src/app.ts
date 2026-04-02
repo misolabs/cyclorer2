@@ -82,4 +82,6 @@ await routingDataService.loadRegionData("ellergronn")
 appBus.emit("system:ready")
 
 // FOR TESTING
-await wakeLockService.enable(true)
+document.getElementById("wake-lock-btn")!.addEventListener("click", async () => {
+    await wakeLockService.enable(true)
+})
