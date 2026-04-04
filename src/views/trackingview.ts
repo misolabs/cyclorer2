@@ -99,10 +99,8 @@ export class TrackingView {
         this.trackingMap.map.setView(ellergronnGPS, defaultZoomLevel)
 
         this.trackingMap.addPositionMarker(ellergronnGPS, (this.mobileMode ? null : this.onPositionMarkerDragged.bind(this)))
-        /*if(!this.mobileMode) {
-            this.trackingMap.addHeadingMarker(ellergronnGPS, this.onHeadingMarkerDragged.bind(this))
-            setInterval(this.onSimulationTimer.bind(this), 2000)
-        }*/
+
+        // Show buttons overlay on click
         this.trackingMap.map.on("click", (e) => {
             const root = document.getElementById("ui-midride-menu")!
             if(root.classList.contains("hide")) {
@@ -125,10 +123,6 @@ export class TrackingView {
 
     onAreaDataLoaded(areas: [GeoJsonAreaCollection, GeoJsonEntrypointCollection]){
         this.trackingMap.addAreaLayer(areas[0], areas[1])
-    }
-
-    onHeadingMarkerDragged(e: L.DragEndEvent){
-        //headingLatLon = geoToLatLon(e.target.getLatLng())
     }
 
     onPositionMarkerDragged(e: L.DragEndEvent) {
@@ -177,6 +171,7 @@ export class TrackingView {
         this.trackingMap.clearRoute()
         this.trackingMap.setSnappedEdge([])
         this.trackingMap.highlightArea(null)
+        this.trackingMap.clearAreaMarker()
 
         this.previewMap.clearArea()
         setDescription("")

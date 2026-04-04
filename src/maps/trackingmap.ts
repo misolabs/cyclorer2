@@ -255,6 +255,9 @@ export class TrackingMap{
             this.zoomFrameArea(areaLayer.getBounds())
             this.bus.emit("zoom:framed:area", area)
         }
+        else{
+            this.zoomFrameRider()
+        }
     }
 
     setAreaMarker(areas: AreaNode[]): void{
