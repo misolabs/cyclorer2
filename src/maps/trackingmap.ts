@@ -43,6 +43,10 @@ function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
   <td>v</td>
   <td><b>${feature.properties.v}</b></td>
   </tr>
+  <tr>
+  <td>Ride count</td>
+  <td><b>${feature.properties.ride_count}</b></td>
+  </tr>
   </table>`
   layer.bindPopup(html)
 }
