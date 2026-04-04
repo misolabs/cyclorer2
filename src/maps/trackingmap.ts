@@ -325,7 +325,7 @@ export class TrackingMap{
     setHeading(angle: number){
         const alpha = 0.9
         this.heading = this.heading * alpha + angle * (1 - alpha)
-        this.heading = Math.round(this.heading / 12) * 12
+        this.heading = Math.round(this.heading / 24) * 24
         this.map.setBearing(this.heading)
     }
 

@@ -107,6 +107,7 @@ export class TrackingView {
             const root = document.getElementById("ui-midride-menu")!
             if(root.classList.contains("hide")) {
                 root.classList.remove("hide")
+                setTimeout( () => {root.classList.add("hide") }, 20000)
             }else root.classList.add("hide")
         })
     }

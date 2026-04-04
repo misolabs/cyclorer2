@@ -32,6 +32,14 @@ export interface TileCacheStats{
     offlineCacheHits: number,
 }
 
+//-------------
+// Installation
+//-------------
+
+self.addEventListener('install', (event) => {
+    self.caches.delete("geodata-cache")
+})
+
 //---------------------
 // Leaflet tile caching
 //---------------------
