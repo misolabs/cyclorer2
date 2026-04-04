@@ -208,5 +208,23 @@
     user-select: none;
 }
 
+/* Text annotations */
+.map-label {
+    display: inline-block;          /* important */
+    padding: 4px 8px;
 
+    background: rgba(255,255,255,0.9);
+    border-radius: 6px;
 
+    font-size: 15px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    width: max-content;             /* 🔑 key fix */
+    height: auto;
+
+    box-sizing: border-box;
+
+    transform: translate(-50%, -100%);
+}

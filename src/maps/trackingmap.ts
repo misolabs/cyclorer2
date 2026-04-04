@@ -101,7 +101,7 @@ export class TrackingMap{
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
-        this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false })
+        this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false, attributionControl: false })
 
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
@@ -330,6 +330,15 @@ export class TrackingMap{
         this.heading = this.heading * alpha + angle * (1 - alpha)
         this.heading = Math.round(this.heading / 24) * 24
         this.map.setBearing(this.heading)
+    }
+
+    addTextAnnotation(text: string, pos: LatLng){
+        const label = L.marker(pos, {
+            icon: L.divIcon({
+                className: '',
+                html: `<div class="roboto-font map-label">${text}</div>`,
+            })
+        }).addTo(this.map);
     }
 
     addAnnotation(annotation: LocationAnnotation){

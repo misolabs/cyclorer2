@@ -93,6 +93,15 @@ export class TrackingView {
             this.viewFollowTracking = false
             centerBtnEl?.classList.remove("hidden")
         })
+
+        // TODO Experimental - Add text annotation
+        document.getElementById("drop-pin-text")!.addEventListener("click", () =>
+        {
+            const text = window.prompt("Annotation:")
+            if(text)
+                this.trackingMap.addTextAnnotation(text, this.trackingMap.positionMarker!.getLatLng())
+        })
+
     }
 
     init() {
