@@ -103,6 +103,12 @@ export class TrackingView {
             this.trackingMap.addHeadingMarker(ellergronnGPS, this.onHeadingMarkerDragged.bind(this))
             setInterval(this.onSimulationTimer.bind(this), 2000)
         }*/
+        this.trackingMap.map.on("click", (e) => {
+            const root = document.getElementById("ui-midride-menu")!
+            if(root.classList.contains("hide")) {
+                root.classList.remove("hide")
+            }else root.classList.add("hide")
+        })
     }
 
     onStatsDataLoaded(stats: RoutingStatsJson) {

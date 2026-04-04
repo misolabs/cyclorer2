@@ -26,10 +26,15 @@
 #settings-open{
     visibility: visible;
     position: absolute;
-    top: 20px;
-    right:20px;
+    top: 0;
+    right: 40px;
+
+    width:80px;
+    height:80px;
+
     z-index: 2500;
-    background-color: darkslategray;
+    background-color: rgba(47,79, 79, 0.7);
+
     color: white;
 }
 

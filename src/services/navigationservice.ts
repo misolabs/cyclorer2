@@ -61,7 +61,7 @@ export class NavigationService{
         bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
 
         bus.on("system:ready", this.onSystemReady.bind(this))
-        bus.on("data:sync", this.onDataSync.bind(this))
+        //bus.on("data:sync", this.onDataSync.bind(this))
 
         bus.on("navigation:target:area", this.onNavigateArea.bind(this))
         bus.on("area:dismiss", this.onDismissArea.bind(this))

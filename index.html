@@ -17,7 +17,7 @@
   </head>
   <body>
   <!-- Overlay - MidRide Menu -->
-  <div id="ui-midride-menu">
+  <div id="ui-midride-menu" class="hide">
     <button id="open-inride-menu" class="btn btn-secondary">
       <span class="material-symbols-rounded">add_location</span>
     </button>
@@ -28,6 +28,10 @@
 
     <button id="wake-lock-btn" class="btn btn-secondary">
       <span class="material-symbols-rounded">visibility_lock</span>
+    </button>
+
+    <button id="settings-open" class="btn btn-secondary">
+      <span class="material-symbols-rounded">menu</span>
     </button>
 
     <div id="ui-midride-menu-content" class="hide">
@@ -69,11 +73,6 @@
           <span class="material-symbols-rounded">compress</span>
         </button>
       </div>
-
-      <!--    <div id="gps" class="gps-icon"></div>-->
-      <button id="settings-open" class="btn btn-secondary settings-button ui-overlay-element">
-        <span class="material-symbols-rounded">menu</span>
-      </button>
 
       <div id="preview-map" class="minipreview">
 
