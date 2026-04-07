@@ -1,4 +1,5 @@
-import type {LocationAnnotation} from "../models/models.ts";
+import type {LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
+import {LatLng} from "leaflet";
 
 const STORAGE_KEY = 'cyclorer2_annotations'
 
@@ -13,15 +14,36 @@ export class AnnotationRepo{
         }catch(err){console.error(err)}
     }
 
-    add(la: LocationAnnotation){
+    async add(la: LocationAnnotation): Promise<LocationAnnotation>{
+        /*
         const record:LocationAnnotation = {id: this.nextId, ...la}
         this.repo.set(this.nextId, record)
         this.nextId++
 
         // Save on every addition
         this.save()
+*/
+        // Send to annotation server
+        const response = await fetch("https://cyclotation.fly.dev/location", {
+            headers: {"Content-Type": "application/json",},
+            method: 'POST', body: JSON.stringify({
+                category: la.category,
+                lat: la.location.lat,
+                lon: la.location.lon,
+                timestamp: la.timestamp
+            })})
 
-        return record
+        if(response.status == 200){
+            try {
+                const json: LocationAnnotationJson = JSON.parse(await response.text())
+                return {
+                    category: json.category,
+                    location: {lat:json.lat, lon:json.lon},
+    //                text: json.text,
+                    id: json.id,
+                    timestamp: json.timestamp}
+            }catch(err){console.error(err); throw err}
+        }else throw Error("POST request failed with status code " + response.status)
     }
 
     delete(id: number){

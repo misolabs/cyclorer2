@@ -87,9 +87,9 @@ export class NavigationService{
         this.update()
     }
 
-    onAddAnnotationRequest(category: AnnotationCategory){
+    async onAddAnnotationRequest(category: AnnotationCategory){
         const ts = new Date(Date.now()).toJSON()
-        const annotation = this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
+        const annotation = await this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
 
         // Tell everyone about this one
         this.bus.emit("annotation:location:added", annotation)

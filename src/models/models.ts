@@ -122,3 +122,12 @@ export interface LocationAnnotation{
   timestamp: string
   id?: number
 }
+
+export interface LocationAnnotationJson{
+  category: AnnotationCategory
+  lat: number
+  lon: number
+  timestamp: string
+  id?: number
+  text?: string
+}
