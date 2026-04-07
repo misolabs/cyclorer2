@@ -9,9 +9,6 @@ export class AnnotationRepo{
 
     constructor() {
         this.repo = new Map()
-        try {
-            this.load()
-        }catch(err){console.error(err)}
     }
 
     async add(la: LocationAnnotation): Promise<LocationAnnotation>{
@@ -30,7 +27,8 @@ export class AnnotationRepo{
                 category: la.category,
                 lat: la.location.lat,
                 lon: la.location.lon,
-                timestamp: la.timestamp
+                timestamp: la.timestamp,
+                text: la.text,
             })})
 
         if(response.status == 200){
@@ -39,7 +37,7 @@ export class AnnotationRepo{
                 return {
                     category: json.category,
                     location: {lat:json.lat, lon:json.lon},
-    //                text: json.text,
+                    text: json.text,
                     id: json.id,
                     timestamp: json.timestamp}
             }catch(err){console.error(err); throw err}
@@ -84,6 +82,30 @@ export class AnnotationRepo{
                 }
             }
         }
+    }
+
+    async fetchFromServer(){
+        // Send to annotation server
+        const response = await fetch("https://cyclotation.fly.dev/location",)
+
+        if(response.status == 200){
+            try {
+                const json: LocationAnnotationJson[] = JSON.parse(await response.text())
+                for(const aJson of json){
+                    try{
+                        const annotation = {
+                            category: aJson.category,
+                            location: {lat:aJson.lat, lon:aJson.lon},
+                            text: aJson.text,
+                            id: aJson.id,
+                            timestamp: aJson.timestamp}
+
+                        if(annotation.id)
+                            this.repo.set(annotation.id, annotation)
+                    }catch(err){console.error(err)}
+                }
+            }catch(err){console.error(err); throw err}
+        }else throw Error("POST request failed with status code " + response.status)
     }
 
     private toArray(){

@@ -99,7 +99,7 @@ export class TrackingView {
         {
             const text = window.prompt("Annotation:")
             if(text)
-                this.trackingMap.addTextAnnotation(text, this.trackingMap.positionMarker!.getLatLng())
+                this.bus.emit("annotation:location:text:create", text)
         })
 
     }
@@ -152,7 +152,10 @@ export class TrackingView {
     }
 
     onAnnotationAdded(annotation: LocationAnnotation){
-        this.trackingMap.addAnnotation(annotation)
+        if(annotation.category === "TEXT" && annotation.text)
+            this.trackingMap.addTextAnnotation(annotation)
+        else
+            this.trackingMap.addAnnotation(annotation)
     }
 
     onExplorationStarted(area: Area){

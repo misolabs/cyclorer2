@@ -121,6 +121,7 @@ export interface LocationAnnotation{
   location: LatLon
   timestamp: string
   id?: number
+  text?: string
 }
 
 export interface LocationAnnotationJson{

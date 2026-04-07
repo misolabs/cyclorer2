@@ -53,7 +53,8 @@ export class NavigationService{
         bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
 
-        bus.on("annotation:location:add", this.onAddAnnotationRequest.bind(this))
+        bus.on("annotation:location:marker:create", this.onAddAnnotationRequest.bind(this))
+        bus.on("annotation:location:text:create", this.onAddTextAnnotationRequest.bind(this))
         bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
 
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
@@ -68,7 +69,10 @@ export class NavigationService{
     }
 
     // Called when everything is in place
-    onSystemReady(){
+    async onSystemReady(){
+        // Fetch annotations from server
+        await this.annotationRepo.fetchFromServer()
+
         // Add location annotations to the map
         this.annotationRepo.getAll().forEach((a: LocationAnnotation) => {this.bus.emit("annotation:location:added", a)})
     }
@@ -90,6 +94,14 @@ export class NavigationService{
     async onAddAnnotationRequest(category: AnnotationCategory){
         const ts = new Date(Date.now()).toJSON()
         const annotation = await this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
+
+        // Tell everyone about this one
+        this.bus.emit("annotation:location:added", annotation)
+    }
+
+    async onAddTextAnnotationRequest(text: string){
+        const ts = new Date(Date.now()).toJSON()
+        const annotation = await this.annotationRepo.add({location: this.currentPosition, category: "TEXT", timestamp: ts, text: text})
 
         // Tell everyone about this one
         this.bus.emit("annotation:location:added", annotation)

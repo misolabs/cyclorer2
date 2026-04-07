@@ -86,15 +86,3 @@ document.getElementById("wake-lock-btn")!.addEventListener("click", async () => 
     await wakeLockService.enable(true)
 })
 
-appBus.on("data:sync", async () => {
-    const response = await fetch("http://macbook:8000/")
-    const t = await response.text()
-
-    const responseP = await fetch("http://macbook:8000/", {
-        method: "POST",
-        headers: {"Content-Type": "application/json",},
-        body: JSON.stringify([{ name: "Mr Jones", description: "A lame name" }, {name:"Darrell", description: "Another name"}]),
-    });
-
-    window.alert(t)
-})

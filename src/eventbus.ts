@@ -39,7 +39,8 @@ type Events = {
     "rds:areas:loaded": [GeoJsonAreaCollection, GeoJsonEntrypointCollection]
     "rds:annotations:loaded": LocationAnnotation[]
 
-    "annotation:location:add": AnnotationCategory
+    "annotation:location:marker:create": AnnotationCategory
+    "annotation:location:text:create": AnnotationCategory
     "annotation:location:added": LocationAnnotation
     "annotation:location:delete": number
 

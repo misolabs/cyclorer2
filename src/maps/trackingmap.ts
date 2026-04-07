@@ -336,11 +336,12 @@ export class TrackingMap{
         this.map.setBearing(this.heading)
     }
 
-    addTextAnnotation(text: string, pos: LatLng){
-        const label = L.marker(pos, {
+    addTextAnnotation(annotation: LocationAnnotation){
+        const label = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
+            {
             icon: L.divIcon({
                 className: '',
-                html: `<div class="roboto-font map-label">${text}</div>`,
+                html: `<div class="roboto-font map-label">${annotation.text}</div>`,
             })
         }).addTo(this.map);
     }
