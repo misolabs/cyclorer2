@@ -1,11 +1,7 @@
 import type {LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
-import {LatLng} from "leaflet";
-
-const STORAGE_KEY = 'cyclorer2_annotations'
 
 export class AnnotationRepo{
     repo: Map<number, LocationAnnotation>
-    nextId = 0
 
     constructor() {
         this.repo = new Map()
@@ -25,13 +21,8 @@ export class AnnotationRepo{
 
         if(response.status == 200){
             try {
-                const json: LocationAnnotationJson = JSON.parse(await response.text())
-                const annotation = {
-                    category: json.category,
-                    location: {lat:json.lat, lon:json.lon},
-                    text: json.text,
-                    id: json.id,
-                    timestamp: json.timestamp}
+                const text= await response.text()
+                const annotation = this.textToAnnotation(text)
                 if(annotation.id)
                     this.repo.set(annotation.id, annotation)
                 return annotation
@@ -70,17 +61,12 @@ export class AnnotationRepo{
                 })})
 
             if(response.status == 200){
-                const json: LocationAnnotationJson = JSON.parse(await response.text())
-                const annotation = {
-                    category: json.category,
-                    location: {lat:json.lat, lon:json.lon},
-                    text: json.text,
-                    id: json.id,
-                    timestamp: json.timestamp}
+                const text= await response.text()
+                const annotation = this.textToAnnotation(text)
                 if(annotation.id)
                     this.repo.set(annotation.id, annotation)
                 return annotation
-            }
+            }else throw Error("PUT request failed with status code " + response.status)
         }
     }
 
@@ -106,6 +92,18 @@ export class AnnotationRepo{
                 }
             }catch(err){console.error(err); throw err}
         }else throw Error("POST request failed with status code " + response.status)
+    }
+
+    private textToAnnotation(text: string): LocationAnnotation {
+        const json: LocationAnnotationJson = JSON.parse(text)
+        const annotation = {
+            category: json.category,
+            location: {lat:json.lat, lon:json.lon},
+            text: json.text,
+            id: json.id,
+            timestamp: json.timestamp}
+
+        return annotation
     }
 
     private toArray(){
