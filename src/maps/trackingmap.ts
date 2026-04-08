@@ -1,4 +1,4 @@
-import L, {LatLngBounds} from 'leaflet'
+import L, {LatLngBounds, Marker} from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 
 import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/models.ts";
@@ -337,24 +337,43 @@ export class TrackingMap{
     }
 
     addTextAnnotation(annotation: LocationAnnotation){
+        const id = annotation.id
+        if(id == undefined) return
         const label = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
             {
             icon: L.divIcon({
                 className: '',
                 html: `<div class="roboto-font map-label">${annotation.text}</div>`,
-            })
-        }).addTo(this.map);
+            }), draggable: true,
+        }).addTo(this.map)
+        this.addAnnotationPopup(annotation, label)
+        // Handler for modifying position
+        label.on("dragend", (e ) => {
+            this.bus.emit("annotation:location:modify:pos", {id: id, pos:{lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng }})
+        })
+
     }
 
-    addAnnotation(annotation: LocationAnnotation){
-        const tsLabel = new Date(annotation.timestamp).toDateString()
-        const marker = L.marker(new LatLng(annotation.location.lat,annotation.location.lon), {icon:this.glyphIcons.get(annotation.category)})
+    addAnnotation(annotation: LocationAnnotation) {
+        const id = annotation.id
+        if(id == undefined) return
+        const marker = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
+            {icon: this.glyphIcons.get(annotation.category), draggable: true})
             .addTo(this.annotationsLG)
+        // Attach handler
+        this.addAnnotationPopup(annotation, marker)
+        // Handler for modifying position
+        marker.on("dragend", (e ) => {
+            this.bus.emit("annotation:location:modify:pos", {id: id, pos:{lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng }})
+        })
+    }
 
+    addAnnotationPopup(annotation: LocationAnnotation, marker: Marker){
+        const tsLabel = new Date(annotation.timestamp).toDateString()
         const popupContent = document.createElement("div");
 
         popupContent.innerHTML = `
-        <span class="roboto-font" style="font-weight: bold">
+        <span class="roboto-font mb-3" style="font-weight: bold">
             Created: ${tsLabel}
         </span>
         <br>

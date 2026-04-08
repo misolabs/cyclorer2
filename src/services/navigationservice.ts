@@ -56,6 +56,7 @@ export class NavigationService{
         bus.on("annotation:location:marker:create", this.onAddAnnotationRequest.bind(this))
         bus.on("annotation:location:text:create", this.onAddTextAnnotationRequest.bind(this))
         bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
+        bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
         bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
@@ -110,6 +111,15 @@ export class NavigationService{
     onDeleteAnnotationRequest(id: number){
         console.log("Delete annotation request", id)
         this.annotationRepo.delete(id)
+    }
+
+    async onAnnotationPositionChanged(data: {id: number, pos: LatLon}){
+        const annotation = this.annotationRepo.get(data.id)
+        if(annotation){
+            annotation.location = data.pos
+            const persisted = await this.annotationRepo.update(annotation)
+            // TODO - Send message with new object?
+        }
     }
 
     onStatsLoaded(stats: RoutingStatsJson){

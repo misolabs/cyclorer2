@@ -12,14 +12,6 @@ export class AnnotationRepo{
     }
 
     async add(la: LocationAnnotation): Promise<LocationAnnotation>{
-        /*
-        const record:LocationAnnotation = {id: this.nextId, ...la}
-        this.repo.set(this.nextId, record)
-        this.nextId++
-
-        // Save on every addition
-        this.save()
-*/
         // Send to annotation server
         const response = await fetch("https://cyclotation.fly.dev/location", {
             headers: {"Content-Type": "application/json",},
@@ -34,20 +26,25 @@ export class AnnotationRepo{
         if(response.status == 200){
             try {
                 const json: LocationAnnotationJson = JSON.parse(await response.text())
-                return {
+                const annotation = {
                     category: json.category,
                     location: {lat:json.lat, lon:json.lon},
                     text: json.text,
                     id: json.id,
                     timestamp: json.timestamp}
+                if(annotation.id)
+                    this.repo.set(annotation.id, annotation)
+                return annotation
             }catch(err){console.error(err); throw err}
         }else throw Error("POST request failed with status code " + response.status)
     }
 
-    delete(id: number){
+    async delete(id: number){
         if(this.repo.has(id)){
-            this.repo.delete(id)
-            this.save()
+            const response = await fetch("https://cyclotation.fly.dev/location/" + id, {method: "DELETE"})
+            if(response.status == 200){
+                this.repo.delete(id)
+            }
         }
     }
 
@@ -55,31 +52,34 @@ export class AnnotationRepo{
         return this.toArray()
     }
 
-    private save(){
-        const arr = this.toArray();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr))
+    get(id: number){
+        return this.repo.get(id)
     }
 
-    private load(){
-        const storedData = localStorage.getItem(STORAGE_KEY)
-        if(storedData){
-            const list: LocationAnnotation[] = JSON.parse(storedData)
-            // Calculate first unused id
-            if(list && list.length > 0) {
-                this.nextId = list
-                    .map(a => a.id)
-                    .filter(id => id != undefined)
-                    .reduce((previousValue, currentValue): number => {
-                        if (currentValue > previousValue) return currentValue
-                        else return previousValue
-                    }) + 1
+    async update(annotation: LocationAnnotation):Promise<LocationAnnotation|undefined>{
+        if(annotation.id && this.repo.has(annotation.id)){
+            const response = await fetch("https://cyclotation.fly.dev/location/" + annotation.id, {
+                headers: {"Content-Type": "application/json",},
+                method: 'PUT', body: JSON.stringify({
+                    id: annotation.id,
+                    category: annotation.category,
+                    lat: annotation.location.lat,
+                    lon: annotation.location.lon,
+                    timestamp: annotation.timestamp,
+                    text: annotation.text,
+                })})
 
-                // Transform into map for fast access
-                if (list) {
-                    list.forEach((e: LocationAnnotation) => {
-                        this.repo.set(e.id!, e)
-                    })
-                }
+            if(response.status == 200){
+                const json: LocationAnnotationJson = JSON.parse(await response.text())
+                const annotation = {
+                    category: json.category,
+                    location: {lat:json.lat, lon:json.lon},
+                    text: json.text,
+                    id: json.id,
+                    timestamp: json.timestamp}
+                if(annotation.id)
+                    this.repo.set(annotation.id, annotation)
+                return annotation
             }
         }
     }

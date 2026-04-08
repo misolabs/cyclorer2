@@ -43,6 +43,7 @@ type Events = {
     "annotation:location:text:create": AnnotationCategory
     "annotation:location:added": LocationAnnotation
     "annotation:location:delete": number
+    "annotation:location:modify:pos": {id: number, pos: LatLon}
 
     "exploration:started": Area
     "exploration:ended": void
