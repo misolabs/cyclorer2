@@ -174,7 +174,7 @@ export class TrackingMap{
         // Simply draw entrypoints as markers
         L.geoJSON(routingGeoData.features, {
             onEachFeature: popupRoutingEdge,
-            style: {color: "grey", weight: 2}
+            style: {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}
         }).addTo(this.map)
     }
 
