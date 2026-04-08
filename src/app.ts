@@ -26,7 +26,8 @@ await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
 const isMobileLike = window.matchMedia("(pointer: coarse)").matches;
-//const isMobileLike = true
+// TODO - Switch to desktop version if user chooses so
+export const mobileMode = isMobileLike
 
 // App-wide event bus, shared by all components
 const appBus: EventBus = new EventBus()

@@ -86,6 +86,9 @@ export class TrackingView {
         const centerBtnEl = document.getElementById("center-btn")
         centerBtnEl?.addEventListener("click", (e) =>{
             this.viewFollowTracking = true
+            if(!this.mobileMode)
+                this.trackingMap.positionMarker?.setLatLng(this.trackingMap.map.getCenter())
+
             centerBtnEl.classList.add("hidden")
         })
 
