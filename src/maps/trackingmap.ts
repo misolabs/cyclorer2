@@ -106,12 +106,9 @@ export class TrackingMap{
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
-        this.map = L.map(elName, { zoomControl: false, rotate: true, rotateControl: false, attributionControl: false })
-        this.map.doubleClickZoom.enable()
-        L.control.zoom({
-            position: 'topleft'
-        }).addTo(this.map);
-        L.control.scale({metric: true, imperial: false}).addTo(this.map)
+        this.map = L.map(elName, { zoomControl: true, rotate: true, rotateControl: false, attributionControl: false })
+        this.map.touchZoom.enable()
+        L.control.scale({metric: true, imperial: false, position: "bottomright"}).addTo(this.map)
 
         // Create a custom pane on top of the path network and heatmap
         // Holds current route and markers (overlay pane is default polyline pane @ 450)
