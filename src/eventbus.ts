@@ -22,6 +22,8 @@ type Events = {
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void
 
+    "wakelock:engage": void
+    
     "preview:minimize": void
 
     "geolocation:enable": boolean

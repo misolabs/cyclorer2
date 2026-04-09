@@ -15,7 +15,10 @@ export class SplashScreen {
         bus.on("splash:show", this.show.bind(this))
         bus.on("rds:stats:loaded", this.stats.bind(this))
 
-        this.splash.addEventListener("click", () => {this.hideSplash()})
+        this.splash.addEventListener("click", () => {
+            this.hideSplash()
+            bus.emit("wakelock:engage")
+        })
     }
 
     // Does currently nothing, splash screen is visible by default

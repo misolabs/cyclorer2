@@ -73,22 +73,19 @@ settingsService.initSettings()
 
 // We only use GPS tracking on a mobile device
 // Simulation mode on a desktop browser
-if(isMobileLike)
+if(isMobileLike) {
     appBus.emit("geolocation:enable", true)
+    // Enable wakelock when clicking on splash-screen
+    appBus.on("wakelock:engage", async () => {
+        await wakeLockService.enable()
+    })
+    // Re-acquire when coming back to the tab/app
+    document.addEventListener("visibilitychange", () => {
+        wakeLockService.handleVisibilityChange();
+    });}
 
 // Async loading of all geo-data files
 await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
-
-// FOR TESTING
-document.getElementById("wake-lock-btn")!.addEventListener("click", async () => {
-    console.log("wake lock engaging...")
-    await wakeLockService.enable()
-})
-
-// Re-acquire when coming back to the tab/app
-document.addEventListener("visibilitychange", () => {
-    wakeLockService.handleVisibilityChange();
-});
