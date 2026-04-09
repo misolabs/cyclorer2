@@ -13,18 +13,18 @@ export class WakeLockService {
     }
 
     async enable(forceVideo: boolean) {
-
+/*
         if (!forceVideo && 'wakeLock' in navigator) {
             try {
                 await navigator.wakeLock.request('screen');
                 return;
             } catch {}
         }
-
+*/
         // iOS fallback
         this.video = document.getElementById("wakelock-video") as HTMLVideoElement;
         this.video?.setAttribute("type", "video/mp4")
-        this.video?.setAttribute("src", playbackVideoSourceBase64)
+        this.video?.setAttribute("src", "/cyclorer2/assets/wake.mp4")
         await this.video?.play();
         console.log("Video paused?", this.video?.paused)
     }
