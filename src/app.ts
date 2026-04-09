@@ -53,7 +53,7 @@ const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
 const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
-const wakeLockService = new WakeLockService(appBus)
+const wakeLockService = new WakeLockService()
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus)
@@ -84,6 +84,11 @@ appBus.emit("system:ready")
 
 // FOR TESTING
 document.getElementById("wake-lock-btn")!.addEventListener("click", async () => {
-    await wakeLockService.enable(true)
+    console.log("wake lock engaging...")
+    await wakeLockService.enable()
 })
 
+// Re-acquire when coming back to the tab/app
+document.addEventListener("visibilitychange", () => {
+    wakeLockService.handleVisibilityChange();
+});
