@@ -1,9 +1,10 @@
 .leaflet-control-zoom a {
-    width: 56px !important;
-    height: 56px !important;
-    line-height: 56px !important;
-    font-size: 28px !important;
+    width: 64px !important;
+    height: 64px !important;
+    line-height: 64px !important;
+    font-size: 34px !important;
     touch-action: manipulation !important;
+    background-color: rgba(220, 220, 220, 0.7) !important;
 }
 
 .leaflet-control-zoom {
