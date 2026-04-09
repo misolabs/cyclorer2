@@ -4,6 +4,7 @@ import './css/map.css'
 import './css/settings.css'
 import './css/splash.css'
 import './css/inride_menu.css'
+import './css/leaflet-custom.css'
 
 import {EventBus} from "./eventbus.ts";
 

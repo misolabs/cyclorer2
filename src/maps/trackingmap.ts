@@ -5,6 +5,7 @@ import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/
 import {LatLng} from "leaflet";
 
 import 'leaflet/dist/leaflet.css'
+import '../css/leaflet-custom.css'
 
 // Marker cluster plugin
 import "leaflet.markercluster/dist/MarkerCluster.css"
@@ -105,8 +106,11 @@ export class TrackingMap{
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
-        this.map = L.map(elName, { zoomControl: !mobileMode, rotate: true, rotateControl: false, attributionControl: false })
-
+        this.map = L.map(elName, { zoomControl: false, rotate: true, rotateControl: false, attributionControl: false })
+        this.map.doubleClickZoom.enable()
+        L.control.zoom({
+            position: 'topleft'
+        }).addTo(this.map);
         L.control.scale({metric: true, imperial: false}).addTo(this.map)
 
         // Create a custom pane on top of the path network and heatmap

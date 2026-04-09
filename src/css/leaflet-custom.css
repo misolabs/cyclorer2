@@ -1,0 +1,21 @@
+.leaflet-control-zoom a {
+    width: 56px;
+    height: 56px;
+    line-height: 56px;
+    font-size: 28px;
+    touch-action: manipulation;
+}
+
+.leaflet-control-zoom {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.leaflet-control-zoom a:first-child {
+    border-bottom: 1px solid #ccc;
+}
+
+.leaflet-bottom.leaflet-right {
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
