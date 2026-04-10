@@ -4,10 +4,12 @@ import type {Area} from "../models/models.ts";
 export class InRideMenu{
     bus: EventBus
     container: HTMLElement
+    mobileMode: boolean
 
-    constructor(bus: EventBus) {
+    constructor(bus: EventBus, mobileMode: boolean) {
         this.bus = bus
-        this.container = document.getElementById("ui-midride-menu-content")!
+        this.mobileMode = mobileMode
+        this.container = document.getElementById("annotation-menu-container")!
     }
 
     init(){
@@ -16,19 +18,27 @@ export class InRideMenu{
         document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "FAVORITE"); this.hide()})
         document.getElementById("drop-pin-climb")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "CLIMB"); this.hide()})
 
-        document.getElementById("open-inride-menu")!.addEventListener("click", () => {
+        document.getElementById("open-annotation-menu")!.addEventListener("click", () => {
+            console.log("open-annotation-menu")
             if(this.container.classList.contains("hide")){
                 this.container.classList.remove("hide")
             }else this.hide()
         })
 
         // Clicked on button to return focus to rider
+        /*
         document.getElementById("zoom-frame-rider")!.addEventListener("click", () => {
             this.bus.emit("zoom:frame:rider")
             document.getElementById("zoom-frame-rider")!.classList.add("hide")
         })
 
-        this.bus.on("zoom:framed:area", this.onZoomFramedArea.bind(this))
+        this.bus.on("zoom:framed:area", this.onZoomFramedArea.bind(this))*/
+
+        // Some buttons are only visible in mobile or desktop mode
+
+        const query: string = this.mobileMode ? "#buttons-overlay > button.cyc-only-desktop" : "#buttons-overlay > button.cyc-only-mobile"
+        const buttonsToHide = document.querySelectorAll(query)
+        buttonsToHide.forEach(button => {button.classList.add("hide")})
     }
 
     hide(){

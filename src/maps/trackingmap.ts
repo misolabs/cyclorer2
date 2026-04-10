@@ -101,13 +101,19 @@ export class TrackingMap{
 
     riderViewCenter: LatLng = new LatLng(0,0)
     riderViewZoom = 17
+    globalViewZoom: number = 15
 
     heading: number = 0
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
-        this.map = L.map(elName, { zoomControl: true, rotate: true, rotateControl: false, attributionControl: false })
-        this.map.touchZoom.enable()
+        this.map = L.map(elName, {
+            zoomControl: false,
+            rotate: true,
+            rotateControl: false,
+            attributionControl: false,
+            zoom: this.riderViewZoom
+        })
         L.control.scale({metric: true, imperial: false, position: "bottomright"}).addTo(this.map)
 
         // Create a custom pane on top of the path network and heatmap
@@ -148,6 +154,9 @@ export class TrackingMap{
 
         // Connect to event bus
         this.bus.on("preview:minimize", this.onToggleMinimize.bind(this))
+
+        // Debugging
+        this.map.on("zoomend", (e) => {console.log("Zoom:", this.map.getZoom())})
     }
 
     setBaseLayer(id: string){
@@ -257,11 +266,11 @@ export class TrackingMap{
                 style: {color: "yellow", weight: 7}
             }).addTo(this.areaHighlightLG)
 
-            this.zoomFrameArea(areaLayer.getBounds())
-            this.bus.emit("zoom:framed:area", area)
+            //this.zoomFrameArea(areaLayer.getBounds())
+            //this.bus.emit("zoom:framed:area", area)
         }
         else{
-            this.zoomFrameRider()
+            //this.zoomFrameRider()
         }
     }
 
@@ -335,6 +344,8 @@ export class TrackingMap{
         this.heading = this.heading * alpha + angle * (1 - alpha)
         this.heading = Math.round(this.heading / 24) * 24
         this.map.setBearing(this.heading)
+        this.bus.emit("debug:clear")
+        this.bus.emit("debug:log", `O: ${angle.toFixed(0)} I: ${this.heading}`)
     }
 
     addTextAnnotation(annotation: LocationAnnotation){

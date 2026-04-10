@@ -57,7 +57,7 @@ const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
 const wakeLockService = new WakeLockService()
 
 // Create views
-const inrideMenu: InRideMenu = new InRideMenu(appBus)
+const inrideMenu: InRideMenu = new InRideMenu(appBus, mobileMode)
 const debugOverlay = new DebugOverlay("debug", appBus)
 
 const settingsView: SettingsView = new SettingsView("settings-view", appBus)

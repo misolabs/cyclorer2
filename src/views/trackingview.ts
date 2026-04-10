@@ -67,7 +67,7 @@ export class TrackingView {
         this.bus.on("navigation:target:area", this.onNavigationArea.bind(this))
         this.bus.on("navigation:stop", this.onNavigationStop.bind(this))
 
-        this.bus.on("zoom:frame:rider", this.onZoomFrameRider.bind(this))
+       // this.bus.on("zoom:frame:rider", this.onZoomFrameRider.bind(this))
 
         // Show this when splash screen starts fading out
         this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
@@ -89,12 +89,12 @@ export class TrackingView {
             if(!this.mobileMode)
                 this.trackingMap.positionMarker?.setLatLng(this.trackingMap.map.getCenter())
 
-            centerBtnEl.classList.add("hidden")
+            centerBtnEl.classList.add("hide")
         })
 
         this.trackingMap.map.on("dragstart", (e) => {
             this.viewFollowTracking = false
-            centerBtnEl?.classList.remove("hidden")
+            centerBtnEl?.classList.remove("hide")
         })
 
         // TODO Experimental - Add text annotation
@@ -114,12 +114,14 @@ export class TrackingView {
 
         // Show buttons overlay on click
         this.trackingMap.map.on("click", (e) => {
-            const root = document.getElementById("ui-midride-menu")!
+            const root = document.getElementById("buttons-overlay")!
             if(root.classList.contains("hide")) {
                 root.classList.remove("hide")
                 setTimeout( () => {root.classList.add("hide") }, 20000)
             }else root.classList.add("hide")
         })
+
+        document.getElementById("zoom-toggle-btn")!.addEventListener("click", () => {this.toggleZoomLevel()})
     }
 
     onStatsDataLoaded(stats: RoutingStatsJson) {
@@ -266,4 +268,16 @@ export class TrackingView {
         }
     }
 
+    toggleZoomLevel(){
+        const toggle = document.getElementById("zoom-toggle-btn")!
+        const glyph = toggle.querySelector("span")!
+
+        if(glyph.textContent == "zoom_in"){
+            glyph.textContent = "zoom_out"
+            this.trackingMap.map.setZoom(this.trackingMap.riderViewZoom)
+        }else{
+            glyph.textContent = "zoom_in"
+            this.trackingMap.map.setZoom(this.trackingMap.globalViewZoom)
+        }
+    }
 }

@@ -16,38 +16,6 @@
     <title>Cyclorer 2</title>
   </head>
   <body>
-  <!-- Overlay - MidRide Menu -->
-  <div id="ui-midride-menu" class="hide">
-    <button id="open-inride-menu" class="btn btn-secondary">
-      <span class="material-symbols-rounded">add_location</span>
-    </button>
-
-    <button id="zoom-frame-rider" class="btn btn-secondary hide">
-      <span class="material-symbols-rounded">center_focus_weak</span>
-    </button>
-
-    <button id="settings-open" class="btn btn-secondary">
-      <span class="material-symbols-rounded">menu</span>
-    </button>
-
-    <div id="ui-midride-menu-content" class="hide">
-      <button id="drop-pin-danger" class="btn btn-danger ui-midride-element mb-3 mt-3">
-        <span class="material-symbols-rounded">skull</span>
-      </button>
-      <button id="drop-pin-favorite" class="btn btn-success ui-midride-element mb-3">
-        <span class="material-symbols-rounded">favorite</span>
-      </button>
-      <button id="drop-pin-explore" class="btn btn-warning ui-midride-element mb-3">
-        <span class="material-symbols-rounded">not_listed_location</span>
-      </button>
-      <button id="drop-pin-climb" class="btn btn-danger ui-midride-element mb-3">
-        <span class="material-symbols-rounded">elevation</span>
-      </button>
-      <button id="drop-pin-text" class="btn btn-secondary ui-midride-element">
-        <span class="material-symbols-rounded">text_fields</span>
-      </button>
-    </div>
-  </div>
 
     <!-- VIEW - Splashscreen -->
     <div id="splash-view">
@@ -59,9 +27,46 @@
     <!-- VIEW - Map -->
     <div id="map-view">
       <div id="tracking-map" class="minipreview">
-        <button id="center-btn" class="btn btn-danger hidden">
-          <span class="material-symbols-rounded">my_location</span>
-        </button>
+        <!-- Overlay - On-Screen Buttons -->
+        <div id="buttons-overlay" class="hide">
+          <button id="open-annotation-menu" class="btn btn-secondary cyc-menu-button cyc-only-desktop">
+            <span class="material-symbols-rounded">pin_drop</span>
+          </button>
+
+          <button id="zoom-toggle-btn" class="btn btn-secondary cyc-menu-button">
+            <span class="material-symbols-rounded">zoom_out</span>
+          </button>
+
+          <button id="settings-open" class="btn btn-secondary cyc-menu-button">
+            <span class="material-symbols-rounded">menu</span>
+          </button>
+
+          <button id="center-btn" class="btn btn-danger cyc-menu-button hide">
+            <span class="material-symbols-rounded">my_location</span>
+          </button>
+
+          <button id="drop-pin-generic" class="btn btn-danger cyc-menu-button cyc-always-visible cyc-only-mobile">
+            <span class="material-symbols-rounded">add_location</span>
+          </button>
+
+          <div id="annotation-menu-container" class="cyc-menu-container hide">
+            <button id="drop-pin-danger" class="btn btn-danger cyc-menu-button mt-3 mb-3">
+              <span class="material-symbols-rounded">skull</span>
+            </button>
+            <button id="drop-pin-favorite" class="btn btn-success cyc-menu-button mt-3">
+              <span class="material-symbols-rounded">favorite</span>
+            </button>
+            <button id="drop-pin-explore" class="btn btn-warning cyc-menu-button mt-3">
+              <span class="material-symbols-rounded">not_listed_location</span>
+            </button>
+            <button id="drop-pin-climb" class="btn btn-danger cyc-menu-button mt-3">
+              <span class="material-symbols-rounded">elevation</span>
+            </button>
+            <button id="drop-pin-text" class="btn btn-secondary cyc-menu-button">
+              <span class="material-symbols-rounded">text_fields</span>
+            </button>
+          </div>
+        </div>
 
         <div id="score-container">
           <div class="label-small roboto-font">Score</div>
@@ -74,7 +79,6 @@
       </div>
 
       <div id="preview-map" class="minipreview">
-
         <div id="directions"></div>
         <div id="description"></div>
 
