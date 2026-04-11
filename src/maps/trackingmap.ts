@@ -146,6 +146,7 @@ export class TrackingMap{
         this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "red"}))
         this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "green"}))
         this.glyphIcons.set( "CLIMB", new L.Icon.Glyph({glyph:"elevation", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "purple"}))
+        this.glyphIcons.set( "QUICKDROP", new L.Icon.Glyph({glyph:"tour", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "purple"}))
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
