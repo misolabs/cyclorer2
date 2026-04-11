@@ -43,14 +43,21 @@
     position: absolute;
     z-index: 2500;
 
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
     padding: 0;
 
     /*background-color: rgba(200, 200, 200, 0.7);*/
     color: white;
 
     pointer-events: all;
+}
+
+@media (max-width: 768px) {
+    .cyc-menu-button{
+        width: 80px;
+        height: 80px;
+    }
 }
 
 /* Special rule for sub-menus */
@@ -62,6 +69,8 @@
 #open-annotation-menu{
     bottom: 10px;
     left: 10px;
+
+    background-color: rgba(181, 134, 4, 0.7);
 }
 
 /* Return zoom to rider */
@@ -69,7 +78,7 @@
     top:10px;
     left: 10px;
 
-    background-color: rgba(200, 0, 0, 0.7);
+    background-color: rgba(47,79, 79, 0.7);
 }
 
 /* Settings menu */
@@ -84,10 +93,14 @@
 #center-btn{
     left: calc(50% - 40px);
     bottom:10px;
+
+    background-color: rgba(181, 30, 4, 0.7);
 }
 
 /* Drop a quick pin during ride */
 #drop-pin-generic{
     bottom: 10px;
     left: 10px;
+
+    background-color: rgba(181, 134, 4, 0.7);
 }
