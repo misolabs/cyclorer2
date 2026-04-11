@@ -1,4 +1,4 @@
-import L, {LatLngBounds, Marker} from 'leaflet'
+import L, {LatLngBounds, type LeafletEvent, Marker} from 'leaflet'
 import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
 
 import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/models.ts";
@@ -112,7 +112,8 @@ export class TrackingMap{
             rotate: true,
             rotateControl: false,
             attributionControl: false,
-            zoom: this.riderViewZoom
+            zoom: this.riderViewZoom,
+            doubleClickZoom: false,
         })
         L.control.scale({metric: true, imperial: false, position: "bottomright"}).addTo(this.map)
 
@@ -227,13 +228,17 @@ export class TrackingMap{
         // Draw edge network
         L.geoJSON(areaData.features,
             {
-            style: {
-            color: "red",
-            weight: 3,
-            opacity: 1
-            }
+                style: {
+                color: "red",
+                weight: 3,
+                opacity: 1,
+            },
+            /* TODO Find a clean way to determine Area
+            onEachFeature: (feature, layer) => {
+                layer.on("click", (e: LeafletEvent) => {this.bus.emit("area:highlight", feature.properties.area_id)})
+            } */
         }).addTo(this.areasLayerGroup)
-        
+
         // Draw entrypoints
         L.geoJSON(entrypointsData.features,{
             pointToLayer: (feature, latlng) => {

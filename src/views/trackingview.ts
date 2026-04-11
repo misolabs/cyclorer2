@@ -113,15 +113,17 @@ export class TrackingView {
         this.trackingMap.addPositionMarker(ellergronnGPS, (this.mobileMode ? null : this.onPositionMarkerDragged.bind(this)))
 
         // Show buttons overlay on click
+        /*
         this.trackingMap.map.on("click", (e) => {
             const root = document.getElementById("buttons-overlay")!
             if(root.classList.contains("hide")) {
                 root.classList.remove("hide")
                 setTimeout( () => {root.classList.add("hide") }, 20000)
             }else root.classList.add("hide")
-        })
+        })*/
 
         document.getElementById("zoom-toggle-btn")!.addEventListener("click", () => {this.toggleZoomLevel()})
+        this.trackingMap.map.on("dblclick", (e) => {this.toggleZoomLevel()})
     }
 
     onStatsDataLoaded(stats: RoutingStatsJson) {
