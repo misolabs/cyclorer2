@@ -345,12 +345,12 @@ export class TrackingMap{
     }
 
     setHeading(angle: number){
-        const alpha = 0.9
+        const alpha = 0.8
         this.heading = this.heading * alpha + angle * (1 - alpha)
-//        this.heading = Math.round(this.heading / 24) * 24
-        this.map.setBearing(this.heading)
-        this.bus.emit("debug:clear")
-        this.bus.emit("debug:log", `O: ${angle.toFixed(0)} I: ${this.heading}`)
+        const quantized = Math.round(this.heading / 5) * 5
+        this.map.setBearing(quantized)
+//        this.bus.emit("debug:clear")
+//        this.bus.emit("debug:log", `O: ${angle.toFixed(0)} I: ${this.heading}`)
     }
 
     addTextAnnotation(annotation: LocationAnnotation){
