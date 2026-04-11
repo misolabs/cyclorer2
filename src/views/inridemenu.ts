@@ -17,6 +17,7 @@ export class InRideMenu{
         document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "EXPLORE"); this.hide()})
         document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "FAVORITE"); this.hide()})
         document.getElementById("drop-pin-climb")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "CLIMB"); this.hide()})
+        document.getElementById("drop-pin-generic")!.addEventListener("click", () => {this.bus.emit("annotation:location:marker:create", "QUICKDROP"); this.hide()})
 
         document.getElementById("open-annotation-menu")!.addEventListener("click", () => {
             console.log("open-annotation-menu")
