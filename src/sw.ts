@@ -3,7 +3,7 @@
 
 // Precaching using workbox
 import { precacheAndRoute } from 'workbox-precaching';
-import { CacheFirst } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
 import { registerRoute } from 'workbox-routing';
 
 // Working context
@@ -11,6 +11,15 @@ declare const self: ServiceWorkerGlobalScope;
 
 // 👇 injected by Vite PWA plugin
 precacheAndRoute(self.__WB_MANIFEST);
+
+//----------------
+// Cache Name Constants
+//----------------
+const TILES_CACHE = "tiles-cache";
+const OFFLINE_CACHE = "tiles-offline";
+const ASSETS_CACHE = "assets-cache";
+const GEODATA_CACHE = "geodata-cache";
+const ANNOTATIONS_CACHE = "annotations-cache";
 
 //----------------
 // Data Structures
@@ -37,7 +46,9 @@ export interface TileCacheStats{
 //-------------
 
 self.addEventListener('install', (event) => {
-    self.caches.delete("geodata-cache")
+    event.waitUntil(
+        self.caches.delete(GEODATA_CACHE)
+    )
 })
 
 //---------------------
@@ -63,12 +74,12 @@ async function handleRetryQueue(){
     if(retryQueue.size > 0 && !retryRunning){
         retryRunning = true;
         (async() => {
-            const offlineCache = await caches.open('tiles-offline');
+            const offlineCache = await caches.open(OFFLINE_CACHE);
             for (const request of retryQueue) {
                 try {
                     const response = await fetch(request);
                     if (response) {
-                        offlineCache.put(request, response.clone());
+                        await offlineCache.put(request, response.clone());
                         retryQueue.delete(request);
                         counter++
                     }
@@ -85,13 +96,13 @@ async function handleRetryQueue(){
 }
 
 function clearTilesCache(){
-    self.caches.delete("tiles-cache")
-    self.caches.delete("tiles-offline")
+    self.caches.delete(TILES_CACHE)
+    self.caches.delete(OFFLINE_CACHE)
 }
 
 async function calculateCacheStats(): Promise<TileCacheStats>{
-    const tilesCache: Cache = await self.caches.open("tiles-cache")
-    const offlineCache: Cache = await self.caches.open("tiles-offline")
+    const tilesCache: Cache = await self.caches.open(TILES_CACHE)
+    const offlineCache: Cache = await self.caches.open(OFFLINE_CACHE)
 
     const tilesKeys = await tilesCache.keys()
     const offlineKeys = await offlineCache.keys()
@@ -113,7 +124,7 @@ registerRoute(
 
         try {
             // 1st level - general cache with size limit
-            const tilesCache = await caches.open('tiles-cache');
+            const tilesCache = await caches.open(TILES_CACHE);
             const cachedResponse = await tilesCache.match(request)
             if(cachedResponse) {
                 tileCacheHits++
@@ -122,7 +133,7 @@ registerRoute(
             }
 
             // 2nd level - offline cache for regions with poor coverage
-            const offlineCache = await caches.open('tiles-offline');
+            const offlineCache = await caches.open(OFFLINE_CACHE);
             const offlineResponse = await offlineCache.match(request);
             if (offlineResponse){
                 offlineCacheHits++
@@ -173,31 +184,22 @@ registerRoute(new NavigationRoute(handler));
 registerRoute(
     ({ url }) => url.pathname.startsWith('/cyclorer2/assets/'),
     new CacheFirst({
-        cacheName: 'assets-cache'
+        cacheName: ASSETS_CACHE
     })
 );
-
-/* We have integrated google fonts directly
-registerRoute(
-    ({ url }) => {
-        const match =
-            url.hostname.includes('fonts.googleapis.com') ||
-            url.hostname.includes('fonts.gstatic.com');
-
-        if (match) console.log('Matched asset:', url.href);
-
-        return match;
-    },
-    new CacheFirst({ cacheName: 'assets-cache' })
-);
-*/
 
 // Geo Routing Data
 registerRoute(
     ({ url }) => url.pathname.startsWith('/cyclorer2/data/'),
     new CacheFirst({
-        cacheName: 'geodata-cache'
+        cacheName: GEODATA_CACHE
     })
+);
+
+// Annotations meta-data
+registerRoute(
+    ({ url }) => url.hostname.includes('cyclotation.fly.dev'),
+    new NetworkFirst({cacheName: ANNOTATIONS_CACHE})
 );
 
 // Register message listener for communication with App
