@@ -1,4 +1,8 @@
+
 import type {LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
+
+const API_BASE = "https://cyclotation.fly.dev";
+const LOCATION_ENDPOINTS = "/annotations/locations"
 
 export class AnnotationRepo{
     repo: Map<number, LocationAnnotation>
@@ -9,7 +13,7 @@ export class AnnotationRepo{
 
     async add(la: LocationAnnotation): Promise<LocationAnnotation>{
         // Send to annotation server
-        const response = await fetch("https://cyclotation.fly.dev/location", {
+        const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}`, {
             headers: {"Content-Type": "application/json",},
             method: 'POST', body: JSON.stringify({
                 category: la.category,
@@ -32,7 +36,7 @@ export class AnnotationRepo{
 
     async delete(id: number){
         if(this.repo.has(id)){
-            const response = await fetch("https://cyclotation.fly.dev/location/" + id, {method: "DELETE"})
+            const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}/${id}`, {method: "DELETE"})
             if(response.status == 200){
                 this.repo.delete(id)
             }
@@ -49,7 +53,7 @@ export class AnnotationRepo{
 
     async update(annotation: LocationAnnotation):Promise<LocationAnnotation|undefined>{
         if(annotation.id && this.repo.has(annotation.id)){
-            const response = await fetch("https://cyclotation.fly.dev/location/" + annotation.id, {
+            const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}/${annotation.id}`, {
                 headers: {"Content-Type": "application/json",},
                 method: 'PUT', body: JSON.stringify({
                     id: annotation.id,
@@ -72,7 +76,7 @@ export class AnnotationRepo{
 
     async fetchFromServer(){
         // Send to annotation server
-        const response = await fetch("https://cyclotation.fly.dev/location",)
+        const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}`, {})
 
         if(response.status == 200){
             try {
