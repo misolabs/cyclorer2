@@ -25,12 +25,7 @@ const ANNOTATIONS_CACHE = "annotations-cache";
 // Data Structures
 //----------------
 
-// TODO Cache names const
-// TODO Limit offline retry fetches
 // TODO Message types
-// TODO Remove console.log
-// TODO Button for clearing caches
-// TODO Refactor SW Messaging Helper from app.ts
 
 // Statistics on cache usage
 export interface TileCacheStats{
@@ -69,12 +64,13 @@ function broadcastMessage(message: any){
     });
 }
 
-async function handleRetryQueue(){
+async function handleRetryQueue(maxFileNum: number = 10){
     let counter = 0;
     if(retryQueue.size > 0 && !retryRunning){
         retryRunning = true;
         (async() => {
             const offlineCache = await caches.open(OFFLINE_CACHE);
+            var count = 0
             for (const request of retryQueue) {
                 try {
                     const response = await fetch(request);
@@ -84,6 +80,8 @@ async function handleRetryQueue(){
                         counter++
                     }
                 }catch(err){console.error(err);}
+                count++
+                if(count >= maxFileNum) break;
             }
         })()
         .then(() => {
@@ -120,7 +118,7 @@ registerRoute(
     ({ url }) => url.hostname.includes('tile'),
     async (options) => {
         const request = options.request;
-        console.log("Fetching tile", request.url);
+        //console.log("Fetching tile", request.url);
 
         try {
             // 1st level - general cache with size limit
@@ -128,7 +126,7 @@ registerRoute(
             const cachedResponse = await tilesCache.match(request)
             if(cachedResponse) {
                 tileCacheHits++
-                console.log("Found in cache level 1")
+                //console.log("Found in cache level 1")
                 return cachedResponse
             }
 
@@ -137,11 +135,11 @@ registerRoute(
             const offlineResponse = await offlineCache.match(request);
             if (offlineResponse){
                 offlineCacheHits++
-                console.log("Found in cache level 2")
+                //console.log("Found in cache level 2")
                 return offlineResponse
             }
 
-            console.log("Not found in 1st cache, trying network ")
+            //console.log("Not found in 1st cache, trying network ")
 
             // Try network next
             const response = await fetch(request);
@@ -150,13 +148,13 @@ registerRoute(
                 tilesCache.put(request, response.clone());
                 // The call was successful -> we have a network connection -> try loading queued tiles (async)
                 handleRetryQueue()
-                console.log(`Found on network, checking ${retryQueue.size} offline tiles`);
+                //console.log(`Found on network, checking ${retryQueue.size} offline tiles`);
                 return response;
             }
             else return new Response("Tile not found (empty response)", {status: 404})
         } catch (err) {
             console.error(err);
-            console.warn('Tile fetch failed, addind to retry list...', request.url);
+            console.warn('Tile fetch failed, adding to retry list...', request.url);
 
             // Add to retry queue
             retryQueue.add(request);
@@ -205,7 +203,7 @@ registerRoute(
 // Register message listener for communication with App
 self.addEventListener('message', async (event) => {
     const { type, payload } = event.data;
-    console.log("message", event.data);
+    //console.log("message", event.data);
     switch (type) {
         case 'CACHE_STATS_REQUEST':
             const stats = await calculateCacheStats()
