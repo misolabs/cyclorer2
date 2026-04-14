@@ -6,7 +6,7 @@ import {
     type BoundingBox, type Edge,
     type LatLon,
     type LocationAnnotation,
-    type Route
+    type Route, type EdgeAnnotation
 } from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
@@ -76,6 +76,9 @@ export class NavigationService{
 
         // Add location annotations to the map
         this.annotationRepo.getAll().forEach((a: LocationAnnotation) => {this.bus.emit("annotation:location:added", a)})
+
+        // Add edge annotations to map
+        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emit("annotation:edge:added", a)})
     }
 
     // Position update from simulation mode

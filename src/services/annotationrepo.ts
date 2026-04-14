@@ -1,14 +1,17 @@
 
-import type {LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
+import type {EdgeAnnotation, LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
 
 const API_BASE = "https://cyclotation.fly.dev";
 const LOCATION_ENDPOINTS = "/annotations/locations"
+const EDGE_ENDPOINTS = "/annotations/edges"
 
 export class AnnotationRepo{
     repo: Map<number, LocationAnnotation>
+    edgeRepo: Map<number, EdgeAnnotation>
 
     constructor() {
         this.repo = new Map()
+        this.edgeRepo = new Map()
     }
 
     async add(la: LocationAnnotation): Promise<LocationAnnotation>{
@@ -47,6 +50,10 @@ export class AnnotationRepo{
         return this.toArray()
     }
 
+    getAllEdges(){
+        return [...this.edgeRepo].map(([name, value]) => value)
+    }
+
     get(id: number){
         return this.repo.get(id)
     }
@@ -74,7 +81,15 @@ export class AnnotationRepo{
         }
     }
 
-    async fetchFromServer(){
+    async fetchFromServer() {
+        await Promise.all([
+            this.fetchEdgeAnnotations(),
+            this.fetchLocationAnnotations()
+            ]
+        )
+    }
+
+    async fetchLocationAnnotations(){
         // Send to annotation server
         const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}`, {})
 
@@ -96,6 +111,30 @@ export class AnnotationRepo{
                 }
             }catch(err){console.error(err); throw err}
         }else throw Error("POST request failed with status code " + response.status)
+    }
+
+    async fetchEdgeAnnotations(){
+        // Send to annotation server
+        const response = await fetch(`${API_BASE}${EDGE_ENDPOINTS}`, {})
+
+        if(response.status == 200){
+            try {
+                const json: EdgeAnnotation[] = JSON.parse(await response.text())
+                for(const aJson of json){
+                    try{
+                        const annotation = {
+                            category: aJson.category,
+                            comment: aJson.comment,
+                            id: aJson.id,
+                            edge_id:aJson.edge_id,
+                            timestamp: aJson.timestamp}
+
+                        if(annotation.id)
+                            this.edgeRepo.set(annotation.id, annotation)
+                    }catch(err){console.error(err)}
+                }
+            }catch(err){console.error(err); throw err}
+        }else throw Error("GET all edges request failed with status code " + response.status)
     }
 
     private textToAnnotation(text: string): LocationAnnotation {

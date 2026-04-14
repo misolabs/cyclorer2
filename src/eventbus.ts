@@ -6,7 +6,7 @@ import type {
     RoutingStatsJson
 } from "./models/geo.ts";
 import type {GeolocationLight} from "./services/geolocationservice.ts";
-import type {AnnotationCategory, Area, AreaId, LatLon, LocationAnnotation} from "./models/models.ts";
+import type {AnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation} from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
 type Events = {
@@ -46,6 +46,8 @@ type Events = {
     "annotation:location:added": LocationAnnotation
     "annotation:location:delete": number
     "annotation:location:modify:pos": {id: number, pos: LatLon}
+
+    "annotation:edge:added": EdgeAnnotation
 
     "exploration:started": Area
     "exploration:ended": void

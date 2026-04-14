@@ -30,6 +30,7 @@ export interface RoutingEdgeProperties {
     u: number;
     v: number;
     name?: string|string[]
+    edge_id: string
 
     deadend: boolean
     highway: string | string[]

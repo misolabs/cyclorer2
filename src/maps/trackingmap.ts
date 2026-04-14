@@ -1,7 +1,10 @@
-import L, {LatLngBounds, type LeafletEvent, Marker} from 'leaflet'
-import type { GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection } from "../models/geo.ts"
+import L, {LatLngBounds, type LeafletEvent, Marker, type PathOptions, type PolylineOptions} from 'leaflet'
+import type {
+    GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection,
+    RoutingEdgeProperties
+} from "../models/geo.ts"
 
-import type {Area, AreaNode, LatLon, LocationAnnotation, Route} from "../models/models.ts";
+import type {Area, AreaNode, EdgeAnnotation, LatLon, LocationAnnotation, Route} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 import 'leaflet/dist/leaflet.css'
@@ -16,6 +19,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import type {EventBus} from "../eventbus.ts";
+import type {Feature, GeometryObject} from "geojson";
 
 // Fix default icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -26,32 +30,6 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow,
 })
 
-function popupRoutingEdge(feature: GeoJsonRouting, layer: L.Polyline){
-  const html = `<table>
-  <tr>
-  <td>classification</td>
-  <td><b>${feature.properties.highway}</b></td>
-  </tr>
-  <tr>
-  <td>length</td>
-  <td><b>${feature.properties.length.toFixed(0)}m</b></td>
-  </tr>
-  <tr>
-  <td>u</td>
-  <td><b>${feature.properties.u}</b></td>
-  </tr>
-  <tr>
-  <td>v</td>
-  <td><b>${feature.properties.v}</b></td>
-  </tr>
-  <tr>
-  <td>Ride count</td>
-  <td><b>${feature.properties.ride_count}</b></td>
-  </tr>
-  </table>`
-  layer.bindPopup(html)
-}
-
 function navigateTo(areaId: number){
     window.dispatchEvent(new CustomEvent('cycSelectArea', {detail: { areaId }}))
 }
@@ -60,6 +38,15 @@ interface TileService{
     attribution: string
     url: string
 }
+
+const edgeStyles: Map<string, PolylineOptions> = new Map([
+    ["DEFAULT", {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}],
+    ["DEADEND", {color: "black", weight: 5}],
+    ["UNVISITED", {color: "red", weight: 3}],
+    ["FAVORITES", {color: "yellow", weight: 5}],
+    ["KEEPOUT", {color: "rgb(100, 100, 100)", weight: 5, dashArray:[20, 20]}],
+    ["FLOWTRAIL", {color: "purple", weight: 5}],
+])
 
 const osmTileService: TileService = {url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
 const cyclosmTileService: TileService = {url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", attribution: "CyclOSM"}
@@ -95,6 +82,8 @@ export class TrackingMap{
     areaHighlightLG: L.LayerGroup = L.layerGroup()
     snailTrailLG: L.LayerGroup = L.layerGroup()
     annotationsLG: L.LayerGroup = L.layerGroup()
+
+    edgeNetworkLayers: Map<string, L.Polyline> = new Map([])
 
     snailTrailLayer!: L.Polyline
     snailTrailPoly: LatLng[] = []
@@ -159,6 +148,16 @@ export class TrackingMap{
 
         // Debugging
         this.map.on("zoomend", (e) => {console.log("Zoom:", this.map.getZoom())})
+
+        // TODO: Move to right location
+        this.bus.on("annotation:edge:added", (a: EdgeAnnotation) => {
+            const layer = this.edgeNetworkLayers.get(a.edge_id)
+            if(layer){
+                const style = edgeStyles.get(a.category)
+                if(style) layer.setStyle(style)
+                else console.error("Edge category not found", a.category)
+            }
+        })
     }
 
     setBaseLayer(id: string){
@@ -185,8 +184,8 @@ export class TrackingMap{
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         // Simply draw entrypoints as markers
         L.geoJSON(routingGeoData.features, {
-            onEachFeature: popupRoutingEdge,
-            style: {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}
+            onEachFeature: this.routingEdgePostprocess.bind(this),
+            style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
     }
 
@@ -227,6 +226,7 @@ export class TrackingMap{
         }
     
         // Draw edge network
+        /*
         L.geoJSON(areaData.features,
             {
                 style: {
@@ -234,12 +234,8 @@ export class TrackingMap{
                 weight: 3,
                 opacity: 1,
             },
-            /* TODO Find a clean way to determine Area
-            onEachFeature: (feature, layer) => {
-                layer.on("click", (e: LeafletEvent) => {this.bus.emit("area:highlight", feature.properties.area_id)})
-            } */
         }).addTo(this.areasLayerGroup)
-
+*/
         // Draw entrypoints
         L.geoJSON(entrypointsData.features,{
             pointToLayer: (feature, latlng) => {
@@ -470,5 +466,48 @@ export class TrackingMap{
 
     zoomFrameRider(){
         this.map.setView(this.riderViewCenter, this.riderViewZoom)
+    }
+
+    routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
+        const html = `<table>
+          <tr>
+          <td>Id</td>
+          <td><b>${feature.properties.edge_id}</b></td>
+          </tr>
+          <tr>
+          <td>classification</td>
+          <td><b>${feature.properties.highway}</b></td>
+          </tr>
+          <tr>
+          <td>length</td>
+          <td><b>${feature.properties.length.toFixed(0)}m</b></td>
+          </tr>
+          <tr>
+          <td>u</td>
+          <td><b>${feature.properties.u}</b></td>
+          </tr>
+          <tr>
+          <td>v</td>
+          <td><b>${feature.properties.v}</b></td>
+          </tr>
+          <tr>
+          <td>Ride count</td>
+          <td><b>${feature.properties.ride_count}</b></td>
+          </tr>
+          </table>`
+        layer.bindPopup(html)
+
+        // Add to layers map
+        this.edgeNetworkLayers.set(feature.properties.edge_id, layer)
+    }
+
+    styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
+        if(feature && feature.properties.deadend)
+            return edgeStyles.get("DEADEND")!
+        else if(feature && feature.properties.ride_count == 0)
+            return edgeStyles.get("UNVISITED")!
+
+        // default case
+        return edgeStyles.get("DEFAULT")!
     }
 }

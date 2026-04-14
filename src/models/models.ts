@@ -132,3 +132,11 @@ export interface LocationAnnotationJson{
   id?: number
   text?: string
 }
+
+export interface EdgeAnnotation{
+  id: number
+  edge_id: string
+  timestamp: string
+  category: string
+  comment?: string
+}
