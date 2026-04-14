@@ -1,12 +1,12 @@
 import type {EventBus} from "../eventbus.ts";
 import {
     NavigationMode,
-    type AnnotationCategory,
+    type LocationAnnotationCategory,
     type Area, type AreaNode,
     type BoundingBox, type Edge,
     type LatLon,
     type LocationAnnotation,
-    type Route, type EdgeAnnotation
+    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent
 } from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
@@ -58,6 +58,8 @@ export class NavigationService{
         bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
         bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
+        bus.on("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
+
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
         bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
         bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
@@ -95,7 +97,7 @@ export class NavigationService{
         this.update()
     }
 
-    async onAddAnnotationRequest(category: AnnotationCategory){
+    async onAddAnnotationRequest(category: LocationAnnotationCategory){
         const ts = new Date(Date.now()).toJSON()
         const annotation = await this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
 
@@ -114,6 +116,16 @@ export class NavigationService{
     onDeleteAnnotationRequest(id: number){
         console.log("Delete annotation request", id)
         this.annotationRepo.delete(id)
+    }
+
+    async onCreateEdgeAnnotation(annotation: EdgeAnnotationCreateEvent){
+        const result = await this.annotationRepo.addEdge({
+            ...annotation,
+            timestamp: new Date(Date.now()).toJSON()
+        })
+
+        // Tell map to display the new edge annotation
+        this.bus.emit("annotation:edge:added", result)
     }
 
     async onAnnotationPositionChanged(data: {id: number, pos: LatLon}){

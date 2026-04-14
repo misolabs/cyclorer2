@@ -4,7 +4,10 @@ import type {
     RoutingEdgeProperties
 } from "../models/geo.ts"
 
-import type {Area, AreaNode, EdgeAnnotation, LatLon, LocationAnnotation, Route} from "../models/models.ts";
+import {
+    type Area, type AreaNode, type EdgeAnnotation,
+    EdgeAnnotationCategory, type LatLon, type LocationAnnotation, type Route
+} from "../models/models.ts";
 import {LatLng} from "leaflet";
 
 import 'leaflet/dist/leaflet.css'
@@ -43,9 +46,11 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["DEFAULT", {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}],
     ["DEADEND", {color: "black", weight: 5}],
     ["UNVISITED", {color: "red", weight: 3}],
-    ["FAVORITES", {color: "yellow", weight: 5}],
-    ["KEEPOUT", {color: "rgb(100, 100, 100)", weight: 5, dashArray:[20, 20]}],
-    ["FLOWTRAIL", {color: "purple", weight: 5}],
+
+    [EdgeAnnotationCategory.EA_FAVORITE, {color: "yellow", weight: 5}],
+    [EdgeAnnotationCategory.EA_KEEPOUT, {color: "black", weight: 5, dashArray:[10, 10]}],
+    [EdgeAnnotationCategory.EA_FLOWTRAIL, {color: "blue", weight: 5}],
+    [EdgeAnnotationCategory.EA_STEEP, {color: "purple", weight: 5}],
 ])
 
 const osmTileService: TileService = {url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
@@ -146,9 +151,6 @@ export class TrackingMap{
         // Connect to event bus
         this.bus.on("preview:minimize", this.onToggleMinimize.bind(this))
 
-        // Debugging
-        this.map.on("zoomend", (e) => {console.log("Zoom:", this.map.getZoom())})
-
         // TODO: Move to right location
         this.bus.on("annotation:edge:added", (a: EdgeAnnotation) => {
             const layer = this.edgeNetworkLayers.get(a.edge_id)
@@ -156,6 +158,9 @@ export class TrackingMap{
                 const style = edgeStyles.get(a.category)
                 if(style) layer.setStyle(style)
                 else console.error("Edge category not found", a.category)
+
+                if(a.comment) layer.bindTooltip(a.comment, {permanent: false})
+                else layer.bindTooltip(a.category, {permanent: false})
             }
         })
     }
@@ -469,7 +474,9 @@ export class TrackingMap{
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
-        const html = `<table>
+        const popupContainer = document.createElement("div");
+
+        popupContainer.innerHTML = `<table>
           <tr>
           <td>Id</td>
           <td><b>${feature.properties.edge_id}</b></td>
@@ -494,8 +501,36 @@ export class TrackingMap{
           <td>Ride count</td>
           <td><b>${feature.properties.ride_count}</b></td>
           </tr>
-          </table>`
-        layer.bindPopup(html)
+          </table>
+          <div class="mt-3" style="width: 200px; display: flex;height: 50px;flex-direction: row;gap: 10px;">
+            <button class="btn btn-success cyc-menu-button cyc-only-desktop cyc-edge-annotation-favorite-btn" style="position: relative;">
+                <span class="material-symbols-rounded">favorite</span>
+            </button>
+            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-keepout-btn" style="position: relative;">
+                <span class="material-symbols-rounded">back_hand</span>
+            </button>
+          </div>`
+
+        // Wire up buttons
+        const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
+        favButton!.addEventListener("click", ()=>{
+            this.bus.emit("annotation:edge:create", {
+                edge_id: feature.properties.edge_id,
+                category: EdgeAnnotationCategory.EA_FAVORITE,
+                comment: undefined
+            })
+        });
+
+        const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn");
+        avoidButton!.addEventListener("click", ()=>{
+            this.bus.emit("annotation:edge:create", {
+                edge_id: feature.properties.edge_id,
+                category: EdgeAnnotationCategory.EA_KEEPOUT,
+                comment: undefined
+            })
+        })
+
+        layer.bindPopup(popupContainer)
 
         // Add to layers map
         this.edgeNetworkLayers.set(feature.properties.edge_id, layer)

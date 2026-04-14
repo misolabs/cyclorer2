@@ -115,9 +115,14 @@ export interface POI{
   type: string
 }
 
-export type AnnotationCategory = string
+//------------
+// ANNOTATIONS
+//------------
+
+// Locations = Marker
+export type LocationAnnotationCategory = string
 export interface LocationAnnotation{
-  category: AnnotationCategory
+  category: LocationAnnotationCategory
   location: LatLon
   timestamp: string
   id?: number
@@ -125,7 +130,7 @@ export interface LocationAnnotation{
 }
 
 export interface LocationAnnotationJson{
-  category: AnnotationCategory
+  category: LocationAnnotationCategory
   lat: number
   lon: number
   timestamp: string
@@ -133,10 +138,32 @@ export interface LocationAnnotationJson{
   text?: string
 }
 
+// Edges
+
+export const EdgeAnnotationCategory = {
+  EA_KEEPOUT: "KEEPOUT",
+  EA_FAVORITE: "FAVORITES",
+  EA_STEEP: "STEEPCLIMB",
+  EA_FLOWTRAIL: "FLOWTRAIL",
+} as const;
+
 export interface EdgeAnnotation{
   id: number
   edge_id: string
   timestamp: string
+  category: string
+  comment?: string
+}
+
+export interface EdgeAnnotationRequest{
+  edge_id: string
+  timestamp: string
+  category: string
+  comment?: string
+}
+
+export interface EdgeAnnotationCreateEvent {
+  edge_id: string
   category: string
   comment?: string
 }

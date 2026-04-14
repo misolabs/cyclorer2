@@ -1,5 +1,10 @@
 
-import type {EdgeAnnotation, LocationAnnotation, LocationAnnotationJson} from "../models/models.ts";
+import type {
+    EdgeAnnotation,
+    EdgeAnnotationCreateEvent, EdgeAnnotationRequest,
+    LocationAnnotation,
+    LocationAnnotationJson
+} from "../models/models.ts";
 
 const API_BASE = "https://cyclotation.fly.dev";
 const LOCATION_ENDPOINTS = "/annotations/locations"
@@ -32,6 +37,28 @@ export class AnnotationRepo{
                 const annotation = this.textToAnnotation(text)
                 if(annotation.id)
                     this.repo.set(annotation.id, annotation)
+                return annotation
+            }catch(err){console.error(err); throw err}
+        }else throw Error("POST request failed with status code " + response.status)
+    }
+
+    async addEdge(ea: EdgeAnnotationRequest): Promise<EdgeAnnotation>{
+        // Send to annotation server
+        const response = await fetch(`${API_BASE}${EDGE_ENDPOINTS}`, {
+            headers: {"Content-Type": "application/json",},
+            method: 'POST', body: JSON.stringify({
+                category: ea.category,
+                timestamp: ea.timestamp,
+                comment: ea.comment,
+                edge_id: ea.edge_id
+            })})
+
+        if(response.status == 200){
+            try {
+                const text= await response.text()
+                const annotation: EdgeAnnotation = JSON.parse(text)
+                if(annotation.id)
+                    this.edgeRepo.set(annotation.id, annotation)
                 return annotation
             }catch(err){console.error(err); throw err}
         }else throw Error("POST request failed with status code " + response.status)
