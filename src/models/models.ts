@@ -142,9 +142,9 @@ export interface LocationAnnotationJson{
 
 export const EdgeAnnotationCategory = {
   EA_KEEPOUT: "KEEPOUT",
-  EA_FAVORITE: "FAVORITES",
+  EA_FAVORITE: "FAVORITE",
   EA_STEEP: "STEEPCLIMB",
-  EA_FLOWTRAIL: "FLOWTRAIL",
+  EA_EXPLORE: "EXPLORE",
 } as const;
 
 export interface EdgeAnnotation{

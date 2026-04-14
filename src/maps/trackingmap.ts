@@ -49,7 +49,7 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
 
     [EdgeAnnotationCategory.EA_FAVORITE, {color: "yellow", weight: 5}],
     [EdgeAnnotationCategory.EA_KEEPOUT, {color: "black", weight: 5, dashArray:[10, 10]}],
-    [EdgeAnnotationCategory.EA_FLOWTRAIL, {color: "blue", weight: 5}],
+    [EdgeAnnotationCategory.EA_EXPLORE, {color: "blue", weight: 5}],
     [EdgeAnnotationCategory.EA_STEEP, {color: "purple", weight: 5}],
 ])
 
