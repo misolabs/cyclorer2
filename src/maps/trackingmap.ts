@@ -190,7 +190,7 @@ export class TrackingMap{
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         // Simply draw entrypoints as markers
         L.geoJSON(routingGeoData.features, {
-            onEachFeature: this.mobileMode ? undefined : this.routingEdgePostprocess.bind(this),
+            onEachFeature: this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
     }
@@ -465,9 +465,11 @@ export class TrackingMap{
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
-        const popupContainer = document.createElement("div");
+        // When riding popups only get in the way
+        if(!this.mobileMode) {
+            const popupContainer = document.createElement("div");
 
-        popupContainer.innerHTML = `<table>
+            popupContainer.innerHTML = `<table>
           <tr>
           <td>Id</td>
           <td><b>${feature.properties.edge_id}</b></td>
@@ -502,27 +504,27 @@ export class TrackingMap{
             </button>
           </div>`
 
-        // Wire up buttons
-        const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
-        favButton!.addEventListener("click", ()=>{
-            this.bus.emit("annotation:edge:create", {
-                edge_id: feature.properties.edge_id,
-                category: EdgeAnnotationCategory.EA_FAVORITE,
-                comment: undefined
+            // Wire up buttons
+            const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
+            favButton!.addEventListener("click", () => {
+                this.bus.emit("annotation:edge:create", {
+                    edge_id: feature.properties.edge_id,
+                    category: EdgeAnnotationCategory.EA_FAVORITE,
+                    comment: undefined
+                })
+            });
+
+            const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn");
+            avoidButton!.addEventListener("click", () => {
+                this.bus.emit("annotation:edge:create", {
+                    edge_id: feature.properties.edge_id,
+                    category: EdgeAnnotationCategory.EA_KEEPOUT,
+                    comment: undefined
+                })
             })
-        });
 
-        const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn");
-        avoidButton!.addEventListener("click", ()=>{
-            this.bus.emit("annotation:edge:create", {
-                edge_id: feature.properties.edge_id,
-                category: EdgeAnnotationCategory.EA_KEEPOUT,
-                comment: undefined
-            })
-        })
-
-        layer.bindPopup(popupContainer)
-
+            layer.bindPopup(popupContainer)
+        }
         // Add to layers map
         this.edgeNetworkLayers.set(feature.properties.edge_id, layer)
     }
