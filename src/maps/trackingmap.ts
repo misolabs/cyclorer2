@@ -67,14 +67,13 @@ let currentTileService: TileService | null = null
 
 export class TrackingMap{
     bus: EventBus
+    mobileMode: boolean
 
     map: L.Map
     positionMarker: L.Marker|null = null
-    headingMarker: L.Marker|null = null
     neighbourMarker: L.CircleMarker[] = []
     snappedEdge: L.Polyline
     routeLayer: L.Polyline
-    headingIcon: L.Icon
     positionIcon: L.Icon
 
     glyphIcons: Map<string, L.Icon.Glyph> = new Map()
@@ -101,6 +100,7 @@ export class TrackingMap{
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
+        this.mobileMode = mobileMode
         this.map = L.map(elName, {
             zoomControl: false,
             rotate: true,
@@ -122,12 +122,6 @@ export class TrackingMap{
 
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9, pane:"routePane"}).addTo(this.map)
         this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9, pane: "routePane"}).addTo(this.map)
-        this.headingIcon = new L.Icon({
-            iconUrl: import.meta.env.BASE_URL + 'assets/sign-merge-right.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [16, -32],
-        })
         this.positionIcon = new L.Icon({
             iconUrl: import.meta.env.BASE_URL + 'assets/pos-marker.png',
             iconSize: [48, 48],
@@ -153,14 +147,21 @@ export class TrackingMap{
 
         // TODO: Move to right location
         this.bus.on("annotation:edge:added", (a: EdgeAnnotation) => {
+            const glyphs:Map<string, string> = new Map([
+                ["FAVORITE", "favorite"],
+                ["EXPLORE", "question_mark"],
+                ["KEEPOUT", "skull"],
+                ["STEEP", "elevation"],
+            ])
+
             const layer = this.edgeNetworkLayers.get(a.edge_id)
             if(layer){
                 const style = edgeStyles.get(a.category)
                 if(style) layer.setStyle(style)
                 else console.error("Edge category not found", a.category)
 
-                if(a.comment) layer.bindTooltip(a.comment, {permanent: false})
-                else layer.bindTooltip(a.category, {permanent: false})
+                if(a.comment) layer.bindTooltip(a.comment, {permanent: true})
+                else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
             }
         })
     }
@@ -189,7 +190,7 @@ export class TrackingMap{
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         // Simply draw entrypoints as markers
         L.geoJSON(routingGeoData.features, {
-            onEachFeature: this.routingEdgePostprocess.bind(this),
+            onEachFeature: this.mobileMode ? undefined : this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
     }
@@ -253,16 +254,6 @@ export class TrackingMap{
         this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.positionIcon}).addTo(this.map)
         if(listener != null)
             this.positionMarker.addEventListener("dragend", listener)
-    }
-
-    addHeadingMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
-        this.headingMarker = L.marker(startPos, {
-            draggable: true,
-            title: "Heading",
-            icon: this.headingIcon}
-        ).addTo(this.map)
-        if(listener != null)
-            this.headingMarker.addEventListener("dragend", listener)
     }
 
     highlightArea(area: Area | null){
