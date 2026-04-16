@@ -11,9 +11,11 @@ export class GeoLocationService{
         this.watchId = -1
 
         this.bus.on("geolocation:enable", this.enableGeolocation.bind(this))
+        this.bus.on("powersave:disable", this.enableGeolocation.bind(this))
+        this.bus.on("powersave:enable", this.disableGeolocation.bind(this))
     }
 
-    enableGeolocation(enable: boolean) {
+    enableGeolocation() {
         if("geolocation" in navigator) {
             this.watchId = navigator.geolocation.watchPosition(
                 this.trackingListener.bind(this),
@@ -22,6 +24,13 @@ export class GeoLocationService{
             )
             this.bus.emit("geolocation:ready")
         }else console.warn("Geolocation not supported")
+    }
+
+    disableGeolocation() {
+        if("geolocation" in navigator && this.watchId > 0) {
+            navigator.geolocation.clearWatch(this.watchId)
+            this.watchId = -1
+        }
     }
 
     trackingListener(pos: GeolocationPosition){

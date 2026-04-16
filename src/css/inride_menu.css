@@ -104,3 +104,11 @@
 
     background-color: rgba(4, 137, 181, 0.7);
 }
+
+/* Enter mobile powersave mode */
+#powersave-enable-btn{
+    bottom: 10px;
+    right: 10px;
+
+    background-color: rgba(4, 137, 181, 0.7);
+}

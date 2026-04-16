@@ -1,0 +1,23 @@
+#powersave-view {
+    position: fixed;
+    inset: 0;
+
+    background-color: black;
+    background-size: cover;
+    background-position: center;
+    opacity: 1.0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    transition: opacity 1.0s ease;
+    z-index: 9999;
+}
+
+#powersave-view.hidden {
+    opacity: 0.0;
+    pointer-events: none;
+}

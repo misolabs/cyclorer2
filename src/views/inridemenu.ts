@@ -26,20 +26,13 @@ export class InRideMenu{
             }else this.hide()
         })
 
-        // Clicked on button to return focus to rider
-        /*
-        document.getElementById("zoom-frame-rider")!.addEventListener("click", () => {
-            this.bus.emit("zoom:frame:rider")
-            document.getElementById("zoom-frame-rider")!.classList.add("hide")
-        })
-
-        this.bus.on("zoom:framed:area", this.onZoomFramedArea.bind(this))*/
+        document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {this.bus.emit("powersave:enable")})
 
         // Some buttons are only visible in mobile or desktop mode
 
         const query: string = this.mobileMode ? "#buttons-overlay > button.cyc-only-desktop" : "#buttons-overlay > button.cyc-only-mobile"
         const buttonsToHide = document.querySelectorAll(query)
-        buttonsToHide.forEach(button => {button.classList.add("hide")})
+        //buttonsToHide.forEach(button => {button.classList.add("hide")})
     }
 
     hide(){

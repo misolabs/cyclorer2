@@ -25,11 +25,13 @@ type Events = {
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void
 
+    "powersave:enable": void
+    "powersave:disable": void
     "wakelock:engage": void
     
     "preview:minimize": void
 
-    "geolocation:enable": boolean
+    "geolocation:enable": void
     "geolocation:update": GeolocationPosition
     "geolocation:ready": void
 

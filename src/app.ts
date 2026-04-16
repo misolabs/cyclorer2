@@ -3,6 +3,7 @@ import './css/common.css'
 import './css/map.css'
 import './css/settings.css'
 import './css/splash.css'
+import './css/powersave.css'
 import './css/inride_menu.css'
 import './css/leaflet-custom.css'
 
@@ -23,6 +24,7 @@ import {InRideMenu} from "./views/inridemenu.ts";
 import {DebugOverlay} from "./views/debugoverlay.ts";
 import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
+import {PowersaveView} from "./views/powersave.ts";
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device
@@ -66,6 +68,8 @@ const trackingView = new TrackingView(appBus, isMobileLike)
 trackingView.init()
 inrideMenu.init()
 
+const powersaveView = new PowersaveView(appBus)
+
 // Show splash screen
 appBus.emit("splash:show")
 
@@ -75,7 +79,7 @@ settingsService.initSettings()
 // We only use GPS tracking on a mobile device
 // Simulation mode on a desktop browser
 if(isMobileLike) {
-    appBus.emit("geolocation:enable", true)
+    appBus.emit("geolocation:enable")
     // Enable wakelock when clicking on splash-screen
     appBus.on("wakelock:engage", async () => {
         await wakeLockService.enable()
