@@ -46,6 +46,7 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["DEFAULT", {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}],
     ["DEADEND", {color: "black", weight: 5}],
     ["UNVISITED", {color: "red", weight: 3}],
+    ["URBAN_UNVISITED", {color: "green", weight: 3}],
 
     [EdgeAnnotationCategory.EA_FAVORITE, {color: "yellow", weight: 5}],
     [EdgeAnnotationCategory.EA_KEEPOUT, {color: "black", weight: 5, dashArray:[10, 10]}],
@@ -529,11 +530,26 @@ export class TrackingMap{
         this.edgeNetworkLayers.set(feature.properties.edge_id, layer)
     }
 
+    isOfType(
+        highway: string | string[] | undefined,
+        ...types: string[]
+    ): boolean {
+        if (!highway) return false;
+
+        if (Array.isArray(highway)) {
+            return highway.some(h => types.includes(h));
+        }
+
+        return types.includes(highway);
+    }
+
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
         if(feature && feature.properties.deadend)
             return edgeStyles.get("DEADEND")!
-        else if(feature && feature.properties.ride_count == 0)
+        else if(feature && feature.properties.ride_count == 0 && this.isOfType(feature.properties.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
+        else if(feature && feature.properties.ride_count == 0)
+            return edgeStyles.get("URBAN_UNVISITED")!
 
         // default case
         return edgeStyles.get("DEFAULT")!
