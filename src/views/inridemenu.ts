@@ -32,7 +32,7 @@ export class InRideMenu{
 
         const query: string = this.mobileMode ? "#buttons-overlay > button.cyc-only-desktop" : "#buttons-overlay > button.cyc-only-mobile"
         const buttonsToHide = document.querySelectorAll(query)
-        //buttonsToHide.forEach(button => {button.classList.add("hide")})
+        buttonsToHide.forEach(button => {button.classList.add("hide")})
     }
 
     hide(){

@@ -98,6 +98,7 @@ export class TrackingMap{
     globalViewZoom: number = 15
 
     heading: number = 0
+    resetHeading = true
 
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
@@ -165,6 +166,9 @@ export class TrackingMap{
                 else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
             }
         })
+
+        // After we come back from powersave mode we just set the heading without history
+        this.bus.on("powersave:disable", () => {this.resetHeading = true})
     }
 
     setBaseLayer(id: string){
@@ -339,12 +343,24 @@ export class TrackingMap{
     }
 
     setHeading(angle: number){
-        const alpha = 0.8
-        this.heading = this.heading * alpha + angle * (1 - alpha)
+        // Sometimes we need a clean break
+        if(this.resetHeading){
+            this.heading = angle
+            this.resetHeading = false
+        }else {
+            const alpha = 0.8
+
+            let delta = ((angle - this.heading + 540) % 360) - 180;
+
+            // move a fraction toward target
+            this.heading = this.heading + (1 - alpha) * delta;
+
+            // normalize back to [0, 360)
+            this.heading = (this.heading + 360) % 360;
+        }
+        // Set a lightly quantized angle in 5° steps to avoid too much jitter
         const quantized = Math.round(this.heading / 5) * 5
         this.map.setBearing(quantized)
-//        this.bus.emit("debug:clear")
-//        this.bus.emit("debug:log", `O: ${angle.toFixed(0)} I: ${this.heading}`)
     }
 
     addTextAnnotation(annotation: LocationAnnotation){
@@ -503,6 +519,12 @@ export class TrackingMap{
             <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-keepout-btn" style="position: relative;">
                 <span class="material-symbols-rounded">back_hand</span>
             </button>
+            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-explore-btn" style="position: relative;">
+                <span class="material-symbols-rounded">not_listed_location</span>
+            </button>
+            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-steep-btn" style="position: relative;">
+                <span class="material-symbols-rounded">elevation</span>
+            </button>
           </div>`
 
             // Wire up buttons
@@ -520,6 +542,24 @@ export class TrackingMap{
                 this.bus.emit("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_KEEPOUT,
+                    comment: undefined
+                })
+            })
+
+            const exploreButton = popupContainer.querySelector(".cyc-edge-annotation-explore-btn");
+            exploreButton!.addEventListener("click", () => {
+                this.bus.emit("annotation:edge:create", {
+                    edge_id: feature.properties.edge_id,
+                    category: EdgeAnnotationCategory.EA_EXPLORE,
+                    comment: undefined
+                })
+            })
+
+            const steepButton = popupContainer.querySelector(".cyc-edge-annotation-steep-btn");
+            steepButton!.addEventListener("click", () => {
+                this.bus.emit("annotation:edge:create", {
+                    edge_id: feature.properties.edge_id,
+                    category: EdgeAnnotationCategory.EA_STEEP,
                     comment: undefined
                 })
             })
