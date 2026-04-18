@@ -30,7 +30,7 @@ export class InRideMenu{
 
         // Some buttons are only visible in mobile or desktop mode
 
-        const query: string = this.mobileMode ? "#buttons-overlay > button.cyc-only-desktop" : "#buttons-overlay > button.cyc-only-mobile"
+        const query: string = this.mobileMode ? "#buttons-overlay > .cyc-only-desktop" : "#buttons-overlay > .cyc-only-mobile"
         const buttonsToHide = document.querySelectorAll(query)
         buttonsToHide.forEach(button => {button.classList.add("hide")})
     }
