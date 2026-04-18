@@ -34,6 +34,7 @@ type Events = {
     "geolocation:enable": void
     "geolocation:update": GeolocationPosition
     "geolocation:ready": void
+    "geolocation:riding": boolean
 
     "geolocsim:update": LatLon
 

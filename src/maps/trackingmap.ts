@@ -169,6 +169,9 @@ export class TrackingMap{
 
         // After we come back from powersave mode we just set the heading without history
         this.bus.on("powersave:disable", () => {this.resetHeading = true})
+
+        // If we are riding we disbale all map intercation to make hitting buttons easier
+        this.bus.on("geolocation:riding", (riding: boolean) =>{this.disableMapInteraction(riding)})
     }
 
     setBaseLayer(id: string){
@@ -593,5 +596,19 @@ export class TrackingMap{
 
         // default case
         return edgeStyles.get("DEFAULT")!
+    }
+
+    disableMapInteraction(disable: boolean) {
+        if (disable) {
+            this.map.dragging.disable();
+            this.map.touchZoom.disable();
+            //this.map.doubleClickZoom.disable();
+            //this.map.scrollWheelZoom.disable();
+        } else {
+            this.map.dragging.enable();
+            this.map.touchZoom.enable();
+            //this.map.doubleClickZoom.enable();
+            //this.map.scrollWheelZoom.enable();
+        }
     }
 }

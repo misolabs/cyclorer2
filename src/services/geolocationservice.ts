@@ -5,6 +5,7 @@ export interface GeolocationLight{ coords: {latitude: number, longitude: number 
 export class GeoLocationService{
     bus: EventBus
     watchId: number
+    riding: boolean = false
 
     constructor(bus: EventBus) {
         this.bus = bus
@@ -35,5 +36,15 @@ export class GeoLocationService{
 
     trackingListener(pos: GeolocationPosition){
         this.bus.emit("geolocation:update", pos)
+
+        if(pos.coords.speed){
+            if(!this.riding && pos.coords.speed > 1.0){
+                this.riding = true
+                this.bus.emit("geolocation:riding", true)
+            }else if(this.riding && pos.coords.speed < 0.5){
+                this.riding = false
+                this.bus.emit("geolocation:riding", false)
+            }
+        }
     }
 }
