@@ -40,6 +40,10 @@
 
 /* General properties for all menu buttons */
 .cyc-menu-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     position: absolute;
     z-index: 2500;
 
@@ -51,6 +55,22 @@
     color: white;
 
     pointer-events: all;
+}
+
+.cyc-menu-button-hitbox{
+    position: absolute;
+
+    z-index: 9000;
+
+    width: 120px;   /* hitbox size */
+    height: 120px;  /* hitbox size */
+
+    pointer-events: all;
+}
+
+/* When he click the hitbox we highlight the button */
+.cyc-menu-button-hitbox:active .btn{
+    background-color: white;
 }
 
 @media (max-width: 768px) {
@@ -91,7 +111,12 @@
 
 /* Center view on rider */
 #center-btn{
-    left: calc(50% - 40px);
+    left: calc(50% - 60px);
+    bottom:0;
+}
+
+#center-btn .btn{
+    left: 20px;
     bottom:10px;
 
     background-color: rgba(181, 30, 4, 0.7);
@@ -99,6 +124,11 @@
 
 /* Drop a quick pin during ride */
 #drop-pin-generic{
+    bottom: 0;
+    left: 0;
+}
+
+#drop-pin-generic .btn{
     bottom: 10px;
     left: 10px;
 
@@ -107,6 +137,11 @@
 
 /* Enter mobile powersave mode */
 #powersave-enable-btn{
+    bottom: 0;
+    right: 0;
+}
+
+#powersave-enable-btn .btn{
     bottom: 10px;
     right: 10px;
 
