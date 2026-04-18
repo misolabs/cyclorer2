@@ -57,23 +57,31 @@
     pointer-events: all;
 }
 
-.cyc-menu-button-hitbox{
+/* Hitbox = Invisible region around a button that triggers a button */
+.cyc-menu-button-hitbox {
     position: absolute;
 
     z-index: 9000;
 
-    width: 120px;   /* hitbox size */
-    height: 120px;  /* hitbox size */
+    width: 60px; /* hitbox size */
+    height: 60px; /* hitbox size */
 
     pointer-events: all;
 }
 
-/* When he click the hitbox we highlight the button */
-.cyc-menu-button-hitbox:active .btn{
-    background-color: white;
-}
-
+/* Bigger hitbox when riding */
 @media (max-width: 768px) {
+    .cyc-menu-button-hitbox {
+        width: 120px; /* hitbox size */
+        height: 120px; /* hitbox size */
+    }
+
+    /* When he click the hitbox we highlight the button */
+    .cyc-menu-button-hitbox:active .btn{
+        background-color: white;
+    }
+
+    /* Larger buttons */
     .cyc-menu-button{
         width: 80px;
         height: 80px;
@@ -95,6 +103,11 @@
 
 /* Return zoom to rider */
 #zoom-toggle-btn{
+    top: 0;
+    left: 0;
+}
+
+#zoom-toggle-btn .btn{
     top:10px;
     left: 10px;
 
@@ -103,6 +116,11 @@
 
 /* Settings menu */
 #settings-open{
+    top: 0;
+    right: 0;
+}
+
+#settings-open .btn{
     top: 10px;
     right: 10px;
 
