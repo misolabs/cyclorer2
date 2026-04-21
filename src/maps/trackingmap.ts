@@ -153,7 +153,7 @@ export class TrackingMap{
                 ["FAVORITE", "favorite"],
                 ["EXPLORE", "question_mark"],
                 ["KEEPOUT", "skull"],
-                ["STEEP", "elevation"],
+                ["STEEPCLIMB", "elevation"],
             ])
 
             const layer = this.edgeNetworkLayers.get(a.edge_id)
@@ -164,6 +164,15 @@ export class TrackingMap{
 
                 if(a.comment) layer.bindTooltip(a.comment, {permanent: true})
                 else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
+            }
+        })
+
+        // When a style override (=custom annotation) is deleted we revert to the standard rendering style for that edge
+        this.bus.on("annotation:edge:deleted", (a: EdgeAnnotation) => {
+            const layer = this.edgeNetworkLayers.get(a.edge_id)
+            if(layer){
+                layer.setStyle(this.styleRoutingEdge(layer.feature))
+                layer.getTooltip()?.removeFrom(this.map)
             }
         })
 
@@ -515,6 +524,7 @@ export class TrackingMap{
           <td><b>${feature.properties.ride_count}</b></td>
           </tr>
           </table>
+          <textarea rows="3" placeholder="Comment" class="cyc-edge-annotation-comment-input" style="width: 100%;"></textarea>
           <div class="mt-3" style="width: 200px; display: flex;height: 50px;flex-direction: row;gap: 10px;">
             <button class="btn btn-success cyc-menu-button cyc-only-desktop cyc-edge-annotation-favorite-btn" style="position: relative;">
                 <span class="material-symbols-rounded">favorite</span>
@@ -522,13 +532,18 @@ export class TrackingMap{
             <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-keepout-btn" style="position: relative;">
                 <span class="material-symbols-rounded">back_hand</span>
             </button>
-            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-explore-btn" style="position: relative;">
+            <button class="btn btn-secondary cyc-menu-button cyc-only-desktop cyc-edge-annotation-explore-btn" style="position: relative;">
                 <span class="material-symbols-rounded">not_listed_location</span>
             </button>
-            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-steep-btn" style="position: relative;">
+            <button class="btn btn-secondary cyc-menu-button cyc-only-desktop cyc-edge-annotation-steep-btn" style="position: relative;">
                 <span class="material-symbols-rounded">elevation</span>
             </button>
+            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-delete-btn" style="position: relative;">
+                <span class="material-symbols-rounded">ink_eraser</span>
+            </button>
           </div>`
+
+            const commentArea = popupContainer.querySelector(".cyc-edge-annotation-comment-input")! as HTMLTextAreaElement
 
             // Wire up buttons
             const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
@@ -536,7 +551,7 @@ export class TrackingMap{
                 this.bus.emit("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_FAVORITE,
-                    comment: undefined
+                    comment: commentArea.value
                 })
             });
 
@@ -545,7 +560,7 @@ export class TrackingMap{
                 this.bus.emit("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_KEEPOUT,
-                    comment: undefined
+                    comment: commentArea.value
                 })
             })
 
@@ -554,7 +569,7 @@ export class TrackingMap{
                 this.bus.emit("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_EXPLORE,
-                    comment: undefined
+                    comment: commentArea.value
                 })
             })
 
@@ -563,8 +578,14 @@ export class TrackingMap{
                 this.bus.emit("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_STEEP,
-                    comment: undefined
+                    comment: commentArea.value
                 })
+            })
+
+            // TODO - Handle event in AnnotationRepo
+            const deleteButton = popupContainer.querySelector(".cyc-edge-annotation-delete-btn");
+            deleteButton!.addEventListener("click", () => {
+                this.bus.emit("annotation:edge:delete", feature.properties.edge_id)
             })
 
             layer.bindPopup(popupContainer)

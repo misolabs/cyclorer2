@@ -73,6 +73,29 @@ export class AnnotationRepo{
         }
     }
 
+    async deleteEdge(id: number): Promise<boolean>{
+        if(this.edgeRepo.has(id)){
+            const response = await fetch(`${API_BASE}${EDGE_ENDPOINTS}/${id}`, {method: "DELETE"})
+            if(response.status == 200){
+                this.edgeRepo.delete(id)
+                return true
+            }
+        }
+        return false
+    }
+
+    findByEdgeId(edgeId: string): EdgeAnnotation | undefined {
+        let result: EdgeAnnotation | undefined = undefined
+        this.edgeRepo.forEach((edge, id) => {
+            if(edge.edge_id == edgeId){
+                console.log("found edge ID", edge.edge_id)
+                result = edge
+            }
+        })
+
+        return result
+    }
+
     getAll(){
         return this.toArray()
     }

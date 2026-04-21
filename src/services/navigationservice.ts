@@ -59,6 +59,7 @@ export class NavigationService{
         bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
         bus.on("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
+        bus.on("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
 
         bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
         bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
@@ -113,19 +114,34 @@ export class NavigationService{
         this.bus.emit("annotation:location:added", annotation)
     }
 
-    onDeleteAnnotationRequest(id: number){
+    async onDeleteAnnotationRequest(id: number){
         console.log("Delete annotation request", id)
-        this.annotationRepo.delete(id)
+        await this.annotationRepo.delete(id)
     }
 
     async onCreateEdgeAnnotation(annotation: EdgeAnnotationCreateEvent){
-        const result = await this.annotationRepo.addEdge({
-            ...annotation,
-            timestamp: new Date(Date.now()).toJSON()
-        })
+        // TODO cover the case where we are modifying an existing annotation
+        const existingAnnotation = this.annotationRepo.findByEdgeId(annotation.edge_id)
+        if(!existingAnnotation) {
+            const result = await this.annotationRepo.addEdge({
+                ...annotation,
+                timestamp: new Date(Date.now()).toJSON()
+            })
 
-        // Tell map to display the new edge annotation
-        this.bus.emit("annotation:edge:added", result)
+            // Tell map to display the new edge annotation
+            this.bus.emit("annotation:edge:added", result)
+        }else{
+            // TODO Modify current edge
+        }
+    }
+
+    async onDeleteEdgeAnnotation(edge_id: string){
+        const annotation = this.annotationRepo.findByEdgeId(edge_id)
+        if(annotation){
+            const success = await this.annotationRepo.deleteEdge(annotation.id)
+            if(success)
+                this.bus.emit("annotation:edge:deleted", annotation)
+        }else console.error("Unable to find edge annotation")
     }
 
     async onAnnotationPositionChanged(data: {id: number, pos: LatLon}){

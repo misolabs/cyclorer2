@@ -55,6 +55,8 @@ type Events = {
 
     "annotation:edge:added": EdgeAnnotation
     "annotation:edge:create": EdgeAnnotationCreateEvent
+    "annotation:edge:delete": string
+    "annotation:edge:deleted": EdgeAnnotation
 
     "exploration:started": Area
     "exploration:ended": void
