@@ -6,7 +6,7 @@ import {
     type BoundingBox, type Edge,
     type LatLon,
     type LocationAnnotation,
-    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent
+    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent, type LocationAnnotationRequest
 } from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
@@ -53,10 +53,10 @@ export class NavigationService{
         bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
 
-        bus.on("annotation:location:marker:create", this.onAddAnnotationRequest.bind(this))
-        bus.on("annotation:location:text:create", this.onAddTextAnnotationRequest.bind(this))
-        bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
-        bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
+        bus.on("annotation:location:create", this.onAddAnnotationRequest.bind(this))
+        //bus.on("annotation:location:text:create", this.onAddTextAnnotationRequest.bind(this))
+        //bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
+        //bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
         bus.on("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
         bus.on("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
@@ -66,6 +66,7 @@ export class NavigationService{
         bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
 
         bus.on("system:ready", this.onSystemReady.bind(this))
+        bus.on("system:sync:requests", () => {this.annotationRepo.processQueue()})
         //bus.on("data:sync", this.onDataSync.bind(this))
 
         bus.on("navigation:target:area", this.onNavigateArea.bind(this))
@@ -78,7 +79,7 @@ export class NavigationService{
         await this.annotationRepo.fetchFromServer()
 
         // Add location annotations to the map
-        this.annotationRepo.getAll().forEach((a: LocationAnnotation) => {this.bus.emit("annotation:location:added", a)})
+        this.bus.emit("annotation:location:loaded", this.annotationRepo.getAll())
 
         // Add edge annotations to map
         this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emit("annotation:edge:added", a)})
@@ -98,14 +99,12 @@ export class NavigationService{
         this.update()
     }
 
-    async onAddAnnotationRequest(category: LocationAnnotationCategory){
-        const ts = new Date(Date.now()).toJSON()
-        const annotation = await this.annotationRepo.add({location: this.currentPosition, category: category, timestamp: ts})
 
-        // Tell everyone about this one
-        this.bus.emit("annotation:location:added", annotation)
+    async onAddAnnotationRequest(annotation: LocationAnnotationRequest){
+        // We add the request to the queue, but we don't know when it will be executed
+        this.annotationRepo.add(annotation)
     }
-
+/*
     async onAddTextAnnotationRequest(text: string){
         const ts = new Date(Date.now()).toJSON()
         const annotation = await this.annotationRepo.add({location: this.currentPosition, category: "TEXT", timestamp: ts, text: text})
@@ -113,8 +112,8 @@ export class NavigationService{
         // Tell everyone about this one
         this.bus.emit("annotation:location:added", annotation)
     }
-
-    async onDeleteAnnotationRequest(id: number){
+*/
+    async onDeleteAnnotationRequest(id: string){
         console.log("Delete annotation request", id)
         await this.annotationRepo.delete(id)
     }
@@ -144,7 +143,7 @@ export class NavigationService{
         }else console.error("Unable to find edge annotation")
     }
 
-    async onAnnotationPositionChanged(data: {id: number, pos: LatLon}){
+    async onAnnotationPositionChanged(data: {id: string, pos: LatLon}){
         const annotation = this.annotationRepo.get(data.id)
         if(annotation){
             annotation.location = data.pos

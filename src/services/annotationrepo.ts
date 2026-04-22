@@ -3,15 +3,23 @@ import type {
     EdgeAnnotation,
     EdgeAnnotationCreateEvent, EdgeAnnotationRequest,
     LocationAnnotation,
-    LocationAnnotationJson
+    LocationAnnotationJson, LocationAnnotationRequest
 } from "../models/models.ts";
 
 const API_BASE = "https://cyclotation.fly.dev";
 const LOCATION_ENDPOINTS = "/annotations/locations"
 const EDGE_ENDPOINTS = "/annotations/edges"
 
+interface RequestQueueEntry{
+    url: string,
+    headers?: HeadersInit,
+    method: string,
+    body: string,
+    retryCount: number,
+}
+
 export class AnnotationRepo{
-    repo: Map<number, LocationAnnotation>
+    repo: Map<string, LocationAnnotation>
     edgeRepo: Map<number, EdgeAnnotation>
 
     constructor() {
@@ -19,27 +27,61 @@ export class AnnotationRepo{
         this.edgeRepo = new Map()
     }
 
-    async add(la: LocationAnnotation): Promise<LocationAnnotation>{
-        // Send to annotation server
-        const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}`, {
-            headers: {"Content-Type": "application/json",},
-            method: 'POST', body: JSON.stringify({
-                category: la.category,
-                lat: la.location.lat,
-                lon: la.location.lon,
-                timestamp: la.timestamp,
-                text: la.text,
-            })})
+    getQueue(): RequestQueueEntry[] {
+        return JSON.parse(localStorage.getItem('annotationsRequestQueue') || '[]')
+    }
 
-        if(response.status == 200){
+    setQueue(queue: RequestQueueEntry[]) {
+        localStorage.setItem('annotationsRequestQueue', JSON.stringify(queue))
+    }
+
+    addToQueue(request: RequestQueueEntry){
+        const queue = this.getQueue()
+        queue.push(request)
+        this.setQueue(queue)
+        this.processQueue()
+    }
+
+    async processQueue() {
+        const queue = this.getQueue()
+        const remaining = []
+
+        for (const item of queue) {
             try {
-                const text= await response.text()
-                const annotation = this.textToAnnotation(text)
-                if(annotation.id)
-                    this.repo.set(annotation.id, annotation)
-                return annotation
-            }catch(err){console.error(err); throw err}
-        }else throw Error("POST request failed with status code " + response.status)
+                const res = await fetch(item.url, {
+                    method: item.method,
+                    headers: item.headers,
+                    body: item.body
+                })
+
+                if (!res.ok) throw new Error()
+                console.log("Successfully sent request", item)
+            } catch {
+                item.retryCount++
+                if(item.retryCount < 5)
+                    remaining.push(item)
+                else
+                    console.error("Failed to send request 5 times, abandoning task", item)
+            }
+        }
+
+        this.setQueue(remaining)
+    }
+
+    add(la: LocationAnnotationRequest): void {
+        const request: RequestQueueEntry = {
+            url: `${API_BASE}${LOCATION_ENDPOINTS}`,
+            method: "POST",
+            headers: {"Content-Type": "application/json",},
+            body: JSON.stringify(la),
+            retryCount: 0
+        }
+
+        // Add annotation to local repo
+        this.repo.set(la.id, la)
+
+        // Add to request queue for sending to server
+        this.addToQueue(request)
     }
 
     async addEdge(ea: EdgeAnnotationRequest): Promise<EdgeAnnotation>{
@@ -64,7 +106,7 @@ export class AnnotationRepo{
         }else throw Error("POST request failed with status code " + response.status)
     }
 
-    async delete(id: number){
+    async delete(id: string){
         if(this.repo.has(id)){
             const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}/${id}`, {method: "DELETE"})
             if(response.status == 200){
@@ -104,7 +146,7 @@ export class AnnotationRepo{
         return [...this.edgeRepo].map(([name, value]) => value)
     }
 
-    get(id: number){
+    get(id: string){
         return this.repo.get(id)
     }
 
@@ -145,21 +187,15 @@ export class AnnotationRepo{
 
         if(response.status == 200){
             try {
-                const json: LocationAnnotationJson[] = JSON.parse(await response.text())
-                for(const aJson of json){
+                const json: LocationAnnotation[] = JSON.parse(await response.text())
+                for(const annotation of json){
                     try{
-                        const annotation = {
-                            category: aJson.category,
-                            location: {lat:aJson.lat, lon:aJson.lon},
-                            text: aJson.text,
-                            id: aJson.id,
-                            timestamp: aJson.timestamp}
-
                         if(annotation.id)
                             this.repo.set(annotation.id, annotation)
                     }catch(err){console.error(err)}
                 }
             }catch(err){console.error(err); throw err}
+            console.log("Loaded location annotations", this.repo.size)
         }else throw Error("POST request failed with status code " + response.status)
     }
 

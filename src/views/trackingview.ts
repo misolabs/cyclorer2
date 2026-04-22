@@ -14,8 +14,15 @@ import type {
 import type {Settings} from "../services/settingsservice.ts";
 import {geoToLatLon} from "../crs/latlonmath.ts";
 import type {GeolocationLight} from "../services/geolocationservice.ts";
-import type {Area, AreaId, LocationAnnotation} from "../models/models.ts";
+import type {
+    Area,
+    AreaId,
+    LocationAnnotation,
+    LocationAnnotationCategory,
+    LocationAnnotationRequest
+} from "../models/models.ts";
 import {formatDistance, setDescription} from "../dom.ts";
+import {jsonTimestamp} from "../helpers.ts";
 
 /*  TODO
     - heading
@@ -56,7 +63,10 @@ export class TrackingView {
 
         this.bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
 
-        this.bus.on("annotation:location:added", this.onAnnotationAdded.bind(this))
+        // UI requests to create an annotation marker here
+        this.bus.on("annotation:location:drophere", this.onLocationAnnotationDrophere.bind(this))
+        // After location annotations are loaded we add them to the map
+        this.bus.on("annotation:location:loaded", this.onLocationAnnotationsLoaded.bind(this))
 
         this.bus.on("exploration:started", this.onExplorationStarted.bind(this))
         this.bus.on("exploration:ended", this.onExplorationEnded.bind(this))
@@ -98,12 +108,13 @@ export class TrackingView {
         })
 
         // TODO Experimental - Add text annotation
+        /*
         document.getElementById("drop-pin-text")!.addEventListener("click", () =>
         {
             const text = window.prompt("Annotation:")
             if(text)
                 this.bus.emit("annotation:location:text:create", text)
-        })
+        })*/
 
     }
 
@@ -158,6 +169,29 @@ export class TrackingView {
         this.trackingMap.toggleFrequencyHeatmap(settings.showFrequencyHeatmap)
     }
 
+    onLocationAnnotationDrophere(category: LocationAnnotationCategory){
+        const locationLatLng = this.trackingMap.positionMarker!.getLatLng()
+
+        const annotation: LocationAnnotationRequest = {
+            category: category,
+            id: crypto.randomUUID(),
+            text: undefined, // TODO Cater for text annotations as well
+            timestamp: jsonTimestamp(),
+            location: {lat: locationLatLng.lat, lon: locationLatLng.lng},
+        }
+
+        // Add to tracking map
+        this.trackingMap.addAnnotation(annotation)
+
+        // Send to backend for storage
+        this.bus.emit("annotation:location:create", annotation)
+    }
+
+    onLocationAnnotationsLoaded(annotations: LocationAnnotation[]){
+        for (const annotation of annotations) {
+            this.trackingMap.addAnnotation(annotation)
+        }
+    }
     onAnnotationAdded(annotation: LocationAnnotation){
         if(annotation.category === "TEXT" && annotation.text)
             this.trackingMap.addTextAnnotation(annotation)

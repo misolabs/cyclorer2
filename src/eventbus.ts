@@ -8,7 +8,7 @@ import type {
 import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {
     LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
-    EdgeAnnotationCreateEvent
+    EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
@@ -20,6 +20,7 @@ type Events = {
     "settings:show": boolean
 
     "data:sync": void
+    "system:sync:requests": void
 
     "splash:show": void
     "splash:stats": {totalLength: number, areaCount: number}
@@ -47,11 +48,12 @@ type Events = {
     "rds:areas:loaded": [GeoJsonAreaCollection, GeoJsonEntrypointCollection]
     "rds:annotations:loaded": LocationAnnotation[]
 
-    "annotation:location:marker:create": LocationAnnotationCategory
-    "annotation:location:text:create": LocationAnnotationCategory
-    "annotation:location:added": LocationAnnotation
-    "annotation:location:delete": number
-    "annotation:location:modify:pos": {id: number, pos: LatLon}
+    "annotation:location:drophere": LocationAnnotationCategory // UI button to mapview
+    "annotation:location:create": LocationAnnotationRequest // UI to service
+    "annotation:location:delete": LocationAnnotationId
+    "annotation:location:modify:pos": {id: LocationAnnotationId, pos: LatLon}
+    "annotation:location:synced": LocationAnnotation
+    "annotation:location:loaded": LocationAnnotation[]
 
     "annotation:edge:added": EdgeAnnotation
     "annotation:edge:create": EdgeAnnotationCreateEvent

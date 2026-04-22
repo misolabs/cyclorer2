@@ -29,3 +29,7 @@ export function logError(e: unknown, ...args:any): string {
   console.error(...args, String(e))
   return String(e);
 }
+
+export function jsonTimestamp(){
+  return new Date(Date.now()).toJSON()
+}

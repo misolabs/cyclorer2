@@ -87,10 +87,17 @@ if(isMobileLike) {
     // Re-acquire when coming back to the tab/app
     document.addEventListener("visibilitychange", () => {
         wakeLockService.handleVisibilityChange();
-    });}
+    });
+
+    // Try sending pending requests when going back online
+    document.addEventListener("online", () => {appBus.emit("system:sync:requests")})
+}
 
 // Async loading of all geo-data files
 await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
+
+// Sync pending server requests
+appBus.emit("system:sync:requests")

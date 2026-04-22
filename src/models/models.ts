@@ -110,31 +110,36 @@ export const NavigationMode = {
 }
 export type NavigationMode = typeof NavigationMode[keyof typeof NavigationMode];
 
-export interface POI{
-  pos: LatLon
-  type: string
-}
-
 //------------
 // ANNOTATIONS
 //------------
 
 // Locations = Marker
 export type LocationAnnotationCategory = string
-export interface LocationAnnotation{
+export type LocationAnnotationId = string
+
+export interface LocationAnnotationRequest{
+  id: LocationAnnotationId
   category: LocationAnnotationCategory
   location: LatLon
   timestamp: string
-  id?: number
+  text?: string
+}
+
+export interface LocationAnnotation{
+  id: LocationAnnotationId
+  category: LocationAnnotationCategory
+  location: LatLon
+  timestamp: string
   text?: string
 }
 
 export interface LocationAnnotationJson{
+  id: LocationAnnotationId
   category: LocationAnnotationCategory
   lat: number
   lon: number
   timestamp: string
-  id?: number
   text?: string
 }
 
