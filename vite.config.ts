@@ -12,6 +12,11 @@ export default defineConfig({
             strategies: "injectManifest",
             srcDir: 'src',
             filename: 'sw.ts',
+            workbox: {
+                globPatterns: [
+                    '**/*.{js,css,html,ico,png,jpg,svg,woff2}'
+                ],
+            },
 
             manifest: {
                 name: "Cyclorer 2",
