@@ -54,9 +54,8 @@ export class NavigationService{
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
 
         bus.on("annotation:location:create", this.onAddAnnotationRequest.bind(this))
-        //bus.on("annotation:location:text:create", this.onAddTextAnnotationRequest.bind(this))
-        //bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
-        //bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
+        bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
+        bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
         bus.on("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
         bus.on("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
@@ -147,8 +146,7 @@ export class NavigationService{
         const annotation = this.annotationRepo.get(data.id)
         if(annotation){
             annotation.location = data.pos
-            const persisted = await this.annotationRepo.update(annotation)
-            // TODO - Send message with new object?
+            this.annotationRepo.update(annotation)
         }
     }
 

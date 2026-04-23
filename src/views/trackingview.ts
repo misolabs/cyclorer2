@@ -172,10 +172,14 @@ export class TrackingView {
     onLocationAnnotationDrophere(category: LocationAnnotationCategory){
         const locationLatLng = this.trackingMap.positionMarker!.getLatLng()
 
+        let text: string|null = null
+        if(category == "TEXT")
+            text = window.prompt("Annotation:")
+
         const annotation: LocationAnnotationRequest = {
             category: category,
             id: crypto.randomUUID(),
-            text: undefined, // TODO Cater for text annotations as well
+            text: text ? text : undefined, // Hack for null <-> undefined
             timestamp: jsonTimestamp(),
             location: {lat: locationLatLng.lat, lon: locationLatLng.lng},
         }
@@ -191,12 +195,6 @@ export class TrackingView {
         for (const annotation of annotations) {
             this.trackingMap.addAnnotation(annotation)
         }
-    }
-    onAnnotationAdded(annotation: LocationAnnotation){
-        if(annotation.category === "TEXT" && annotation.text)
-            this.trackingMap.addTextAnnotation(annotation)
-        else
-            this.trackingMap.addAnnotation(annotation)
     }
 
     onExplorationStarted(area: Area){

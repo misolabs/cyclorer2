@@ -375,30 +375,25 @@ export class TrackingMap{
         this.map.setBearing(quantized)
     }
 
-    addTextAnnotation(annotation: LocationAnnotation){
-        const id = annotation.id
-        if(id == undefined) return
-        const label = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
-            {
-            icon: L.divIcon({
-                className: '',
-                html: `<div class="roboto-font map-label">${annotation.text}</div>`,
-            }), draggable: true,
-        }).addTo(this.map)
-        this.addAnnotationPopup(annotation, label)
-        // Handler for modifying position
-        label.on("dragend", (e ) => {
-            this.bus.emit("annotation:location:modify:pos", {id: id, pos:{lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng }})
-        })
-
-    }
-
     addAnnotation(annotation: LocationAnnotation) {
         const id = annotation.id
         if(id == undefined) return
-        const marker = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
-            {icon: this.glyphIcons.get(annotation.category), draggable: true})
-            .addTo(this.annotationsLG)
+
+        let marker: L.Marker
+        if(annotation.category === "TEXT" && annotation.text){
+            marker = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
+                {
+                    icon: L.divIcon({
+                        className: '',
+                        html: `<div class="roboto-font map-label">${annotation.text}</div>`,
+                    }), draggable: true,
+                }).addTo(this.map)
+
+        }else {
+            marker = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
+                {icon: this.glyphIcons.get(annotation.category), draggable: true})
+                .addTo(this.annotationsLG)
+        }
         // Attach handler
         this.addAnnotationPopup(annotation, marker)
         // Handler for modifying position
@@ -411,6 +406,7 @@ export class TrackingMap{
         const tsLabel = new Date(annotation.timestamp).toDateString()
         const popupContent = document.createElement("div");
 
+        // Popup content definition
         popupContent.innerHTML = `
         <span class="roboto-font mb-3" style="font-weight: bold">
             Created: ${tsLabel}
@@ -425,7 +421,9 @@ export class TrackingMap{
         const btn = popupContent.querySelector(".delete-btn")!;
 
         btn.addEventListener("click", () => {
+            // Remove marker from map
             this.map.removeLayer(marker)
+            // And ask to remove permanently from backend
             this.bus.emit("annotation:location:delete", annotation.id!);
         });
 

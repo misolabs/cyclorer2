@@ -93,9 +93,11 @@ async function handleRetryQueue(maxFileNum: number = 10){
     }
 }
 
-function clearTilesCache(){
-    self.caches.delete(TILES_CACHE)
-    self.caches.delete(OFFLINE_CACHE)
+async function clearTilesCache(){
+    await Promise.all([
+        self.caches.delete(TILES_CACHE),
+        self.caches.delete(OFFLINE_CACHE)
+    ])
 }
 
 async function calculateCacheStats(): Promise<TileCacheStats>{

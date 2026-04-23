@@ -14,7 +14,7 @@ interface RequestQueueEntry{
     url: string,
     headers?: HeadersInit,
     method: string,
-    body: string,
+    body?: string,
     retryCount: number,
 }
 
@@ -108,10 +108,19 @@ export class AnnotationRepo{
 
     async delete(id: string){
         if(this.repo.has(id)){
-            const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}/${id}`, {method: "DELETE"})
-            if(response.status == 200){
-                this.repo.delete(id)
+            // Create (possibly offline) request
+            const request: RequestQueueEntry = {
+                url: `${API_BASE}${LOCATION_ENDPOINTS}/${id}`,
+                method: "DELETE",
+                headers: undefined,
+                body: undefined,
+                retryCount: 0
             }
+            this.addToQueue(request)
+            this.processQueue()
+
+            // In the meantime we already remove it from the UI
+            this.repo.delete(id)
         }
     }
 
@@ -150,27 +159,23 @@ export class AnnotationRepo{
         return this.repo.get(id)
     }
 
-    async update(annotation: LocationAnnotation):Promise<LocationAnnotation|undefined>{
+    update(annotation: LocationAnnotation): LocationAnnotation{
         if(annotation.id && this.repo.has(annotation.id)){
-            const response = await fetch(`${API_BASE}${LOCATION_ENDPOINTS}/${annotation.id}`, {
+            // Add to request queue
+            const request: RequestQueueEntry = {
+                url: `${API_BASE}${LOCATION_ENDPOINTS}/${annotation.id}`,
+                method: "PUT",
                 headers: {"Content-Type": "application/json",},
-                method: 'PUT', body: JSON.stringify({
-                    id: annotation.id,
-                    category: annotation.category,
-                    lat: annotation.location.lat,
-                    lon: annotation.location.lon,
-                    timestamp: annotation.timestamp,
-                    text: annotation.text,
-                })})
+                body: JSON.stringify(annotation),
+                retryCount: 0
+            }
+            this.addToQueue(request)
+            this.processQueue()
 
-            if(response.status == 200){
-                const text= await response.text()
-                const annotation = this.textToAnnotation(text)
-                if(annotation.id)
-                    this.repo.set(annotation.id, annotation)
-                return annotation
-            }else throw Error("PUT request failed with status code " + response.status)
+            // Store the new value in our local repo
+            this.repo.set(annotation.id, annotation)
         }
+        return annotation
     }
 
     async fetchFromServer() {
