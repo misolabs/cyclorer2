@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 
 export async function loadLegacyPlugins() {
     await import('leaflet-rotate')
+    await import('./lib/leaflet-icon-glyph.js')
 }
 
 export default L

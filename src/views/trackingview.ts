@@ -3,7 +3,6 @@ import {TrackingMap} from "../maps/trackingmap.ts";
 import {PreviewMap} from "../maps/previewmap.ts";
 
 import L, {LatLng} from "leaflet"
-import "../lib/leaflet-icon-glyph.js"
 
 import type {
     GeoJsonAreaCollection,

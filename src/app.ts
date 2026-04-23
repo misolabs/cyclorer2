@@ -25,6 +25,7 @@ import {DebugOverlay} from "./views/debugoverlay.ts";
 import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
+
 await loadLegacyPlugins()
 
 // Heuristic to determine whether we are running on a mobile device

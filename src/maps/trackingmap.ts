@@ -1,4 +1,5 @@
 import L, {LatLngBounds, type LeafletEvent, Marker, type PathOptions, type PolylineOptions} from 'leaflet'
+import {Icon as ExtraMarkersIcon, PinCirclePanel} from 'leaflet-extra-markers'
 import type {
     GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection,
     RoutingEdgeProperties
@@ -76,9 +77,9 @@ export class TrackingMap{
     snappedEdge: L.Polyline
     routeLayer: L.Polyline
     positionIcon: L.Icon
+    extraIcon: ExtraMarkersIcon
 
     glyphIcons: Map<string, L.Icon.Glyph> = new Map()
-
     baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
@@ -129,6 +130,14 @@ export class TrackingMap{
             iconSize: [48, 48],
             iconAnchor: [24, 24],
             popupAnchor: [0, 0],
+        })
+        this.extraIcon = new ExtraMarkersIcon({
+            svg: PinCirclePanel,
+            color: "royalblue",
+            accentColor: "white",
+            contentColor: "white",
+            contentHtml: '<span class="material-symbols-rounded" style="font-size: 20px; line-height: 1">directions_bike</span>',
+            scale: 1,
         })
 
         // Glyph icons for annotations
@@ -268,7 +277,7 @@ export class TrackingMap{
     }
 
     addPositionMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
-        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.positionIcon}).addTo(this.map)
+        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.extraIcon}).addTo(this.map)
         if(listener != null)
             this.positionMarker.addEventListener("dragend", listener)
     }
