@@ -20,3 +20,14 @@
     margin-bottom: 20px !important;
     margin-right: 20px !important;
 }
+
+.annotation-marker__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.annotation-marker__glyph {
+    font-size: 20px;
+    line-height: 1;
+}

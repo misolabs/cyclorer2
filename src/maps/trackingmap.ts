@@ -1,5 +1,5 @@
 import L, {LatLngBounds, type LeafletEvent, Marker, type PathOptions, type PolylineOptions} from 'leaflet'
-import {Icon as ExtraMarkersIcon, PinCirclePanel} from 'leaflet-extra-markers'
+import {Icon as ExtraMarkersIcon, PinCircleBorder, PinCirclePanel} from 'leaflet-extra-markers'
 import type {
     GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection,
     RoutingEdgeProperties
@@ -67,6 +67,48 @@ const tileServices:Map<string, TileService> = new Map([
 
 let currentTileService: TileService | null = null
 
+type AnnotationMarkerOptions = NonNullable<ConstructorParameters<typeof ExtraMarkersIcon>[0]>
+
+const annotationMarkerBaseOptions = {
+    svg: PinCircleBorder,
+    scale: 1.2,
+    shadow: "cast",
+    accentColor: "white",
+    contentColor: "white",
+    rootClass: "annotation-marker",
+    contentWrapperClass: "annotation-marker__content",
+    contentWrapperStyle: {
+        fontFamily: '"Material Symbols Rounded"',
+        fontSize: "24px",
+        lineHeight: "1",
+        fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24",
+        fontFeatureSettings: "'liga'",
+    },
+    svgStyle: {
+        overflow: "visible",
+    },
+} satisfies AnnotationMarkerOptions
+
+const annotationMarkerPalette = {
+    EXPLORE: {glyph: "question_mark", color: "blue"},
+    DANGER: {glyph: "skull", color: "red"},
+    FAVORITE: {glyph: "favorite", color: "green"},
+    CLIMB: {glyph: "elevation", color: "purple"},
+    QUICKDROP: {glyph: "tour", color: "orange"},
+} as const
+
+function createAnnotationMarkerIcon(glyph: string, color: string): ExtraMarkersIcon {
+    const content = document.createElement("span")
+    content.className = "material-symbols-rounded annotation-marker__glyph"
+    content.textContent = glyph
+
+    return new ExtraMarkersIcon({
+        ...annotationMarkerBaseOptions,
+        color,
+        content,
+    })
+}
+
 export class TrackingMap{
     bus: EventBus
     mobileMode: boolean
@@ -79,7 +121,7 @@ export class TrackingMap{
     positionIcon: L.Icon
     extraIcon: ExtraMarkersIcon
 
-    glyphIcons: Map<string, L.Icon.Glyph> = new Map()
+    annotationIcons: Map<string, ExtraMarkersIcon> = new Map()
     baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
@@ -140,12 +182,10 @@ export class TrackingMap{
             scale: 1,
         })
 
-        // Glyph icons for annotations
-        this.glyphIcons.set( "EXPLORE", new L.Icon.Glyph({glyph:"question_mark", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "blue"}))
-        this.glyphIcons.set( "DANGER", new L.Icon.Glyph({glyph:"skull", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "red"}))
-        this.glyphIcons.set( "FAVORITE", new L.Icon.Glyph({glyph:"favorite", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "green"}))
-        this.glyphIcons.set( "CLIMB", new L.Icon.Glyph({glyph:"elevation", prefix: "material-symbols-rounded", glyphColor: "white", glyphSize: "28px", markerColor: "purple"}))
-        this.glyphIcons.set( "QUICKDROP", new L.Icon.Glyph({glyph:"tour", prefix: "material-symbols-rounded", glyphColor: "orange", glyphSize: "24px", markerColor: "yellow"}))
+        // Annotation icons use the same extra-markers base style and only vary by glyph/color.
+        for (const [category, marker] of Object.entries(annotationMarkerPalette)) {
+            this.annotationIcons.set(category, createAnnotationMarkerIcon(marker.glyph, marker.color))
+        }
 
         // Always visible
         this.areasLayerGroup.addTo(this.map)
@@ -400,7 +440,7 @@ export class TrackingMap{
 
         }else {
             marker = L.marker(new LatLng(annotation.location.lat, annotation.location.lon),
-                {icon: this.glyphIcons.get(annotation.category), draggable: true})
+                {icon: this.annotationIcons.get(annotation.category), draggable: true})
                 .addTo(this.annotationsLG)
         }
         // Attach handler
