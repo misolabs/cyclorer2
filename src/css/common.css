@@ -6,7 +6,7 @@ body{
 /* Variations 100-900 */
 @font-face {
     font-family: 'Roboto';
-    src: url('../../public/fonts/roboto.woff2') format('woff2');
+    src: url('../assets/fonts/roboto.woff2') format('woff2');
     /*font-weight: 400;*/
     /*font-style: normal;*/
 }
@@ -22,7 +22,7 @@ body{
 /* family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0 */
 @font-face {
     font-family: 'Material Symbols Rounded';
-    src: url('../../public/fonts/material-symbols-rounded.woff2') format('woff2');
+    src: url('../assets/fonts/material-symbols-rounded.woff2') format('woff2');
     font-weight: 100 700; /* 👈 important */
     font-style: normal;
 }
