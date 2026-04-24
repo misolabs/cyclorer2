@@ -125,14 +125,15 @@ const annotationMarkerPalette = {
 } as const
 
 function createAnnotationMarkerIcon(glyph: string, color: string): ExtraMarkersIcon {
-    const content = document.createElement("span")
-    content.className = "material-symbols-rounded annotation-marker__glyph"
-    content.textContent = glyph
-
     return new ExtraMarkersIcon({
         ...annotationMarkerBaseOptions,
         color,
-        content,
+        content: () => {
+            const content = document.createElement("span")
+            content.className = "material-symbols-rounded annotation-marker__glyph"
+            content.textContent = glyph
+            return content
+        },
     })
 }
 
