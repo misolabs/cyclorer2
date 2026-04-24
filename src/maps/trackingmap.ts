@@ -1,5 +1,11 @@
 import L, {LatLngBounds, type LeafletEvent, Marker, type PathOptions, type PolylineOptions} from 'leaflet'
-import {Icon as ExtraMarkersIcon, PinCircleBorder, PinCirclePanel} from 'leaflet-extra-markers'
+import {
+    Icon as ExtraMarkersIcon,
+    PinCircleBorder,
+    PinCirclePanel,
+    PointCircle,
+    PointCircleBorder
+} from 'leaflet-extra-markers'
 import type {
     GeoJsonAreaCollection, GeoJsonRouting, GeoJsonRoutingollection, GeoJsonArea, GeoJsonEntrypointCollection,
     RoutingEdgeProperties
@@ -89,6 +95,27 @@ const annotationMarkerBaseOptions = {
     },
 } satisfies AnnotationMarkerOptions
 
+const positionMarkerBaseOptions = {
+    svg: PointCircleBorder,
+    scale: 1.5,
+    shadow: "none",
+    color: "orange",
+    accentColor: "white",
+    contentColor: "white",
+    rootClass: "annotation-marker",
+    contentWrapperClass: "annotation-marker__content",
+    contentWrapperStyle: {
+        fontFamily: '"Material Symbols Rounded"',
+        fontSize: "24px",
+        lineHeight: "1",
+        fontVariationSettings: "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24",
+        fontFeatureSettings: "'liga'",
+    },
+    svgStyle: {
+        overflow: "visible",
+    },
+} satisfies AnnotationMarkerOptions
+
 const annotationMarkerPalette = {
     EXPLORE: {glyph: "question_mark", color: "blue"},
     DANGER: {glyph: "skull", color: "red"},
@@ -118,8 +145,7 @@ export class TrackingMap{
     neighbourMarker: L.CircleMarker[] = []
     snappedEdge: L.Polyline
     routeLayer: L.Polyline
-    positionIcon: L.Icon
-    extraIcon: ExtraMarkersIcon
+    positionIcon: ExtraMarkersIcon
 
     annotationIcons: Map<string, ExtraMarkersIcon> = new Map()
     baseLayer: L.TileLayer | null = null
@@ -167,19 +193,9 @@ export class TrackingMap{
 
         this.snappedEdge = L.polyline([], {color: "#ff7f00", weight: 9, pane:"routePane"}).addTo(this.map)
         this.routeLayer = L.polyline([], {color: "#ff7f00", weight: 9, pane: "routePane"}).addTo(this.map)
-        this.positionIcon = new L.Icon({
-            iconUrl: import.meta.env.BASE_URL + 'assets/pos-marker.png',
-            iconSize: [48, 48],
-            iconAnchor: [24, 24],
-            popupAnchor: [0, 0],
-        })
-        this.extraIcon = new ExtraMarkersIcon({
-            svg: PinCirclePanel,
-            color: "royalblue",
-            accentColor: "white",
-            contentColor: "white",
-            contentHtml: '<span class="material-symbols-rounded" style="font-size: 20px; line-height: 1">directions_bike</span>',
-            scale: 1,
+        this.positionIcon = new ExtraMarkersIcon({
+            ...positionMarkerBaseOptions,
+            contentHtml: '<span class="material-symbols-rounded" style="font-size: 32px;">navigation</span>',
         })
 
         // Annotation icons use the same extra-markers base style and only vary by glyph/color.
@@ -317,7 +333,7 @@ export class TrackingMap{
     }
 
     addPositionMarker(startPos: L.LatLng, listener: ((e: L.DragEndEvent)=>void) | null){
-        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.extraIcon}).addTo(this.map)
+        this.positionMarker = L.marker(startPos, {draggable: true, title: "Tracking", icon: this.positionIcon}).addTo(this.map)
         if(listener != null)
             this.positionMarker.addEventListener("dragend", listener)
     }
