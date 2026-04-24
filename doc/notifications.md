@@ -17,3 +17,11 @@ It should be clearly visible and not distract too much while riding
 # General
 - ask if something is unclear
 - use self-explaining names and try to integrate into existing coding style
+
+# Extension 1
+Add debugging notifications that can be switched on and off
+
+Features:
+- add a new type DEBUG (yellow) for displaying debugging info
+- add an enable/disable function to the view for showing / suppressing debugging notifications
+- add a setting to the settings module and add it to the html settings view

@@ -8,9 +8,9 @@ import type {
 import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {
     LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
-    EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent
+    EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent,
+    NotificationData
 } from "./models/models.ts";
-import type {NotificationData} from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
 type Events = {

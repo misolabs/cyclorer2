@@ -9,6 +9,7 @@ export class SettingsView {
     deadendsInput: HTMLInputElement
     showAreaBoundingBox: HTMLInputElement
     showDebugOverlay: HTMLInputElement
+    showDebugNotifications: HTMLInputElement
     showFreqHeatmapOverlay: HTMLInputElement
     toggleOverlaysWhenRiding: HTMLInputElement
 
@@ -19,6 +20,7 @@ export class SettingsView {
         this.deadendsInput = document.getElementById("settings-deadends")! as HTMLInputElement
         this.showAreaBoundingBox = document.getElementById("settings-area-bbox")! as HTMLInputElement
         this.showDebugOverlay = document.getElementById("settings-show-debug")! as HTMLInputElement
+        this.showDebugNotifications = document.getElementById("settings-show-debug-notifications")! as HTMLInputElement
         this.showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
         this.toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
 
@@ -39,6 +41,7 @@ export class SettingsView {
         this.deadendsInput.checked = settings.showDeadends
         this.showAreaBoundingBox.checked = settings.showAreaBBox
         this.showDebugOverlay.checked = settings.showDebugOverlay
+        this.showDebugNotifications.checked = settings.showDebugNotifications
         this.showFreqHeatmapOverlay.checked = settings.showFrequencyHeatmap
         this.toggleOverlaysWhenRiding.checked = settings.toggleOverlaysWhenRiding
         this.applyRadioSelection("mapService", settings.tileService)
@@ -70,6 +73,7 @@ export class SettingsView {
             showAreaBBox: this.showAreaBoundingBox.checked,
             showFrequencyHeatmap: this.showFreqHeatmapOverlay.checked,
             showDebugOverlay: this.showDebugOverlay.checked,
+            showDebugNotifications: this.showDebugNotifications.checked,
             toggleOverlaysWhenRiding: this.toggleOverlaysWhenRiding.checked,
             tileService: this.getSelectedRadio("mapService") ?? "osm"
         }
@@ -80,6 +84,14 @@ export class SettingsView {
             type: "SUCCESS",
             caption: "Settings saved",
             description: "Your map preferences were updated.",
+            autocloseDelay: 2500,
+        })
+        this.bus.emit("notification:show", {
+            type: "DEBUG",
+            caption: "Debug notifications",
+            description: settings.showDebugNotifications
+                ? "Debug notifications are enabled."
+                : "Debug notifications are disabled.",
             autocloseDelay: 2500,
         })
     }

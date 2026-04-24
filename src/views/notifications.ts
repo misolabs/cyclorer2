@@ -6,21 +6,29 @@ const notificationTheme: Record<NotificationType, { icon: string; accent: string
   WARNING: { icon: "warning", accent: "#ed6c02" },
   SUCCESS: { icon: "check_circle", accent: "#2e7d32" },
   INFO: { icon: "info", accent: "#1976d2" },
+  DEBUG: { icon: "bug_report", accent: "#c9a227" },
 }
 
 export class NotificationsView {
   bus: EventBus
   root: HTMLElement
   autoCloseTimers = new Map<HTMLElement, number>()
+  debugNotificationsEnabled = false
 
   constructor(bus: EventBus) {
     this.bus = bus
     this.root = document.getElementById("notifications-view")!
 
     this.bus.on("notification:show", this.showNotification.bind(this))
+    this.bus.on("settings:loaded", this.onSettingsChanged.bind(this))
+    this.bus.on("settings:updated", this.onSettingsChanged.bind(this))
   }
 
   showNotification(notification: NotificationData) {
+    if (notification.type === NotificationType.DEBUG && !this.debugNotificationsEnabled) {
+      return
+    }
+
     const theme = notificationTheme[notification.type] ?? notificationTheme.INFO
     const card = document.createElement("button")
     card.type = "button"
@@ -58,6 +66,20 @@ export class NotificationsView {
       const timer = window.setTimeout(() => this.dismissNotification(card), notification.autocloseDelay)
       this.autoCloseTimers.set(card, timer)
     }
+  }
+
+  setDebugNotificationsEnabled(enabled: boolean) {
+    this.debugNotificationsEnabled = enabled
+
+    if (!enabled) {
+      this.root.querySelectorAll<HTMLElement>('[data-type="DEBUG"]').forEach(card => {
+        this.dismissNotification(card)
+      })
+    }
+  }
+
+  private onSettingsChanged(settings: { showDebugNotifications: boolean }) {
+    this.setDebugNotificationsEnabled(settings.showDebugNotifications)
   }
 
   dismissNotification(card: HTMLElement) {

@@ -115,6 +115,7 @@ export const NotificationType = {
   WARNING: "WARNING",
   SUCCESS: "SUCCESS",
   INFO: "INFO",
+  DEBUG: "DEBUG",
 } as const;
 
 export type NotificationType = typeof NotificationType[keyof typeof NotificationType];

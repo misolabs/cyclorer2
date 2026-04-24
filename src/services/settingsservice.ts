@@ -5,6 +5,7 @@ export interface Settings{
     showAreaBBox: boolean
     showFrequencyHeatmap: boolean
     showDebugOverlay: boolean
+    showDebugNotifications: boolean
     toggleOverlaysWhenRiding: boolean
     tileService: string
 }
@@ -14,6 +15,7 @@ const defaultSettings: Settings ={
     showAreaBBox: true,
     showFrequencyHeatmap: true,
     showDebugOverlay: false,
+    showDebugNotifications: false,
     toggleOverlaysWhenRiding: true,
     tileService: "osm"
 }

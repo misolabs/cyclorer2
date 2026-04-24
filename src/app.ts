@@ -102,7 +102,7 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
-appBus.emit("notification:show", {type: "SUCCESS", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
+appBus.emit("notification:show", {type: "DEBUG", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
 
 // Sync pending server requests
 appBus.emit("system:sync:requests")
