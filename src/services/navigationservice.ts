@@ -48,7 +48,7 @@ export class NavigationService{
 
     constructor(bus: EventBus) {
         this.bus = bus;
-        this.annotationRepo = new AnnotationRepo()
+        this.annotationRepo = new AnnotationRepo(bus)
 
         bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
         bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))

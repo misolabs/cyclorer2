@@ -5,6 +5,7 @@ import type {
     LocationAnnotation,
     LocationAnnotationJson, LocationAnnotationRequest
 } from "../models/models.ts";
+import type {EventBus} from "../eventbus.ts";
 
 const API_BASE = "https://cyclotation.fly.dev";
 const LOCATION_ENDPOINTS = "/annotations/locations"
@@ -19,10 +20,12 @@ interface RequestQueueEntry{
 }
 
 export class AnnotationRepo{
+    bus: EventBus
     repo: Map<string, LocationAnnotation>
     edgeRepo: Map<number, EdgeAnnotation>
 
-    constructor() {
+    constructor(bus: EventBus) {
+        this.bus = bus
         this.repo = new Map()
         this.edgeRepo = new Map()
     }
@@ -54,14 +57,33 @@ export class AnnotationRepo{
                     body: item.body
                 })
 
-                if (!res.ok) throw new Error()
+                if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
                 console.log("Successfully sent request", item)
+                this.bus.emit("notification:show", {
+                    type: "DEBUG",
+                    caption: "Annotation synced",
+                    description: `${item.method} ${item.url} was sent successfully.`,
+                    autocloseDelay: 1500,
+                })
             } catch {
                 item.retryCount++
-                if(item.retryCount < 5)
+                if(item.retryCount < 5) {
                     remaining.push(item)
-                else
+                    this.bus.emit("notification:show", {
+                        type: "WARNING",
+                        caption: "Annotation sync retry",
+                        description: `${item.method} ${item.url} failed. Retrying (${item.retryCount}/5).`,
+                        autocloseDelay: 3500,
+                    })
+                } else {
                     console.error("Failed to send request 5 times, abandoning task", item)
+                    this.bus.emit("notification:show", {
+                        type: "ERROR",
+                        caption: "Annotation sync failed",
+                        description: `${item.method} ${item.url} failed after 5 attempts and was abandoned.`,
+                        autocloseDelay: 5000,
+                    })
+                }
             }
         }
 
