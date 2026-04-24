@@ -76,6 +76,12 @@ export class SettingsView {
 
         // Spread the good news
         this.bus.emit("settings:updated", settings)
+        this.bus.emit("notification:show", {
+            type: "SUCCESS",
+            caption: "Settings saved",
+            description: "Your map preferences were updated.",
+            autocloseDelay: 2500,
+        })
     }
 
     // TODO - Re-Integrate AreaList on click on "Navigate to area" button

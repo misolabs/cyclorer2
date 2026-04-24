@@ -10,6 +10,7 @@ import type {
     LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
     EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent
 } from "./models/models.ts";
+import type {NotificationData} from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
 type Events = {
@@ -41,6 +42,7 @@ type Events = {
 
     "debug:log": string
     "debug:clear": void
+    "notification:show": NotificationData
 
     "rds:stats:loaded": RoutingStatsJson
     "rds:loaderror": string

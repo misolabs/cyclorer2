@@ -110,6 +110,22 @@ export const NavigationMode = {
 }
 export type NavigationMode = typeof NavigationMode[keyof typeof NavigationMode];
 
+export const NotificationType = {
+  ERROR: "ERROR",
+  WARNING: "WARNING",
+  SUCCESS: "SUCCESS",
+  INFO: "INFO",
+} as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
+
+export interface NotificationData {
+  type: NotificationType
+  caption: string
+  description: string
+  autocloseDelay?: number
+}
+
 //------------
 // ANNOTATIONS
 //------------

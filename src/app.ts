@@ -5,11 +5,13 @@ import './css/settings.css'
 import './css/splash.css'
 import './css/powersave.css'
 import './css/inride_menu.css'
+import './css/notifications.css'
 import './css/leaflet-custom.css'
 
 import {EventBus} from "./eventbus.ts";
 
 import {SettingsView} from "./views/settingsview.ts";
+import {NotificationsView} from "./views/notifications.ts";
 import {SplashScreen} from "./views/splash.ts";
 import {TrackingView} from "./views/trackingview.ts";
 
@@ -64,6 +66,7 @@ const inrideMenu: InRideMenu = new InRideMenu(appBus, mobileMode)
 const debugOverlay = new DebugOverlay("debug", appBus)
 
 const settingsView: SettingsView = new SettingsView("settings-view", appBus)
+const notificationsView = new NotificationsView(appBus)
 const splashScreen: SplashScreen = new SplashScreen(appBus)
 const trackingView = new TrackingView(appBus, isMobileLike)
 trackingView.init()
@@ -99,6 +102,7 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emit("system:ready")
+appBus.emit("notification:show", {type: "SUCCESS", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
 
 // Sync pending server requests
 appBus.emit("system:sync:requests")
