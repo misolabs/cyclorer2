@@ -139,7 +139,6 @@ export class AnnotationRepo{
                 retryCount: 0
             }
             this.addToQueue(request)
-            this.processQueue()
 
             // In the meantime we already remove it from the UI
             this.repo.delete(id)
@@ -192,7 +191,6 @@ export class AnnotationRepo{
                 retryCount: 0
             }
             this.addToQueue(request)
-            this.processQueue()
 
             // Store the new value in our local repo
             this.repo.set(annotation.id, annotation)
