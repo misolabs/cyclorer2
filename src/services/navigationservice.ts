@@ -81,7 +81,7 @@ export class NavigationService{
         this.bus.emitEvent("annotation:location:loaded", this.annotationRepo.getAll())
 
         // Add edge annotations to map
-        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emitEvent("annotation:edge:added", a)})
+        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emitEvent("annotation:edge:modified", a)})
     }
 
     // Position update from simulation mode
@@ -127,7 +127,7 @@ export class NavigationService{
             })
 
             // Tell map to display the new edge annotation
-            this.bus.emitEvent("annotation:edge:added", result)
+            this.bus.emitEvent("annotation:edge:modified", result)
         }else{
             // TODO Modify current edge
         }

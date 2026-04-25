@@ -214,7 +214,7 @@ export class TrackingMap{
         this.bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
 
         // TODO: Move to right location
-        this.bus.onEvent("annotation:edge:added", (a: EdgeAnnotation) => {
+        this.bus.onEvent("annotation:edge:modified", (a: EdgeAnnotation) => {
             const glyphs:Map<string, string> = new Map([
                 ["FAVORITE", "favorite"],
                 ["EXPLORE", "question_mark"],
@@ -224,10 +224,15 @@ export class TrackingMap{
 
             const layer = this.edgeNetworkLayers.get(a.edge_id)
             if(layer){
+                // Update context menu
+                this.routingEdgePostprocess(layer.feature as GeoJsonRouting, layer, a)
+
+                // Update drawing style
                 const style = edgeStyles.get(a.category)
                 if(style) layer.setStyle(style)
                 else console.error("Edge category not found", a.category)
 
+                // Update edge tooltip
                 if(a.comment) layer.bindTooltip(a.comment, {permanent: true})
                 else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
             }
@@ -557,7 +562,7 @@ export class TrackingMap{
         this.map.setView(this.riderViewCenter, this.riderViewZoom)
     }
 
-    routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
+    routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline, annotation: EdgeAnnotation|undefined = undefined){
         // When riding popups only get in the way
         if(!this.mobileMode) {
             const popupContainer = document.createElement("div");
@@ -589,27 +594,37 @@ export class TrackingMap{
           </tr>
           </table>
           <textarea rows="3" placeholder="Comment" class="cyc-edge-annotation-comment-input" style="width: 100%;"></textarea>
-          <div class="mt-3" style="width: 200px; display: flex;height: 50px;flex-direction: row;gap: 10px;">
-            <button class="btn btn-success cyc-menu-button cyc-only-desktop cyc-edge-annotation-favorite-btn" style="position: relative;">
-                <span class="material-symbols-rounded">favorite</span>
-            </button>
-            <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-keepout-btn" style="position: relative;">
-                <span class="material-symbols-rounded">back_hand</span>
-            </button>
-            <button class="btn btn-secondary cyc-menu-button cyc-only-desktop cyc-edge-annotation-explore-btn" style="position: relative;">
-                <span class="material-symbols-rounded">not_listed_location</span>
-            </button>
-            <button class="btn btn-secondary cyc-menu-button cyc-only-desktop cyc-edge-annotation-steep-btn" style="position: relative;">
-                <span class="material-symbols-rounded">elevation</span>
-            </button>
+          <div class="mt-3 d-flex flex-column gap-2">
+            <div class="btn-group flex-wrap" role="radiogroup" aria-label="Edge annotation category" style="width: 100%;">
+              <input type="radio" class="btn-check cyc-menu-button cyc-only-desktop cyc-edge-annotation-favorite-btn" name="cyc-edge-annotation-${feature.properties.edge_id}" id="cyc-edge-annotation-${feature.properties.edge_id}-favorite" autocomplete="off" ${annotation?.category === EdgeAnnotationCategory.EA_FAVORITE ? "checked" : ""}>
+              <label class="btn btn-outline-secondary cyc-edge-annotation-radio-label cyc-edge-annotation-radio-label--favorite cyc-menu-button cyc-only-desktop" for="cyc-edge-annotation-${feature.properties.edge_id}-favorite" style="position: relative;">
+                  <span class="material-symbols-rounded">favorite</span>
+              </label>
+              <input type="radio" class="btn-check cyc-menu-button cyc-only-desktop cyc-edge-annotation-keepout-btn" name="cyc-edge-annotation-${feature.properties.edge_id}" id="cyc-edge-annotation-${feature.properties.edge_id}-keepout" autocomplete="off" ${annotation?.category === EdgeAnnotationCategory.EA_KEEPOUT ? "checked" : ""}>
+              <label class="btn btn-outline-secondary cyc-edge-annotation-radio-label cyc-edge-annotation-radio-label--keepout cyc-menu-button cyc-only-desktop" for="cyc-edge-annotation-${feature.properties.edge_id}-keepout" style="position: relative;">
+                  <span class="material-symbols-rounded">back_hand</span>
+              </label>
+              <input type="radio" class="btn-check cyc-menu-button cyc-only-desktop cyc-edge-annotation-explore-btn" name="cyc-edge-annotation-${feature.properties.edge_id}" id="cyc-edge-annotation-${feature.properties.edge_id}-explore" autocomplete="off" ${annotation?.category === EdgeAnnotationCategory.EA_EXPLORE ? "checked" : ""}>
+              <label class="btn btn-outline-secondary cyc-edge-annotation-radio-label cyc-edge-annotation-radio-label--explore cyc-menu-button cyc-only-desktop" for="cyc-edge-annotation-${feature.properties.edge_id}-explore" style="position: relative;">
+                  <span class="material-symbols-rounded">not_listed_location</span>
+              </label>
+              <input type="radio" class="btn-check cyc-menu-button cyc-only-desktop cyc-edge-annotation-steep-btn" name="cyc-edge-annotation-${feature.properties.edge_id}" id="cyc-edge-annotation-${feature.properties.edge_id}-steep" autocomplete="off" ${annotation?.category === EdgeAnnotationCategory.EA_STEEP ? "checked" : ""}>
+              <label class="btn btn-outline-secondary cyc-edge-annotation-radio-label cyc-edge-annotation-radio-label--steep cyc-menu-button cyc-only-desktop" for="cyc-edge-annotation-${feature.properties.edge_id}-steep" style="position: relative;">
+                  <span class="material-symbols-rounded">elevation</span>
+              </label>
+            </div>
             <button class="btn btn-danger cyc-menu-button cyc-only-desktop cyc-edge-annotation-delete-btn" style="position: relative;">
                 <span class="material-symbols-rounded">ink_eraser</span>
             </button>
           </div>`
 
             const commentArea = popupContainer.querySelector(".cyc-edge-annotation-comment-input")! as HTMLTextAreaElement
+            if(commentArea && annotation && annotation.comment){
+                commentArea.value = annotation.comment
+            }
 
-            // Wire up buttons
+            // Wire up the radio buttons for now. The actual action handlers can
+            // be swapped out later without changing the popup markup.
             const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
             favButton!.addEventListener("click", () => {
                 this.bus.emitEvent("annotation:edge:create", {

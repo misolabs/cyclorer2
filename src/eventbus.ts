@@ -59,7 +59,7 @@ type Events = {
     "annotation:location:synced": LocationAnnotation
     "annotation:location:loaded": LocationAnnotation[]
 
-    "annotation:edge:added": EdgeAnnotation
+    "annotation:edge:modified": EdgeAnnotation
     "annotation:edge:create": EdgeAnnotationCreateEvent
     "annotation:edge:delete": string
     "annotation:edge:deleted": EdgeAnnotation
