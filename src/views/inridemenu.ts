@@ -13,12 +13,12 @@ export class InRideMenu{
     }
 
     init(){
-        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "DANGER"); this.hide()})
-        document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "EXPLORE"); this.hide()})
-        document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "FAVORITE"); this.hide()})
-        document.getElementById("drop-pin-climb")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "CLIMB"); this.hide()})
-        document.getElementById("drop-pin-text")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "TEXT"); this.hide()})
-        document.getElementById("drop-pin-generic")!.addEventListener("click", () => {this.bus.emit("annotation:location:drophere", "QUICKDROP");this.hide()})
+        document.getElementById("drop-pin-danger")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "DANGER"); this.hide()})
+        document.getElementById("drop-pin-explore")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "EXPLORE"); this.hide()})
+        document.getElementById("drop-pin-favorite")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "FAVORITE"); this.hide()})
+        document.getElementById("drop-pin-climb")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "CLIMB"); this.hide()})
+        document.getElementById("drop-pin-text")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "TEXT"); this.hide()})
+        document.getElementById("drop-pin-generic")!.addEventListener("click", () => {this.bus.emitEvent("annotation:location:drophere", "QUICKDROP");this.hide()})
 
         document.getElementById("open-annotation-menu")!.addEventListener("click", () => {
             console.log("open-annotation-menu")
@@ -27,7 +27,7 @@ export class InRideMenu{
             }else this.hide()
         })
 
-        document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {this.bus.emit("powersave:enable")})
+        document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {this.bus.emitEvent("powersave:enable")})
 
         // Some buttons are only visible in mobile or desktop mode
 

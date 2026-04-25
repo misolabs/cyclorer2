@@ -79,29 +79,29 @@ export class RoutingDataService{
 
         // Load basic region stats file
         const statsData = await this.loadRoutingStats(basePath + "stats.json")
-        statsData ? this.bus.emit("rds:stats:loaded", statsData) : this.notifyLoadError("Error loading stats file.")
+        statsData ? this.bus.emitEvent("rds:stats:loaded", statsData) : this.notifyLoadError("Error loading stats file.")
 
         // Load routing network
         await this.loadRoutingEdges(basePath + "routing_edges.geojson")
-        this.routingGeoData ? this.bus.emit("rds:routing:loaded", this.routingGeoData) : this.notifyLoadError("Error loading routing network")
+        this.routingGeoData ? this.bus.emitEvent("rds:routing:loaded", this.routingGeoData) : this.notifyLoadError("Error loading routing network")
 
         // Load unviisted areas
         await Promise.all([
             this.loadAreas(basePath + "unvisited_areas.geojson"),
             this.loadEntrypoints(basePath + "unvisited_junctions.geojson")
         ])
-        this.areaGeoData ? this.bus.emit("rds:areas:loaded", [this.areaGeoData, this.entrypointsGeoData]) : this.notifyLoadError("Error loading area data")
+        this.areaGeoData ? this.bus.emitEvent("rds:areas:loaded", [this.areaGeoData, this.entrypointsGeoData]) : this.notifyLoadError("Error loading area data")
 
         console.log("Loading data done.")
     }
 
     private notifyLoadError(description: string) {
-        this.bus.emit("rds:loaderror", description)
+        this.bus.emitEvent("rds:loaderror", description)
         const notification: NotificationData = {
             type: "ERROR",
             caption: "Failed to load region data",
             description,
         }
-        this.bus.emit("notification:show", notification)
+        this.bus.emitEvent("notification:show", notification)
     }
 }

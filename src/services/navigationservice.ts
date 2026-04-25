@@ -50,26 +50,26 @@ export class NavigationService{
         this.bus = bus;
         this.annotationRepo = new AnnotationRepo(bus)
 
-        bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
-        bus.on("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
+        bus.onEvent("geolocation:update", this.onGeoPositionChanged.bind(this))
+        bus.onEvent("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
 
-        bus.on("annotation:location:create", this.onAddAnnotationRequest.bind(this))
-        bus.on("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
-        bus.on("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
+        bus.onEvent("annotation:location:create", this.onAddAnnotationRequest.bind(this))
+        bus.onEvent("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
+        bus.onEvent("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
-        bus.on("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
-        bus.on("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
+        bus.onEvent("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
+        bus.onEvent("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
 
-        bus.on("rds:stats:loaded", this.onStatsLoaded.bind(this))
-        bus.on("rds:areas:loaded", this.onAreasLoaded.bind(this))
-        bus.on("rds:routing:loaded", this.onRoutingLoaded.bind(this))
+        bus.onEvent("rds:stats:loaded", this.onStatsLoaded.bind(this))
+        bus.onEvent("rds:areas:loaded", this.onAreasLoaded.bind(this))
+        bus.onEvent("rds:routing:loaded", this.onRoutingLoaded.bind(this))
 
-        bus.on("system:ready", this.onSystemReady.bind(this))
-        bus.on("system:sync:requests", () => {this.annotationRepo.processQueue()})
-        //bus.on("data:sync", this.onDataSync.bind(this))
+        bus.onEvent("system:ready", this.onSystemReady.bind(this))
+        bus.onEvent("system:sync:requests", () => {this.annotationRepo.processQueue()})
+        //bus.eventOn("data:sync", this.onDataSync.bind(this))
 
-        bus.on("navigation:target:area", this.onNavigateArea.bind(this))
-        bus.on("area:dismiss", this.onDismissArea.bind(this))
+        bus.onEvent("navigation:target:area", this.onNavigateArea.bind(this))
+        bus.onEvent("area:dismiss", this.onDismissArea.bind(this))
     }
 
     // Called when everything is in place
@@ -78,10 +78,10 @@ export class NavigationService{
         await this.annotationRepo.fetchFromServer()
 
         // Add location annotations to the map
-        this.bus.emit("annotation:location:loaded", this.annotationRepo.getAll())
+        this.bus.emitEvent("annotation:location:loaded", this.annotationRepo.getAll())
 
         // Add edge annotations to map
-        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emit("annotation:edge:added", a)})
+        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emitEvent("annotation:edge:added", a)})
     }
 
     // Position update from simulation mode
@@ -109,7 +109,7 @@ export class NavigationService{
         const annotation = await this.annotationRepo.add({location: this.currentPosition, category: "TEXT", timestamp: ts, text: text})
 
         // Tell everyone about this one
-        this.bus.emit("annotation:location:added", annotation)
+        this.bus.eventEmit("annotation:location:added", annotation)
     }
 */
     async onDeleteAnnotationRequest(id: string){
@@ -127,7 +127,7 @@ export class NavigationService{
             })
 
             // Tell map to display the new edge annotation
-            this.bus.emit("annotation:edge:added", result)
+            this.bus.emitEvent("annotation:edge:added", result)
         }else{
             // TODO Modify current edge
         }
@@ -138,7 +138,7 @@ export class NavigationService{
         if(annotation){
             const success = await this.annotationRepo.deleteEdge(annotation.id)
             if(success)
-                this.bus.emit("annotation:edge:deleted", annotation)
+                this.bus.emitEvent("annotation:edge:deleted", annotation)
         }else console.error("Unable to find edge annotation")
     }
 
@@ -217,15 +217,15 @@ export class NavigationService{
             if(!this.exploring && closestEdge.edge.area_id){
                 this.exploring = true
                 const area: Area = this.areaFinder.areaInfoById(closestEdge.edge.area_id)
-                this.bus.emit("exploration:started", area)
+                this.bus.emitEvent("exploration:started", area)
             }else if(this.exploring){
                 if(closestEdge.edge.area_id){
                     this.score += haversineDistance(this.lastPosition, this.currentPosition)
-                    this.bus.emit("exploration:score:updated", this.score)
+                    this.bus.emitEvent("exploration:score:updated", this.score)
                 }
                 else{
                     this.exploring = false
-                    this.bus.emit("exploration:ended")
+                    this.bus.emitEvent("exploration:ended")
                 }
             }
 
@@ -256,10 +256,10 @@ export class NavigationService{
 
             // Propose a new target area
             this.currentArea = this.areaFinder.areaInfoById(areaId)
-            this.bus.emit("navigation:target:area", this.currentArea)
+            this.bus.emitEvent("navigation:target:area", this.currentArea)
 
             // If we don't lock-onto the target within a certain time, we auto-dismis
-            this.dismissTimerId = setTimeout( () => {this.bus.emit("area:dismiss")}, 60000)
+            this.dismissTimerId = setTimeout( () => {this.bus.emitEvent("area:dismiss")}, 60000)
         }
     }
 }

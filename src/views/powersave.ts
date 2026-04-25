@@ -8,10 +8,10 @@ export class PowersaveView {
     constructor(bus: EventBus) {
         this.bus = bus
 
-        bus.on("powersave:enable", this.showView.bind(this))
+        bus.onEvent("powersave:enable", this.showView.bind(this))
 
         this.view.addEventListener("click", () => {
-            bus.emit("powersave:disable")
+            bus.emitEvent("powersave:disable")
             this.hideView()
         })
     }

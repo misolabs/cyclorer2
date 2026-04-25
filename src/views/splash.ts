@@ -12,12 +12,12 @@ export class SplashScreen {
     constructor(bus: EventBus) {
         this.bus = bus
 
-        bus.on("splash:show", this.show.bind(this))
-        bus.on("rds:stats:loaded", this.stats.bind(this))
+        bus.onEvent("splash:show", this.show.bind(this))
+        bus.onEvent("rds:stats:loaded", this.stats.bind(this))
 
         this.splash.addEventListener("click", () => {
             this.hideSplash()
-            bus.emit("wakelock:engage")
+            bus.emitEvent("wakelock:engage")
         })
     }
 
@@ -37,7 +37,7 @@ export class SplashScreen {
 
     hideSplash() {
         // Tell others that we are fading out
-        this.bus.emit("splash:hiding")
+        this.bus.emitEvent("splash:hiding")
 
         // Fade-out splash screen
         this.splash.classList.add("hidden");

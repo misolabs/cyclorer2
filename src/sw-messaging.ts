@@ -8,8 +8,8 @@ export class ServiceWorkerMessaging{
 
         navigator.serviceWorker.addEventListener('message', this.swMessageListener.bind(this));
 
-        bus.on("cache:stats:request", this.onRequestCacheStats.bind(this));
-        bus.on("cache:clear", this.onClearCache.bind(this));
+        bus.onEvent("cache:stats:request", this.onRequestCacheStats.bind(this));
+        bus.onEvent("cache:clear", this.onClearCache.bind(this));
     }
 
     onClearCache(): void {
@@ -23,6 +23,6 @@ export class ServiceWorkerMessaging{
     // Listener for messages FROM service worker
     swMessageListener(event: MessageEvent){
         if(event.data.type == "CACHE_STATS")
-            this.bus.emit("cache:stats", event.data);
+            this.bus.emitEvent("cache:stats", event.data);
     }
 }

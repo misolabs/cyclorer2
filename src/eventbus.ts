@@ -13,6 +13,8 @@ import type {
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
+type RequestHandler<I, O> = (input: I) => O | undefined;
+
 type Events = {
     "settings:init": void
     "settings:save": Settings
@@ -81,26 +83,36 @@ type Events = {
     "cache:clear": void
 };
 
-export class EventBus {
-    private listeners: Partial<Record<keyof Events, Function[]>> = {};
+type Requests = {
+    "annotations:requests:queuesize": {
+        input: void
+        output: number | undefined
+    }
+};
 
-    on<K extends keyof Events>(
+export class EventBus {
+    private eventListeners: Partial<Record<keyof Events, Function[]>> = {};
+    private requestListeners: Partial<{
+        [K in keyof Requests]: RequestHandler<Requests[K]["input"], Requests[K]["output"]>[]
+    }> = {};
+
+    onEvent<K extends keyof Events>(
         event: K,
         handler: (payload: Events[K]) => void
     ) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
+        if (!this.eventListeners[event]) {
+            this.eventListeners[event] = [];
         }
 
-        (this.listeners[event] as Array<(payload: Events[K]) => void>).push(handler);
+        (this.eventListeners[event] as Array<(payload: Events[K]) => void>).push(handler);
     }
 
-    emit<K extends keyof Events>(
+    emitEvent<K extends keyof Events>(
         event: K,
         ...payload: Events[K] extends void ? [] : [Events[K]]
     ) {
         const handlers =
-            this.listeners[event] as Array<(payload: Events[K]) => void> | undefined;
+            this.eventListeners[event] as Array<(payload: Events[K]) => void> | undefined;
 
         if (!handlers) return;
 
@@ -111,5 +123,37 @@ export class EventBus {
             const value = payload[0]; // now correctly inferred
             handlers.forEach(handler => handler(value));
         }
+    }
+
+    onRequest<K extends keyof Requests>(
+        request: K,
+        handler: RequestHandler<Requests[K]["input"], Requests[K]["output"]>
+    ) {
+        if (!this.requestListeners[request]) {
+            this.requestListeners[request] = [];
+        }
+
+        (this.requestListeners[request] as RequestHandler<Requests[K]["input"], Requests[K]["output"]>[]).push(handler);
+    }
+
+    request<K extends keyof Requests>(
+        request: K,
+        ...payload: Requests[K]["input"] extends void ? [] : [Requests[K]["input"]]
+    ): Requests[K]["output"] {
+        const handlers =
+            this.requestListeners[request] as RequestHandler<Requests[K]["input"], Requests[K]["output"]>[] | undefined;
+
+        if (!handlers) return undefined as Requests[K]["output"];
+
+        const input = (payload.length === 0 ? undefined : payload[0]) as Requests[K]["input"];
+
+        for (const handler of handlers) {
+            const result = handler(input);
+            if (typeof result !== "undefined") {
+                return result;
+            }
+        }
+
+        return undefined as Requests[K]["output"];
     }
 }

@@ -11,9 +11,9 @@ export class GeoLocationService{
         this.bus = bus
         this.watchId = -1
 
-        this.bus.on("geolocation:enable", this.enableGeolocation.bind(this))
-        this.bus.on("powersave:disable", this.enableGeolocation.bind(this))
-        this.bus.on("powersave:enable", this.disableGeolocation.bind(this))
+        this.bus.onEvent("geolocation:enable", this.enableGeolocation.bind(this))
+        this.bus.onEvent("powersave:disable", this.enableGeolocation.bind(this))
+        this.bus.onEvent("powersave:enable", this.disableGeolocation.bind(this))
     }
 
     enableGeolocation() {
@@ -23,7 +23,7 @@ export class GeoLocationService{
                 (err) => console.warn("Geolocation error:", err.message),
                 {enableHighAccuracy: true}
             )
-            this.bus.emit("geolocation:ready")
+            this.bus.emitEvent("geolocation:ready")
         }else console.warn("Geolocation not supported")
     }
 
@@ -35,15 +35,15 @@ export class GeoLocationService{
     }
 
     trackingListener(pos: GeolocationPosition){
-        this.bus.emit("geolocation:update", pos)
+        this.bus.emitEvent("geolocation:update", pos)
 
         if(pos.coords.speed){
             if(!this.riding && pos.coords.speed > 1.0){
                 this.riding = true
-                this.bus.emit("geolocation:riding", true)
+                this.bus.emitEvent("geolocation:riding", true)
             }else if(this.riding && pos.coords.speed < 0.5){
                 this.riding = false
-                this.bus.emit("geolocation:riding", false)
+                this.bus.emitEvent("geolocation:riding", false)
             }
         }
     }

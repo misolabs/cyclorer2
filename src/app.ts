@@ -75,7 +75,7 @@ inrideMenu.init()
 const powersaveView = new PowersaveView(appBus)
 
 // Show splash screen
-appBus.emit("splash:show")
+appBus.emitEvent("splash:show")
 
 // Load settings or revert to default values
 settingsService.initSettings()
@@ -83,9 +83,9 @@ settingsService.initSettings()
 // We only use GPS tracking on a mobile device
 // Simulation mode on a desktop browser
 if(isMobileLike) {
-    appBus.emit("geolocation:enable")
+    appBus.emitEvent("geolocation:enable")
     // Enable wakelock when clicking on splash-screen
-    appBus.on("wakelock:engage", async () => {
+    appBus.onEvent("wakelock:engage", async () => {
         await wakeLockService.enable()
     })
     // Re-acquire when coming back to the tab/app
@@ -94,15 +94,15 @@ if(isMobileLike) {
     });
 
     // Try sending pending requests when going back online
-    document.addEventListener("online", () => {appBus.emit("system:sync:requests")})
+    document.addEventListener("online", () => {appBus.emitEvent("system:sync:requests")})
 }
 
 // Async loading of all geo-data files
 await routingDataService.loadRegionData("ellergronn")
 
 // All ready
-appBus.emit("system:ready")
-appBus.emit("notification:show", {type: "DEBUG", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
+appBus.emitEvent("system:ready")
+appBus.emitEvent("notification:show", {type: "DEBUG", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
 
 // Sync pending server requests
-appBus.emit("system:sync:requests")
+appBus.emitEvent("system:sync:requests")

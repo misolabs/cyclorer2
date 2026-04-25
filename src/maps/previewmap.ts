@@ -30,8 +30,8 @@ export class PreviewMap {
         this.positionMarker = L.circleMarker(new LatLng(0,0), {radius: 6, color: "red", fillColor: "red", fillOpacity: 0.5})
 
         // Minimize button
-        bus.on("preview:minimize", this.onToggleMinimize.bind(this))
-        document.getElementById("preview-minimise")!.addEventListener("click", () => {this.bus.emit("preview:minimize")})
+        bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
+        document.getElementById("preview-minimise")!.addEventListener("click", () => {this.bus.emitEvent("preview:minimize")})
     }
 
     setArea(area: Area) {

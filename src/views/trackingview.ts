@@ -53,42 +53,42 @@ export class TrackingView {
         this.trackingMap = new TrackingMap("tracking-map", isMobileLike, bus)
         this.previewMap = new PreviewMap("preview-map", bus)
 
-        this.bus.on("rds:stats:loaded", this.onStatsDataLoaded.bind(this))
-        this.bus.on("rds:routing:loaded", this.onRoutingDataLoaded.bind(this))
-        this.bus.on("rds:areas:loaded", this.onAreaDataLoaded.bind(this))
+        this.bus.onEvent("rds:stats:loaded", this.onStatsDataLoaded.bind(this))
+        this.bus.onEvent("rds:routing:loaded", this.onRoutingDataLoaded.bind(this))
+        this.bus.onEvent("rds:areas:loaded", this.onAreaDataLoaded.bind(this))
 
-        this.bus.on("settings:updated", this.onSettingsChanged.bind(this))
-        this.bus.on("settings:loaded", this.onSettingsChanged.bind(this))
+        this.bus.onEvent("settings:updated", this.onSettingsChanged.bind(this))
+        this.bus.onEvent("settings:loaded", this.onSettingsChanged.bind(this))
 
-        this.bus.on("geolocation:update", this.onGeoPositionChanged.bind(this))
+        this.bus.onEvent("geolocation:update", this.onGeoPositionChanged.bind(this))
 
         // UI requests to create an annotation marker here
-        this.bus.on("annotation:location:drophere", this.onLocationAnnotationDrophere.bind(this))
+        this.bus.onEvent("annotation:location:drophere", this.onLocationAnnotationDrophere.bind(this))
         // After location annotations are loaded we add them to the map
-        this.bus.on("annotation:location:loaded", this.onLocationAnnotationsLoaded.bind(this))
+        this.bus.onEvent("annotation:location:loaded", this.onLocationAnnotationsLoaded.bind(this))
 
-        this.bus.on("exploration:started", this.onExplorationStarted.bind(this))
-        this.bus.on("exploration:ended", this.onExplorationEnded.bind(this))
-        this.bus.on("exploration:score:updated", this.onScoreUpdated.bind(this))
+        this.bus.onEvent("exploration:started", this.onExplorationStarted.bind(this))
+        this.bus.onEvent("exploration:ended", this.onExplorationEnded.bind(this))
+        this.bus.onEvent("exploration:score:updated", this.onScoreUpdated.bind(this))
 
-        this.bus.on("area:dismiss", this.onAreaDismiss.bind(this))
-        this.bus.on("area:engage", this.onAreaEngage.bind(this))
-        this.bus.on("navigation:target:area", this.onNavigationArea.bind(this))
-        this.bus.on("navigation:stop", this.onNavigationStop.bind(this))
+        this.bus.onEvent("area:dismiss", this.onAreaDismiss.bind(this))
+        this.bus.onEvent("area:engage", this.onAreaEngage.bind(this))
+        this.bus.onEvent("navigation:target:area", this.onNavigationArea.bind(this))
+        this.bus.onEvent("navigation:stop", this.onNavigationStop.bind(this))
 
-       // this.bus.on("zoom:frame:rider", this.onZoomFrameRider.bind(this))
+       // this.bus.eventOn("zoom:frame:rider", this.onZoomFrameRider.bind(this))
 
         // Show this when splash screen starts fading out
-        this.bus.on("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
+        this.bus.onEvent("splash:hiding", () => {document.getElementById("map-view")!.style.visibility = "visible";})
 
         // Hook up buttons
         // TODO Move these to the menu classes
-        document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emit("settings:show", true)})
+        document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emitEvent("settings:show", true)})
 
         // Navigation control buttons
-        document.getElementById("dismiss-area-btn")!.addEventListener("click", () => {this.bus.emit("area:dismiss")})
-        document.getElementById("engage-area-btn")!.addEventListener("click", () => {this.bus.emit("area:engage")})
-        document.getElementById("stop-navigation-btn")!.addEventListener("click", () => {this.bus.emit("navigation:stop")})
+        document.getElementById("dismiss-area-btn")!.addEventListener("click", () => {this.bus.emitEvent("area:dismiss")})
+        document.getElementById("engage-area-btn")!.addEventListener("click", () => {this.bus.emitEvent("area:engage")})
+        document.getElementById("stop-navigation-btn")!.addEventListener("click", () => {this.bus.emitEvent("navigation:stop")})
 
         // View follow tracking
         // Stop following tracking if we pan the map, show button to re-center
@@ -112,7 +112,7 @@ export class TrackingView {
         {
             const text = window.prompt("Annotation:")
             if(text)
-                this.bus.emit("annotation:location:text:create", text)
+                this.bus.eventEmit("annotation:location:text:create", text)
         })*/
 
     }
@@ -152,7 +152,7 @@ export class TrackingView {
     }
 
     onPositionMarkerDragged(e: L.DragEndEvent) {
-        this.bus.emit("geolocsim:update", {lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng })
+        this.bus.emitEvent("geolocsim:update", {lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng })
     }
 
     onGeoPositionChanged(geo: GeolocationPosition){
@@ -187,7 +187,7 @@ export class TrackingView {
         this.trackingMap.addAnnotation(annotation)
 
         // Send to backend for storage
-        this.bus.emit("annotation:location:create", annotation)
+        this.bus.emitEvent("annotation:location:create", annotation)
     }
 
     onLocationAnnotationsLoaded(annotations: LocationAnnotation[]){

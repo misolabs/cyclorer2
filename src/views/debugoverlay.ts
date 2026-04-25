@@ -9,9 +9,9 @@ export class DebugOverlay{
         this.bus = bus
         this.debugEl = document.getElementById(elName)!
 
-        bus.on("debug:log", this.onDebugLog.bind(this))
-        bus.on("debug:clear", this.onDebugClear.bind(this))
-        bus.on("settings:updated", this.onSettingsChanged.bind(this))
+        bus.onEvent("debug:log", this.onDebugLog.bind(this))
+        bus.onEvent("debug:clear", this.onDebugClear.bind(this))
+        bus.onEvent("settings:updated", this.onSettingsChanged.bind(this))
     }
 
     onDebugLog(contents: string){

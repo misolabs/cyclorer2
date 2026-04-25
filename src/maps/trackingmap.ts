@@ -211,10 +211,10 @@ export class TrackingMap{
         this.annotationsLG.addTo(this.map)
 
         // Connect to event bus
-        this.bus.on("preview:minimize", this.onToggleMinimize.bind(this))
+        this.bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
 
         // TODO: Move to right location
-        this.bus.on("annotation:edge:added", (a: EdgeAnnotation) => {
+        this.bus.onEvent("annotation:edge:added", (a: EdgeAnnotation) => {
             const glyphs:Map<string, string> = new Map([
                 ["FAVORITE", "favorite"],
                 ["EXPLORE", "question_mark"],
@@ -234,7 +234,7 @@ export class TrackingMap{
         })
 
         // When a style override (=custom annotation) is deleted we revert to the standard rendering style for that edge
-        this.bus.on("annotation:edge:deleted", (a: EdgeAnnotation) => {
+        this.bus.onEvent("annotation:edge:deleted", (a: EdgeAnnotation) => {
             const layer = this.edgeNetworkLayers.get(a.edge_id)
             if(layer){
                 layer.setStyle(this.styleRoutingEdge(layer.feature))
@@ -243,10 +243,10 @@ export class TrackingMap{
         })
 
         // After we come back from powersave mode we just set the heading without history
-        this.bus.on("powersave:disable", () => {this.resetHeading = true})
+        this.bus.onEvent("powersave:disable", () => {this.resetHeading = true})
 
         // If we are riding we disbale all map intercation to make hitting buttons easier
-        this.bus.on("geolocation:riding", (riding: boolean) =>{this.disableMapInteraction(riding)})
+        this.bus.onEvent("geolocation:riding", (riding: boolean) =>{this.disableMapInteraction(riding)})
     }
 
     setBaseLayer(id: string){
@@ -348,7 +348,7 @@ export class TrackingMap{
             }).addTo(this.areaHighlightLG)
 
             //this.zoomFrameArea(areaLayer.getBounds())
-            //this.bus.emit("zoom:framed:area", area)
+            //this.bus.eventEmit("zoom:framed:area", area)
         }
         else{
             //this.zoomFrameRider()
@@ -464,7 +464,7 @@ export class TrackingMap{
         this.addAnnotationPopup(annotation, marker)
         // Handler for modifying position
         marker.on("dragend", (e ) => {
-            this.bus.emit("annotation:location:modify:pos", {id: id, pos:{lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng }})
+            this.bus.emitEvent("annotation:location:modify:pos", {id: id, pos:{lat: e.target.getLatLng().lat, lon: e.target.getLatLng().lng }})
         })
     }
 
@@ -490,7 +490,7 @@ export class TrackingMap{
             // Remove marker from map
             this.map.removeLayer(marker)
             // And ask to remove permanently from backend
-            this.bus.emit("annotation:location:delete", annotation.id!);
+            this.bus.emitEvent("annotation:location:delete", annotation.id!);
         });
 
         marker.bindPopup(popupContent);
@@ -612,7 +612,7 @@ export class TrackingMap{
             // Wire up buttons
             const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
             favButton!.addEventListener("click", () => {
-                this.bus.emit("annotation:edge:create", {
+                this.bus.emitEvent("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_FAVORITE,
                     comment: commentArea.value
@@ -621,7 +621,7 @@ export class TrackingMap{
 
             const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn");
             avoidButton!.addEventListener("click", () => {
-                this.bus.emit("annotation:edge:create", {
+                this.bus.emitEvent("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_KEEPOUT,
                     comment: commentArea.value
@@ -630,7 +630,7 @@ export class TrackingMap{
 
             const exploreButton = popupContainer.querySelector(".cyc-edge-annotation-explore-btn");
             exploreButton!.addEventListener("click", () => {
-                this.bus.emit("annotation:edge:create", {
+                this.bus.emitEvent("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_EXPLORE,
                     comment: commentArea.value
@@ -639,7 +639,7 @@ export class TrackingMap{
 
             const steepButton = popupContainer.querySelector(".cyc-edge-annotation-steep-btn");
             steepButton!.addEventListener("click", () => {
-                this.bus.emit("annotation:edge:create", {
+                this.bus.emitEvent("annotation:edge:create", {
                     edge_id: feature.properties.edge_id,
                     category: EdgeAnnotationCategory.EA_STEEP,
                     comment: commentArea.value
@@ -649,7 +649,7 @@ export class TrackingMap{
             // TODO - Handle event in AnnotationRepo
             const deleteButton = popupContainer.querySelector(".cyc-edge-annotation-delete-btn");
             deleteButton!.addEventListener("click", () => {
-                this.bus.emit("annotation:edge:delete", feature.properties.edge_id)
+                this.bus.emitEvent("annotation:edge:delete", feature.properties.edge_id)
             })
 
             layer.bindPopup(popupContainer)

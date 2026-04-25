@@ -29,9 +29,9 @@ export class SettingsService{
         this.bus = bus
 
         // Register listeners
-        this.bus.on("settings:init", this.initSettings.bind(this))
-        this.bus.on("settings:updated", this.saveSettings.bind(this))
-        this.bus.on("settings:save", this.saveSettings.bind(this))
+        this.bus.onEvent("settings:init", this.initSettings.bind(this))
+        this.bus.onEvent("settings:updated", this.saveSettings.bind(this))
+        this.bus.onEvent("settings:save", this.saveSettings.bind(this))
     }
 
     // LISTENERS
@@ -39,7 +39,7 @@ export class SettingsService{
 
     initSettings(){
         const settings = this.loadSettings()
-        this.bus.emit("settings:loaded", settings)
+        this.bus.emitEvent("settings:loaded", settings)
     }
 
     // IMPLEMENTATION

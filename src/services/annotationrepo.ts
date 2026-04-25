@@ -28,6 +28,7 @@ export class AnnotationRepo{
         this.bus = bus
         this.repo = new Map()
         this.edgeRepo = new Map()
+        this.bus.onRequest("annotations:requests:queuesize", () => this.getQueue().length)
     }
 
     getQueue(): RequestQueueEntry[] {
@@ -59,7 +60,7 @@ export class AnnotationRepo{
 
                 if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
                 console.log("Successfully sent request", item)
-                this.bus.emit("notification:show", {
+                this.bus.emitEvent("notification:show", {
                     type: "DEBUG",
                     caption: "Annotation synced",
                     description: `${item.method} ${item.url} was sent successfully.`,
@@ -69,7 +70,7 @@ export class AnnotationRepo{
                 item.retryCount++
                 if(item.retryCount < 5) {
                     remaining.push(item)
-                    this.bus.emit("notification:show", {
+                    this.bus.emitEvent("notification:show", {
                         type: "WARNING",
                         caption: "Annotation sync retry",
                         description: `${item.method} ${item.url} failed. Retrying (${item.retryCount}/5).`,
@@ -77,7 +78,7 @@ export class AnnotationRepo{
                     })
                 } else {
                     console.error("Failed to send request 5 times, abandoning task", item)
-                    this.bus.emit("notification:show", {
+                    this.bus.emitEvent("notification:show", {
                         type: "ERROR",
                         caption: "Annotation sync failed",
                         description: `${item.method} ${item.url} failed after 5 attempts and was abandoned.`,

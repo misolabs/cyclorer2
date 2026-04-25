@@ -12,6 +12,7 @@ export class SettingsView {
     showDebugNotifications: HTMLInputElement
     showFreqHeatmapOverlay: HTMLInputElement
     toggleOverlaysWhenRiding: HTMLInputElement
+    annotationRequestQueueSize: HTMLElement
 
     constructor(element: string, bus: EventBus) {
         this.bus = bus
@@ -23,18 +24,19 @@ export class SettingsView {
         this.showDebugNotifications = document.getElementById("settings-show-debug-notifications")! as HTMLInputElement
         this.showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
         this.toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
+        this.annotationRequestQueueSize = document.getElementById("annotation-request-queue-size")!
 
         document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener.bind(this))
-        document.getElementById("sync-data-btn")?.addEventListener("click", () => this.bus.emit("data:sync"))
+        document.getElementById("sync-data-btn")?.addEventListener("click", () => this.bus.emitEvent("data:sync"))
         document.getElementById("clear-cache-btn")?.addEventListener("click", () => {
-            this.bus.emit("cache:clear")
-            this.bus.emit("cache:stats:request")
+            this.bus.emitEvent("cache:clear")
+            this.bus.emitEvent("cache:stats:request")
         })
 
-        this.bus.on("settings:loaded", this.init.bind(this))
-        this.bus.on("settings:show", this.show.bind(this))
+        this.bus.onEvent("settings:loaded", this.init.bind(this))
+        this.bus.onEvent("settings:show", this.show.bind(this))
 
-        this.bus.on("cache:stats", this.onCacheStatsUpdated.bind(this))
+        this.bus.onEvent("cache:stats", this.onCacheStatsUpdated.bind(this))
     }
 
     init(settings: Settings): void {
@@ -45,14 +47,17 @@ export class SettingsView {
         this.showFreqHeatmapOverlay.checked = settings.showFrequencyHeatmap
         this.toggleOverlaysWhenRiding.checked = settings.toggleOverlaysWhenRiding
         this.applyRadioSelection("mapService", settings.tileService)
+        this.updateAnnotationQueueSize()
     }
 
     show(show: boolean) {
         this.settingsPane.style.visibility = show ? "visible" : "hidden"
 
         // Ask for updated stats
-        if(show)
-            this.bus.emit("cache:stats:request")
+        if(show) {
+            this.bus.emitEvent("cache:stats:request")
+            this.updateAnnotationQueueSize()
+        }
     }
 
     onCacheStatsUpdated(stats: TileCacheStats): void {
@@ -79,14 +84,14 @@ export class SettingsView {
         }
 
         // Spread the good news
-        this.bus.emit("settings:updated", settings)
-        this.bus.emit("notification:show", {
+        this.bus.emitEvent("settings:updated", settings)
+        this.bus.emitEvent("notification:show", {
             type: "SUCCESS",
             caption: "Settings saved",
             description: "Your map preferences were updated.",
             autocloseDelay: 2500,
         })
-        this.bus.emit("notification:show", {
+        this.bus.emitEvent("notification:show", {
             type: "DEBUG",
             caption: "Debug notifications",
             description: settings.showDebugNotifications
@@ -114,5 +119,10 @@ export class SettingsView {
         )
 
         if (radio) radio.checked = true
+    }
+
+    private updateAnnotationQueueSize() {
+        const result = this.bus.request("annotations:requests:queuesize")
+        this.annotationRequestQueueSize.textContent = String(result ?? 0)
     }
 }

@@ -19,9 +19,9 @@ export class NotificationsView {
     this.bus = bus
     this.root = document.getElementById("notifications-view")!
 
-    this.bus.on("notification:show", this.showNotification.bind(this))
-    this.bus.on("settings:loaded", this.onSettingsChanged.bind(this))
-    this.bus.on("settings:updated", this.onSettingsChanged.bind(this))
+    this.bus.onEvent("notification:show", this.showNotification.bind(this))
+    this.bus.onEvent("settings:loaded", this.onSettingsChanged.bind(this))
+    this.bus.onEvent("settings:updated", this.onSettingsChanged.bind(this))
   }
 
   showNotification(notification: NotificationData) {
