@@ -7,7 +7,9 @@ import type {
 } from "../models/models.ts";
 import type {EventBus} from "../eventbus.ts";
 
-const API_BASE = "https://cyclotation.fly.dev";
+const API_BASE = "https://cyclotation.fly.dev"
+//const API_BASE = "http://localhost:8000"
+
 const LOCATION_ENDPOINTS = "/annotations/locations"
 const EDGE_ENDPOINTS = "/annotations/edges"
 
@@ -15,14 +17,14 @@ interface RequestQueueEntry{
     url: string,
     headers?: HeadersInit,
     method: string,
-    body?: string,
+    body?: unknown,
     retryCount: number,
 }
 
 export class AnnotationRepo{
     bus: EventBus
     repo: Map<string, LocationAnnotation>
-    edgeRepo: Map<number, EdgeAnnotation>
+    edgeRepo: Map<string, EdgeAnnotation>
 
     constructor(bus: EventBus) {
         this.bus = bus
@@ -37,6 +39,18 @@ export class AnnotationRepo{
 
     setQueue(queue: RequestQueueEntry[]) {
         localStorage.setItem('annotationsRequestQueue', JSON.stringify(queue))
+    }
+
+    private serializeRequestBody(body: unknown): BodyInit | undefined {
+        if (body === undefined || body === null) {
+            return undefined
+        }
+
+        if (typeof body === "string" || body instanceof Blob || body instanceof FormData || body instanceof URLSearchParams) {
+            return body
+        }
+
+        return JSON.stringify(body)
     }
 
     addToQueue(request: RequestQueueEntry){
@@ -55,7 +69,7 @@ export class AnnotationRepo{
                 const res = await fetch(item.url, {
                     method: item.method,
                     headers: item.headers,
-                    body: item.body
+                    body: this.serializeRequestBody(item.body)
                 })
 
                 if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
@@ -96,7 +110,7 @@ export class AnnotationRepo{
             url: `${API_BASE}${LOCATION_ENDPOINTS}`,
             method: "POST",
             headers: {"Content-Type": "application/json",},
-            body: JSON.stringify(la),
+            body: la,
             retryCount: 0
         }
 
@@ -107,26 +121,26 @@ export class AnnotationRepo{
         this.addToQueue(request)
     }
 
-    async addEdge(ea: EdgeAnnotationRequest): Promise<EdgeAnnotation>{
-        // Send to annotation server
-        const response = await fetch(`${API_BASE}${EDGE_ENDPOINTS}`, {
-            headers: {"Content-Type": "application/json",},
-            method: 'POST', body: JSON.stringify({
-                category: ea.category,
-                timestamp: ea.timestamp,
-                comment: ea.comment,
-                edge_id: ea.edge_id
-            })})
+    saveEdge(ea: EdgeAnnotationRequest): EdgeAnnotation{
+        const annotation: EdgeAnnotation = {
+            category: ea.category,
+            timestamp: ea.timestamp,
+            comment: ea.comment,
+            edge_id: ea.edge_id
+        }
 
-        if(response.status == 200){
-            try {
-                const text= await response.text()
-                const annotation: EdgeAnnotation = JSON.parse(text)
-                if(annotation.id)
-                    this.edgeRepo.set(annotation.id, annotation)
-                return annotation
-            }catch(err){console.error(err); throw err}
-        }else throw Error("POST request failed with status code " + response.status)
+        this.edgeRepo.set(ea.edge_id, annotation)
+
+        const request: RequestQueueEntry = {
+            url: `${API_BASE}${EDGE_ENDPOINTS}/${ea.edge_id}`,
+            method: "PUT",
+            headers: {"Content-Type": "application/json",},
+            body: annotation,
+            retryCount: 0
+        }
+        this.addToQueue(request)
+
+        return annotation
     }
 
     async delete(id: string){
@@ -146,27 +160,24 @@ export class AnnotationRepo{
         }
     }
 
-    async deleteEdge(id: number): Promise<boolean>{
-        if(this.edgeRepo.has(id)){
-            const response = await fetch(`${API_BASE}${EDGE_ENDPOINTS}/${id}`, {method: "DELETE"})
-            if(response.status == 200){
-                this.edgeRepo.delete(id)
-                return true
+    deleteEdge(edgeId: string): boolean{
+        if(this.edgeRepo.has(edgeId)){
+            const request: RequestQueueEntry = {
+                url: `${API_BASE}${EDGE_ENDPOINTS}/${edgeId}`,
+                method: "DELETE",
+                headers: undefined,
+                body: undefined,
+                retryCount: 0
             }
+            this.addToQueue(request)
+            this.edgeRepo.delete(edgeId)
+            return true
         }
         return false
     }
 
     findByEdgeId(edgeId: string): EdgeAnnotation | undefined {
-        let result: EdgeAnnotation | undefined = undefined
-        this.edgeRepo.forEach((edge, id) => {
-            if(edge.edge_id == edgeId){
-                console.log("found edge ID", edge.edge_id)
-                result = edge
-            }
-        })
-
-        return result
+        return this.edgeRepo.get(edgeId)
     }
 
     getAll(){
@@ -188,7 +199,7 @@ export class AnnotationRepo{
                 url: `${API_BASE}${LOCATION_ENDPOINTS}/${annotation.id}`,
                 method: "PUT",
                 headers: {"Content-Type": "application/json",},
-                body: JSON.stringify(annotation),
+                body: annotation,
                 retryCount: 0
             }
             this.addToQueue(request)
@@ -237,12 +248,10 @@ export class AnnotationRepo{
                         const annotation = {
                             category: aJson.category,
                             comment: aJson.comment,
-                            id: aJson.id,
                             edge_id:aJson.edge_id,
                             timestamp: aJson.timestamp}
 
-                        if(annotation.id)
-                            this.edgeRepo.set(annotation.id, annotation)
+                        this.edgeRepo.set(annotation.edge_id, annotation)
                     }catch(err){console.error(err)}
                 }
             }catch(err){console.error(err); throw err}

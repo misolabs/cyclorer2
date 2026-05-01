@@ -57,7 +57,7 @@ export class NavigationService{
         bus.onEvent("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
         bus.onEvent("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
 
-        bus.onEvent("annotation:edge:create", this.onCreateEdgeAnnotation.bind(this))
+        bus.onEvent("annotation:edge:save", this.onSaveEdgeAnnotation.bind(this))
         bus.onEvent("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
 
         bus.onEvent("rds:stats:loaded", this.onStatsLoaded.bind(this))
@@ -117,26 +117,19 @@ export class NavigationService{
         await this.annotationRepo.delete(id)
     }
 
-    async onCreateEdgeAnnotation(annotation: EdgeAnnotationCreateEvent){
-        // TODO cover the case where we are modifying an existing annotation
-        const existingAnnotation = this.annotationRepo.findByEdgeId(annotation.edge_id)
-        if(!existingAnnotation) {
-            const result = await this.annotationRepo.addEdge({
-                ...annotation,
-                timestamp: new Date(Date.now()).toJSON()
-            })
+    onSaveEdgeAnnotation(annotation: EdgeAnnotationCreateEvent){
+        const result = this.annotationRepo.saveEdge({
+            ...annotation,
+            timestamp: new Date(Date.now()).toJSON()
+        })
 
-            // Tell map to display the new edge annotation
-            this.bus.emitEvent("annotation:edge:modified", result)
-        }else{
-            // TODO Modify current edge
-        }
+        this.bus.emitEvent("annotation:edge:modified", result)
     }
 
-    async onDeleteEdgeAnnotation(edge_id: string){
+    onDeleteEdgeAnnotation(edge_id: string){
         const annotation = this.annotationRepo.findByEdgeId(edge_id)
         if(annotation){
-            const success = await this.annotationRepo.deleteEdge(annotation.id)
+            const success = this.annotationRepo.deleteEdge(edge_id)
             if(success)
                 this.bus.emitEvent("annotation:edge:deleted", annotation)
         }else console.error("Unable to find edge annotation")

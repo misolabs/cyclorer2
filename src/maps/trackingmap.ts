@@ -637,51 +637,47 @@ export class TrackingMap{
                 commentArea.value = annotation.comment
             }
 
-            // Wire up the radio buttons for now. The actual action handlers can
-            // be swapped out later without changing the popup markup.
-            const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn");
-            favButton!.addEventListener("click", () => {
-                this.bus.emitEvent("annotation:edge:create", {
-                    edge_id: feature.properties.edge_id,
-                    category: EdgeAnnotationCategory.EA_FAVORITE,
-                    comment: commentArea.value
-                })
-            });
+            const edgeId = feature.properties.edge_id
+            const getSelectedCategory = (): string | undefined => {
+                const options: Array<[string, string]> = [
+                    [".cyc-edge-annotation-favorite-btn", EdgeAnnotationCategory.EA_FAVORITE],
+                    [".cyc-edge-annotation-keepout-btn", EdgeAnnotationCategory.EA_KEEPOUT],
+                    [".cyc-edge-annotation-explore-btn", EdgeAnnotationCategory.EA_EXPLORE],
+                    [".cyc-edge-annotation-steep-btn", EdgeAnnotationCategory.EA_STEEP],
+                ]
 
-            const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn");
-            avoidButton!.addEventListener("click", () => {
-                this.bus.emitEvent("annotation:edge:create", {
-                    edge_id: feature.properties.edge_id,
-                    category: EdgeAnnotationCategory.EA_KEEPOUT,
-                    comment: commentArea.value
-                })
-            })
-
-            const exploreButton = popupContainer.querySelector(".cyc-edge-annotation-explore-btn");
-            exploreButton!.addEventListener("click", () => {
-                if(!annotation) {
-                    this.bus.emitEvent("annotation:edge:create", {
-                        edge_id: feature.properties.edge_id,
-                        category: EdgeAnnotationCategory.EA_EXPLORE,
-                        comment: commentArea.value
-                    })
-                }else{
-                    this.bus.emitEvent("annotation:edge:modified", {
-                        ...annotation,
-                        category: EdgeAnnotationCategory.EA_EXPLORE,
-                        comment: commentArea.value
-                    })
+                for (const [selector, category] of options) {
+                    const element = popupContainer.querySelector(selector) as HTMLInputElement | null
+                    if(element?.checked) return category
                 }
-            })
 
-            const steepButton = popupContainer.querySelector(".cyc-edge-annotation-steep-btn");
-            steepButton!.addEventListener("click", () => {
-                this.bus.emitEvent("annotation:edge:create", {
-                    edge_id: feature.properties.edge_id,
-                    category: EdgeAnnotationCategory.EA_STEEP,
+                return undefined
+            }
+
+            const emitEdgeAnnotationSave = () => {
+                const category = getSelectedCategory()
+                if(!category) return
+
+                this.bus.emitEvent("annotation:edge:save", {
+                    edge_id: edgeId,
+                    category,
                     comment: commentArea.value
                 })
-            })
+            }
+
+            const favButton = popupContainer.querySelector(".cyc-edge-annotation-favorite-btn") as HTMLInputElement | null;
+            favButton!.addEventListener("change", emitEdgeAnnotationSave);
+
+            const avoidButton = popupContainer.querySelector(".cyc-edge-annotation-keepout-btn") as HTMLInputElement | null;
+            avoidButton!.addEventListener("change", emitEdgeAnnotationSave)
+
+            const exploreButton = popupContainer.querySelector(".cyc-edge-annotation-explore-btn") as HTMLInputElement | null;
+            exploreButton!.addEventListener("change", emitEdgeAnnotationSave)
+
+            const steepButton = popupContainer.querySelector(".cyc-edge-annotation-steep-btn") as HTMLInputElement | null;
+            steepButton!.addEventListener("change", emitEdgeAnnotationSave)
+
+            commentArea.addEventListener("change", emitEdgeAnnotationSave)
 
             // Delete annotation - Button only visible if there is already an annotation
             const deleteButton = popupContainer.querySelector(".cyc-edge-annotation-delete-btn");

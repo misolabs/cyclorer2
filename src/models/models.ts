@@ -170,7 +170,7 @@ export const EdgeAnnotationCategory = {
 } as const;
 
 export interface EdgeAnnotation{
-  id: number
+  id?: number
   edge_id: string
   timestamp: string
   category: string
