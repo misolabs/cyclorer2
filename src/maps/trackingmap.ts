@@ -64,11 +64,15 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
 const osmTileService: TileService = {url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
 const cyclosmTileService: TileService = {url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png", attribution: "CyclOSM"}
 const openTopoTileService: TileService = {url: "https://c.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "OpenTopoMap"}
+const stadiaOutdoorsTileService: TileService ={url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png", attribution: "Stadia Outdoors"}
+const mtbTileService: TileService = {url:"http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png", attribution: "OpenStreetMap"}
 
 const tileServices:Map<string, TileService> = new Map([
     ["osm", osmTileService],
     ["cyclosm", cyclosmTileService],
     ["opentopo", openTopoTileService],
+    ["stadia_outdoors", stadiaOutdoorsTileService],
+    ["mtbmap", mtbTileService],
 ])
 
 let currentTileService: TileService | null = null
