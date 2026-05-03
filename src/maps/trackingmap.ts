@@ -238,7 +238,7 @@ export class TrackingMap{
 
                 // Update edge tooltip
                 if(a.comment) layer.bindTooltip(a.comment, {permanent: true})
-                else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
+                //else layer.bindTooltip(`<span class='material-symbols-rounded' style='font-size: 14px'>${glyphs.get(a.category)}</span> ${a.category}`, {permanent: true})
             }
         })
 
