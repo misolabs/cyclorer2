@@ -37,14 +37,12 @@ export class GeoLocationService{
     trackingListener(pos: GeolocationPosition){
         this.bus.emitEvent("geolocation:update", pos)
 
-        if(pos.coords.speed){
-            if(!this.riding && pos.coords.speed > 1.0){
-                this.riding = true
-                this.bus.emitEvent("geolocation:riding", true)
-            }else if(this.riding && pos.coords.speed < 0.5){
-                this.riding = false
-                this.bus.emitEvent("geolocation:riding", false)
-            }
+        if(!this.riding && pos.coords.speed && pos.coords.speed > 2.0){
+            this.riding = true
+            this.bus.emitEvent("geolocation:riding", true)
+        }else if(this.riding && (!pos.coords.speed || pos.coords.speed < 0.5)){
+            this.riding = false
+            this.bus.emitEvent("geolocation:riding", false)
         }
     }
 }
