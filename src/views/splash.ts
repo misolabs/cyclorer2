@@ -19,6 +19,19 @@ export class SplashScreen {
             this.hideSplash()
             bus.emitEvent("wakelock:engage")
         })
+
+        // Fetch and display build timestamp
+        const tsElem = document.getElementById("build-timestamp")
+        if (tsElem) {
+            fetch(import.meta.env.BASE_URL + "build-timestamp.json")
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (data && data.timestamp) {
+                        tsElem.textContent = `Build: ${data.timestamp}`;
+                    }
+                })
+                .catch(() => {/* ignore */});
+        }
     }
 
     // Does currently nothing, splash screen is visible by default

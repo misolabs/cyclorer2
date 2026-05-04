@@ -30,6 +30,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Generate build timestamp
+        run: |
+          echo "{\"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}" > ./dist/build-timestamp.json
+        shell: bash
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
