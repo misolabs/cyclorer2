@@ -13,6 +13,7 @@ export class SettingsView {
     showFreqHeatmapOverlay: HTMLInputElement
     toggleOverlaysWhenRiding: HTMLInputElement
     annotationRequestQueueSize: HTMLElement
+    gpsUpdateCountElem: HTMLElement
 
     constructor(element: string, bus: EventBus) {
         this.bus = bus
@@ -25,6 +26,7 @@ export class SettingsView {
         this.showFreqHeatmapOverlay = document.getElementById("settings-frequency-heatmap")! as HTMLInputElement
         this.toggleOverlaysWhenRiding = document.getElementById("settings-toggle-overlays")! as HTMLInputElement
         this.annotationRequestQueueSize = document.getElementById("annotation-request-queue-size")!
+        this.gpsUpdateCountElem = document.getElementById("gps-update-count")!
 
         document.getElementById("settings-close-btn")?.addEventListener("click", this.closeListener.bind(this))
         document.getElementById("sync-data-btn")?.addEventListener("click", () => this.bus.emitEvent("data:sync"))
@@ -57,7 +59,13 @@ export class SettingsView {
         if(show) {
             this.bus.emitEvent("cache:stats:request")
             this.updateAnnotationQueueSize()
+            this.updateGpsUpdateCount()
         }
+    }
+
+    private updateGpsUpdateCount() {
+        const result = this.bus.request("geolocation:updates:count")
+        this.gpsUpdateCountElem.textContent = String(result ?? 0)
     }
 
     onCacheStatsUpdated(stats: TileCacheStats): void {

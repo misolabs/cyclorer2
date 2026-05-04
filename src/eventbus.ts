@@ -88,6 +88,10 @@ type Requests = {
         input: void
         output: number | undefined
     }
+    "geolocation:updates:count":{
+        input: void
+        output: number
+    }
 };
 
 export class EventBus {

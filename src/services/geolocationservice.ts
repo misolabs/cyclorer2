@@ -6,6 +6,7 @@ export class GeoLocationService{
     bus: EventBus
     watchId: number
     riding: boolean = false
+    updateCount: number = 0
 
     constructor(bus: EventBus) {
         this.bus = bus
@@ -14,6 +15,8 @@ export class GeoLocationService{
         this.bus.onEvent("geolocation:enable", this.enableGeolocation.bind(this))
         this.bus.onEvent("powersave:disable", this.enableGeolocation.bind(this))
         this.bus.onEvent("powersave:enable", this.disableGeolocation.bind(this))
+
+        this.bus.onRequest("geolocation:updates:count", () => this.updateCount)
     }
 
     enableGeolocation() {
@@ -36,6 +39,7 @@ export class GeoLocationService{
 
     trackingListener(pos: GeolocationPosition){
         this.bus.emitEvent("geolocation:update", pos)
+        this.updateCount++
 
         if(!this.riding && pos.coords.speed && pos.coords.speed > 2.0){
             this.riding = true

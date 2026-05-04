@@ -210,11 +210,21 @@
         <div class="card-header">Caches</div>
         <div class="card-body">
           <div id="cache-stats" class="mb-3"></div>
+          <button id="clear-cache-btn" class="btn btn-primary w-100">Clear Tile Cache</button>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">System info</div>
+        <div class="card-body">
           <div class="mb-3">
             <strong>Annotation retry queue:</strong>
             <span id="annotation-request-queue-size">0</span>
           </div>
-          <button id="clear-cache-btn" class="btn btn-primary w-100">Clear Tile Cache</button>
+          <div class="mb-3">
+            <strong>GPS updates:</strong>
+            <span id="gps-update-count">0</span>
+          </div>
         </div>
       </div>
 
