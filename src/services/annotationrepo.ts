@@ -60,6 +60,15 @@ export class AnnotationRepo{
         this.processQueue()
     }
 
+    shouldRetry(response: Response) {
+        if (!response) return true // network error
+
+        if (response.status >= 500) return true
+        if (response.status === 429) return true
+
+        return false
+    }
+
     async processQueue() {
         const queue = this.getQueue()
         const remaining = []
@@ -72,7 +81,7 @@ export class AnnotationRepo{
                     body: this.serializeRequestBody(item.body)
                 })
 
-                if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
+                if (!res.ok && this.shouldRetry(res)) throw new Error()
                 console.log("Successfully sent request", item)
                 this.bus.emitEvent("notification:show", {
                     type: "DEBUG",
