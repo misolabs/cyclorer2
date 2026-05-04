@@ -714,7 +714,7 @@ export class TrackingMap{
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
         if(feature && feature.properties.deadend)
             return edgeStyles.get("DEADEND")!
-        else if(feature && feature.properties.access && feature.properties.access == "no")
+        else if(feature && feature.properties.access && (feature.properties.access == "no" || feature.properties.access == "private"))
             return edgeStyles.get("NOACCESS")!
         else if(feature && feature.properties.ride_count == 0 && this.isOfType(feature.properties.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
