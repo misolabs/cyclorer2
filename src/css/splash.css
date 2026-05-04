@@ -20,6 +20,15 @@
     pointer-events: none;
 }
 
+#build-timestamp{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+
+    font-size:small;
+    color:#888;
+}
+
 #stats-wrapper{
     position: fixed;
     right: 30px;
