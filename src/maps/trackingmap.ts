@@ -52,6 +52,7 @@ interface TileService{
 const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["DEFAULT", {color: "rgb(39, 105, 163)", weight: 3, opacity: 1}],
     ["DEADEND", {color: "black", weight: 5}],
+    ["NOACCESS", {color: "purple", weight: 5, dashArray:[10, 10]}],
     ["UNVISITED", {color: "red", weight: 3}],
     ["URBAN_UNVISITED", {color: "green", weight: 3}],
 
@@ -713,6 +714,8 @@ export class TrackingMap{
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
         if(feature && feature.properties.deadend)
             return edgeStyles.get("DEADEND")!
+        else if(feature && feature.properties.access && feature.properties.access == "no")
+            return edgeStyles.get("NOACCESS")!
         else if(feature && feature.properties.ride_count == 0 && this.isOfType(feature.properties.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
         else if(feature && feature.properties.ride_count == 0)

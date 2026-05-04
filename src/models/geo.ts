@@ -33,6 +33,7 @@ export interface RoutingEdgeProperties {
     edge_id: string
 
     deadend: boolean
+    access?: string | string[]
     highway: string | string[]
     offroad: boolean
     ride_count: number
