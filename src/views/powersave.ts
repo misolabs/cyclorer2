@@ -43,7 +43,7 @@ export class PowersaveView {
         })
 
         this.previewMap.showJunctionMap(junction.pos)
-        mapEl.classList.remove("hide")
+        //mapEl.classList.remove("hide")
 /*
         mapEl.classList.add("hide")
         if(adj && adj.length > 2){
