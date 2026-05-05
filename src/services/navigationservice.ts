@@ -229,12 +229,6 @@ export class NavigationService{
                 }
             }
 
-            this.bus.emitEvent("notification:show", {
-                type: NotificationType.DEBUG,
-                caption: "Junctions",
-                description: "Trying ...",
-            })
-
             // EXP - show on preview map
             const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
             let pos = null

@@ -42,6 +42,9 @@ export class PowersaveView {
             autocloseDelay: 3000,
         })
 
+        this.previewMap.showJunctionMap(junction.pos)
+        mapEl.classList.remove("hide")
+/*
         mapEl.classList.add("hide")
         if(adj && adj.length > 2){
             let unvisited = false
@@ -53,6 +56,6 @@ export class PowersaveView {
                 this.previewMap.showJunctionMap(junction.pos)
                 mapEl.classList.remove("hide")
             }
-        }
+        }*/
     }
 }
