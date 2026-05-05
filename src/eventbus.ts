@@ -73,6 +73,8 @@ type Events = {
     "area:dismiss": void
     "area:engage": void
 
+    "navigation:upcoming:junction": LatLon
+
     "zoom:framed:area": Area
     "zoom:frame:rider": void
 

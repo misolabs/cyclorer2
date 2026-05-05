@@ -6,7 +6,8 @@ import {
     type BoundingBox, type Edge,
     type LatLon,
     type LocationAnnotation,
-    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent, type LocationAnnotationRequest
+    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent, type LocationAnnotationRequest, NodeId,
+    TravelDirection
 } from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
@@ -221,6 +222,14 @@ export class NavigationService{
                     this.bus.emitEvent("exploration:ended")
                 }
             }
+
+            // EXP - show on preview map
+            const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
+            let pos = null
+            if(travelDir == TravelDirection.U_TO_V) pos = closestEdge.edge.coordinates[closestEdge.edge.coordinates.length - 1]
+            else pos = closestEdge.edge.coordinates[0]
+
+            this.bus.emitEvent("navigation:upcoming:junction", pos)
 
             // If we are not exploring, we look for new targets in exploration mode
             if(this.navigationMode == NavigationMode.TM_EXPLORE && !this.currentTarget && !this.exploring)
