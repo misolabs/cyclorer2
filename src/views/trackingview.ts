@@ -14,8 +14,9 @@ import type {Settings} from "../services/settingsservice.ts";
 import {geoToLatLon} from "../crs/latlonmath.ts";
 import type {GeolocationLight} from "../services/geolocationservice.ts";
 import type {
+    AdjacencyInfo,
     Area,
-    AreaId,
+    AreaId, JunctionInfo,
     LocationAnnotation,
     LocationAnnotationCategory,
     LocationAnnotationRequest

@@ -9,7 +9,7 @@ import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {
     LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
     EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent,
-    NotificationData
+    NotificationData, JunctionInfo, NodeId, AdjacencyInfo
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
@@ -73,7 +73,7 @@ type Events = {
     "area:dismiss": void
     "area:engage": void
 
-    "navigation:upcoming:junction": LatLon
+    "navigation:upcoming:junction": JunctionInfo
 
     "zoom:framed:area": Area
     "zoom:frame:rider": void
@@ -93,6 +93,10 @@ type Requests = {
     "geolocation:updates:count":{
         input: void
         output: number
+    }
+    "node:adjacency": {
+        input: NodeId
+        output: AdjacencyInfo[] | undefined
     }
 };
 

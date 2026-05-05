@@ -71,6 +71,8 @@ export class NavigationService{
 
         bus.onEvent("navigation:target:area", this.onNavigateArea.bind(this))
         bus.onEvent("area:dismiss", this.onDismissArea.bind(this))
+
+        bus.onRequest("node:adjacency", this.onRequestNodeAdjacency.bind(this))
     }
 
     // Called when everything is in place
@@ -162,6 +164,10 @@ export class NavigationService{
         }
     }
 
+    onRequestNodeAdjacency(node: NodeId){
+        return this.routingEngine?.nodesAdjacency.get(node)
+    }
+
     onDataSync(){
         // Collect data from all sources and sync with computer
         // Currently send an email
@@ -226,10 +232,17 @@ export class NavigationService{
             // EXP - show on preview map
             const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
             let pos = null
-            if(travelDir == TravelDirection.U_TO_V) pos = closestEdge.edge.coordinates[closestEdge.edge.coordinates.length - 1]
-            else pos = closestEdge.edge.coordinates[0]
+            let nodeId: NodeId | undefined
+            if(travelDir == TravelDirection.U_TO_V) {
+                pos = closestEdge.edge.coordinates[closestEdge.edge.coordinates.length - 1]
+                nodeId = NodeId(closestEdge.edge.v)
+            }
+            else {
+                pos = closestEdge.edge.coordinates[0]
+                nodeId = NodeId(closestEdge.edge.u)
+            }
 
-            this.bus.emitEvent("navigation:upcoming:junction", pos)
+            this.bus.emitEvent("navigation:upcoming:junction", {nodeId, pos, travelEdge: closestEdge.edge})
 
             // If we are not exploring, we look for new targets in exploration mode
             if(this.navigationMode == NavigationMode.TM_EXPLORE && !this.currentTarget && !this.exploring)

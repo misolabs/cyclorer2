@@ -32,10 +32,7 @@ export class JunctionMap {
             touchZoom: false
         })
 
-        this.map.setView(new L.LatLng(49.477015, 5.980889), 19)
-
         this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
-        this.bus.onEvent("navigation:upcoming:junction", this.showJunctionMap.bind(this))
     }
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){

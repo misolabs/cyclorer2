@@ -110,6 +110,12 @@ export const NavigationMode = {
 }
 export type NavigationMode = typeof NavigationMode[keyof typeof NavigationMode];
 
+export interface JunctionInfo{
+  nodeId: NodeId;
+  travelEdge: Edge;
+  pos: LatLon;
+}
+
 export const NotificationType = {
   ERROR: "ERROR",
   WARNING: "WARNING",
