@@ -7,7 +7,7 @@ import {
     type LatLon,
     type LocationAnnotation,
     type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent, type LocationAnnotationRequest, NodeId,
-    TravelDirection
+    TravelDirection, NotificationType
 } from "../models/models.ts";
 import {RoutingEngine} from "../routing/routing.ts";
 import type {
@@ -228,6 +228,12 @@ export class NavigationService{
                     this.bus.emitEvent("exploration:ended")
                 }
             }
+
+            this.bus.emitEvent("notification:show", {
+                type: NotificationType.DEBUG,
+                caption: "Junctions",
+                description: "Trying ...",
+            })
 
             // EXP - show on preview map
             const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
