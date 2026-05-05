@@ -35,13 +35,6 @@ export class PowersaveView {
         const mapEl = document.getElementById("powersave-junction-preview")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
-        this.bus.emitEvent("notification:show", {
-            type: NotificationType.DEBUG,
-            caption: "Junction",
-            description: `Junction #${junction.nodeId} with ${adj?.length} adjacent edges`,
-            autocloseDelay: 3000,
-        })
-
         this.previewMap.showJunctionMap(junction.pos)
         //mapEl.classList.remove("hide")
 /*
