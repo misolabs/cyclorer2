@@ -1,6 +1,6 @@
 import type {EventBus} from "../eventbus.ts";
 import {JunctionMap} from "../maps/junctionmap.ts";
-import type {AdjacencyInfo, JunctionInfo} from "../models/models.ts";
+import {type AdjacencyInfo, type JunctionInfo, NotificationType} from "../models/models.ts";
 
 export class PowersaveView {
     bus: EventBus
@@ -34,6 +34,13 @@ export class PowersaveView {
     onUpcomingJunction(junction: JunctionInfo){
         const mapEl = document.getElementById("powersave-junction-preview")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
+
+        this.bus.emitEvent("notification:show", {
+            type: NotificationType.DEBUG,
+            caption: "Junction",
+            description: `Junction #${junction.nodeId} with ${adj?.length} adjacent edges`,
+            autocloseDelay: 3000,
+        })
 
         mapEl.classList.add("hide")
         if(adj && adj.length > 2){
