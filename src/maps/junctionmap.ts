@@ -40,13 +40,6 @@ export class JunctionMap {
             //onEachFeature: this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
-
-        this.bus.emitEvent("notification:show", {
-            type: NotificationType.DEBUG,
-            caption: "Junction",
-            description: "Routing data loaded with " + routingGeoData.features.length + " edges",
-            autocloseDelay: 3000,
-        })
     }
 
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
@@ -66,6 +59,12 @@ export class JunctionMap {
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
         this.map.setView(new L.LatLng(pos.lat, pos.lon), 12)
+        this.bus.emitEvent("notification:show", {
+            type: NotificationType.DEBUG,
+            caption: "Junction",
+            description: `Showing junction map at (${pos.lat.toFixed(5)}, ${pos.lon.toFixed(5)})`,
+            autocloseDelay: 3000,
+        })
     }
 
     // TODO Duplicated code
