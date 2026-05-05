@@ -1,7 +1,7 @@
 import * as L from "leaflet";
 import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
 import type {EventBus} from "../eventbus.ts";
-import {EdgeAnnotationCategory, type LatLon, type NodeId} from "../models/models.ts";
+import {EdgeAnnotationCategory, type LatLon, type NodeId, NotificationType} from "../models/models.ts";
 import type {GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
 import type {Feature, GeometryObject} from "geojson";
 
@@ -40,6 +40,13 @@ export class JunctionMap {
             //onEachFeature: this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
+
+        this.bus.emitEvent("notification:show", {
+            type: NotificationType.DEBUG,
+            caption: "Junction",
+            description: "Routing data loaded with " + routingGeoData.features.length + " edges",
+            autocloseDelay: 3000,
+        })
     }
 
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
@@ -58,7 +65,7 @@ export class JunctionMap {
 
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
-        this.map.setView(new L.LatLng(pos.lat, pos.lon), 19)
+        this.map.setView(new L.LatLng(pos.lat, pos.lon), 12)
     }
 
     // TODO Duplicated code
