@@ -58,7 +58,7 @@ export class JunctionMap {
 
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
-        this.map.setView(new L.LatLng(pos.lat, pos.lon), 12)
+        this.map.setView(new L.LatLng(49.477015, 5.980889), 12)
         this.bus.emitEvent("notification:show", {
             type: NotificationType.DEBUG,
             caption: "Junction",
