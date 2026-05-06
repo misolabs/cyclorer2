@@ -72,7 +72,7 @@ export class JunctionMap {
     }
 
     rotateMap(angle: number){
-        this.map.setBearing(180 - angle)
+        this.map.setBearing(360 - angle)
     }
 
     // TODO Duplicated code
