@@ -63,7 +63,7 @@ export class JunctionMap {
 
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
-        this.map.setView(new L.LatLng(pos.lat, pos.lon), 19)
+        this.map.setView(new L.LatLng(pos.lat, pos.lon), 20)
     }
 
     setPositionMarker(pos: LatLon){
