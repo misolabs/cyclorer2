@@ -24,6 +24,7 @@ export class JunctionMap {
         this.map = L.map(elName, {
             zoomControl: false,
             attributionControl: false,
+            rotate: true,
             rotateControl: false,
             dragging: true,
             scrollWheelZoom: false,
@@ -71,7 +72,7 @@ export class JunctionMap {
     }
 
     rotateMap(angle: number){
-        this.map.setBearing(angle)
+        this.map.setBearing(180 - angle)
     }
 
     // TODO Duplicated code

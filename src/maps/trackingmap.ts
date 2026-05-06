@@ -20,10 +20,6 @@ import {LatLng} from "leaflet";
 import 'leaflet/dist/leaflet.css'
 import '../css/leaflet-custom.css'
 
-// Marker cluster plugin
-import "leaflet.markercluster/dist/MarkerCluster.css"
-import "leaflet.markercluster/dist/MarkerCluster.Default.css"
-
 // Import marker images so Vite bundles them
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
