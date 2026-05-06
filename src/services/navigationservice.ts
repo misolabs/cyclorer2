@@ -44,6 +44,9 @@ export class NavigationService{
     entrypointCandidates: AreaNode[] = []
     forceRecalculation = false
 
+    nextJunction: NodeId | undefined = undefined
+    junctionStableCount: number = 0
+
     dismissed:Set<number> = new Set()
     dismissTimerId = -1
 
@@ -208,12 +211,16 @@ export class NavigationService{
     }
 
     // =========
+
     update(){
         if(!this.routingEngine || !this.areaFinder) return
         const closestEdge = this.routingEngine.findClosestEdge(this.currentPosition)
 
         if(closestEdge){
+            // EXPLORATION SCORE
             // Are we exploring an unvisited area? -> Keep score
+            //--------------------------------------------------
+
             if(!this.exploring && closestEdge.edge.area_id){
                 this.exploring = true
                 const area: Area = this.areaFinder.areaInfoById(closestEdge.edge.area_id)
@@ -229,7 +236,10 @@ export class NavigationService{
                 }
             }
 
-            // EXP - show on preview map
+            // JUNCTION PREVIEW
+            // Determine next junction and broadcast if stable
+            //------------------------------------------------
+
             const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
             let pos = null
             let nodeId: NodeId | undefined
@@ -245,12 +255,30 @@ export class NavigationService{
                 p1 = closestEdge.edge.coordinates[1]
             }
 
-            const junctionAngle = computeHeading(p1, pos)
-            this.bus.emitEvent("navigation:upcoming:junction", {nodeId, pos, travelEdge: closestEdge.edge, orientation: junctionAngle})
+            // Check if we have the same junction prediction more than X times in a row
+            if(nodeId != undefined && nodeId == this.nextJunction){
+                this.junctionStableCount++
+            } else {
+                this.junctionStableCount=0
+                this.nextJunction = nodeId
+            }
 
+            // If stable -> send out the info
+            if(this.junctionStableCount > 3) {
+                const junctionAngle = computeHeading(p1, pos)
+                this.bus.emitEvent("navigation:upcoming:junction", {
+                    nodeId,
+                    pos,
+                    travelEdge: closestEdge.edge,
+                    orientation: junctionAngle
+                })
+            }
+
+            /*
             // If we are not exploring, we look for new targets in exploration mode
             if(this.navigationMode == NavigationMode.TM_EXPLORE && !this.currentTarget && !this.exploring)
                 this.exploreNearbyAreas()
+             */
         }
     }
 
