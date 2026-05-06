@@ -16,6 +16,7 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
 export class JunctionMap {
     bus: EventBus
     map: L.Map
+    positionMarker!: L.CircleMarker
 
     constructor(elName: string, bus: EventBus) {
         this.bus = bus
@@ -31,7 +32,10 @@ export class JunctionMap {
             keyboard: false,
             touchZoom: false
         })
-        //this.map.setView(new L.LatLng(49.477015, 5.980889), 12)
+
+        this.positionMarker = new L.CircleMarker(new LatLng(0,0),
+            {radius: 11, color: "white", weight: 7, fillColor: "red"}
+        ).addTo(this.map)
 
         this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
     }
@@ -60,6 +64,10 @@ export class JunctionMap {
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
         this.map.setView(new L.LatLng(pos.lat, pos.lon), 19)
+    }
+
+    setPositionMarker(pos: LatLon){
+        this.positionMarker.setLatLng(new LatLng(pos.lat, pos.lon))
     }
 
     // TODO Duplicated code

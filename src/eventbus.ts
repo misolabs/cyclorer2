@@ -36,6 +36,7 @@ type Events = {
     "preview:minimize": void
 
     "geolocation:enable": void
+    // Get notified on new tracking position
     "geolocation:update": GeolocationPosition
     "geolocation:ready": void
     "geolocation:riding": boolean
