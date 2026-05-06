@@ -37,6 +37,7 @@ export class PowersaveView {
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
         this.previewMap.showJunctionMap(junction.pos)
+        this.previewMap.rotateMap(junction.orientation)
         //mapEl.classList.remove("hide")
 /*
         mapEl.classList.add("hide")

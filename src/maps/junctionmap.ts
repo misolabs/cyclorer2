@@ -70,6 +70,10 @@ export class JunctionMap {
         this.positionMarker.setLatLng(new LatLng(pos.lat, pos.lon))
     }
 
+    rotateMap(angle: number){
+        this.map.setBearing(angle)
+    }
+
     // TODO Duplicated code
     isOfType(
         highway: string | string[] | undefined,

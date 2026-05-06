@@ -20,7 +20,7 @@ import {mapBBox} from "../models/mapping.ts";
 import {AreaFinder} from "../routing/areafinder.ts";
 import {haversineDistance} from "../crs/latlonmath.ts";
 import {AnnotationRepo} from "./annotationrepo.ts";
-import type {HeadingExp} from "../routing/heading.ts";
+import {computeHeading, type HeadingExp} from "../routing/heading.ts";
 import {SetUtils} from "../setutils.ts";
 
 export class NavigationService{
@@ -233,16 +233,20 @@ export class NavigationService{
             const travelDir = this.routingEngine.travelDirection(this.lastPosition, this.currentPosition, closestEdge)
             let pos = null
             let nodeId: NodeId | undefined
+            let p1;
             if(travelDir == TravelDirection.U_TO_V) {
                 pos = closestEdge.edge.coordinates[closestEdge.edge.coordinates.length - 1]
                 nodeId = NodeId(closestEdge.edge.v)
+                p1 = closestEdge.edge.coordinates[closestEdge.edge.coordinates.length - 2]
             }
             else {
                 pos = closestEdge.edge.coordinates[0]
                 nodeId = NodeId(closestEdge.edge.u)
+                p1 = closestEdge.edge.coordinates[1]
             }
 
-            this.bus.emitEvent("navigation:upcoming:junction", {nodeId, pos, travelEdge: closestEdge.edge})
+            const junctionAngle = computeHeading(p1, pos)
+            this.bus.emitEvent("navigation:upcoming:junction", {nodeId, pos, travelEdge: closestEdge.edge, orientation: junctionAngle})
 
             // If we are not exploring, we look for new targets in exploration mode
             if(this.navigationMode == NavigationMode.TM_EXPLORE && !this.currentTarget && !this.exploring)

@@ -4,7 +4,7 @@ import type {Cartesian, LatLon} from "../models/models.ts";
 const MIN_SPEED = 1.0
 const MAX_HISTORY = 5;
 
-function computeHeading(startPos: LatLon, endPos: LatLon): number {
+export function computeHeading(startPos: LatLon, endPos: LatLon): number {
     const toRad = (d: number) => d * Math.PI / 180;
     const toDeg = (r: number) => r * 180 / Math.PI;
 
@@ -20,9 +20,9 @@ function computeHeading(startPos: LatLon, endPos: LatLon): number {
     const deg = (toDeg(Math.atan2(y, x)) + 360) % 360;
 
     // Quantise to 6 opr 12 main directions for more stability
-    const quantised = Math.floor(deg / 60) * 60 + 30
+    //const quantised = Math.floor(deg / 60) * 60 + 30
 
-    return quantised
+    return deg
 }
 
 function modeFilter(headings: number[]) {
