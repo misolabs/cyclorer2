@@ -29,6 +29,7 @@ type Events = {
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void
 
+    // Enable powersaving mode
     "powersave:enable": void
     "powersave:disable": void
     "wakelock:engage": void

@@ -141,6 +141,7 @@ function createAnnotationMarkerIcon(glyph: string, color: string): ExtraMarkersI
 export class TrackingMap{
     bus: EventBus
     mobileMode: boolean
+    powersaveMode: boolean = false
 
     map: L.Map
     positionMarker: L.Marker|null = null
@@ -248,8 +249,12 @@ export class TrackingMap{
             }
         })
 
+        this.bus.onEvent("powersave:enable", () => this.powersaveMode = true)
         // After we come back from powersave mode we just set the heading without history
-        this.bus.onEvent("powersave:disable", () => {this.resetHeading = true})
+        this.bus.onEvent("powersave:disable", () => {
+            this.powersaveMode = false
+            this.resetHeading = true
+        })
 
         // If we are riding we disbale all map intercation to make hitting buttons easier
         this.bus.onEvent("geolocation:riding", (riding: boolean) =>{this.disableMapInteraction(riding)})
@@ -421,7 +426,7 @@ export class TrackingMap{
 
     setPosition(pos: LatLon, centerView: boolean){
         const leafPos = new LatLng(pos.lat, pos.lon)
-        if(centerView)
+        if(centerView && !this.powersaveMode)
             this.map.setView(leafPos)
         this.positionMarker?.setLatLng(leafPos)
     }
@@ -444,7 +449,8 @@ export class TrackingMap{
         }
         // Set a lightly quantized angle in 5° steps to avoid too much jitter
         const quantized = Math.round(this.heading / 5) * 5
-        this.map.setBearing(quantized)
+        if(!this.powersaveMode)
+            this.map.setBearing(quantized)
     }
 
     addAnnotation(annotation: LocationAnnotation) {

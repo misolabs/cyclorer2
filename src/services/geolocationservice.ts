@@ -13,7 +13,8 @@ export class GeoLocationService{
         this.watchId = -1
 
         this.bus.onEvent("geolocation:enable", this.enableGeolocation.bind(this))
-        this.bus.onEvent("powersave:disable", this.enableGeolocation.bind(this))
+        // GPS is not cut for power saving
+        //this.bus.onEvent("powersave:disable", this.enableGeolocation.bind(this))
         //this.bus.onEvent("powersave:enable", this.disableGeolocation.bind(this))
 
         this.bus.onRequest("geolocation:updates:count", () => this.updateCount)
