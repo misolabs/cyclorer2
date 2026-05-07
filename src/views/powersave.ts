@@ -40,28 +40,10 @@ export class PowersaveView {
         //mapContainerEl.classList.remove("hide")
 
         mapContainerEl.classList.add("hide")
-        if(adj) {
-            this.bus.emitEvent("notification:show", {
-                type: NotificationType.DEBUG,
-                caption: `Adjaccency info: ${adj.length}`,
-                description: "",
-                autocloseDelay: 3000
-            })
-        }
-
         if(adj && adj.length > 2){
             let unvisited = false
             for(const node of adj){
                 const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
-                if(annotation){
-                    this.bus.emitEvent("notification:show",{
-                        type: NotificationType.DEBUG,
-                        caption: `Annotation on edge ${node.edge.edge_id}`,
-                        description: `${annotation.category}: ${annotation.comment}`,
-                        autocloseDelay: 3000
-                    })
-                }
-
                 if(annotation)
                     unvisited = true
 
@@ -69,6 +51,13 @@ export class PowersaveView {
                     unvisited = true
             }
             if(unvisited){
+                this.bus.emitEvent("notification:show",{
+                    type: NotificationType.DEBUG,
+                    caption: `Showing junction`,
+                    description: "",
+                    autocloseDelay: 3000
+                })
+
                 this.previewMap.showJunctionMap(junction.pos)
                 this.previewMap.rotateMap(junction.orientation)
                 mapContainerEl.classList.remove("hide")
