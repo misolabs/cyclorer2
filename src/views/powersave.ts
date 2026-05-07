@@ -40,6 +40,15 @@ export class PowersaveView {
         //mapContainerEl.classList.remove("hide")
 
         mapContainerEl.classList.add("hide")
+        if(adj) {
+            this.bus.emitEvent("notification:show", {
+                type: NotificationType.DEBUG,
+                caption: `Adjaccency info: ${adj.length}`,
+                description: "",
+                autocloseDelay: 3000
+            })
+        }
+
         if(adj && adj.length > 2){
             let unvisited = false
             for(const node of adj){
