@@ -42,6 +42,7 @@ export function mapGeoJsonRoutingEdge(feature: GeoJsonRouting): Edge {
 
   return {
     osmid: feature.properties.osmid,
+    edge_id: feature.properties.edge_id,
     u: feature.properties.u,
     v: feature.properties.v,
     name: feature.properties.name,

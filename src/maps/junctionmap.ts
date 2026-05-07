@@ -65,7 +65,7 @@ export class JunctionMap {
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
-        layer.setText("Demo", {center:false, attributes:{"color":"white"}})
+        //layer.setText("Demo", {center:false, attributes:{"color":"white"}})
     }
 
     showJunctionMap(pos: LatLon){

@@ -31,14 +31,23 @@
     width: 80%;
 }
 
-/* Junction preview map styling */
-#powersave-junction-preview{
+#powersave-junction-container{
     position: absolute;
 
     top: 60%;
     left: 10%;
     width: 80%;
     height: 30%;
+}
+
+/* Junction preview map styling */
+#powersave-junction-preview{
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
     background-color: black;
     border: 1px solid #fff;

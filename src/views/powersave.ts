@@ -33,24 +33,28 @@ export class PowersaveView {
     }
 
     onUpcomingJunction(junction: JunctionInfo){
-        const mapEl = document.getElementById("powersave-junction-preview")!
+        const mapContainerEl = document.getElementById("powersave-junction-container")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
-        this.previewMap.showJunctionMap(junction.pos)
-        this.previewMap.rotateMap(junction.orientation)
-        //mapEl.classList.remove("hide")
-/*
-        mapEl.classList.add("hide")
+        //this.previewMap.showJunctionMap(junction.pos)
+        //mapContainerEl.classList.remove("hide")
+
+        mapContainerEl.classList.add("hide")
         if(adj && adj.length > 2){
             let unvisited = false
             for(const node of adj){
+                const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
+                if(annotation)
+                    unvisited = true
+
                 if((node.edge.ride_count > 0 || node.edge.deadend) && node.edge.offroad)
                     unvisited = true
             }
             if(unvisited){
                 this.previewMap.showJunctionMap(junction.pos)
-                mapEl.classList.remove("hide")
+                this.previewMap.rotateMap(junction.orientation)
+                mapContainerEl.classList.remove("hide")
             }
-        }*/
+        }
     }
 }

@@ -22,6 +22,7 @@ export interface BoundingBox {
 
 export interface Edge {
   osmid: string|string[]
+  edge_id: string
   u: number
   v: number
 
