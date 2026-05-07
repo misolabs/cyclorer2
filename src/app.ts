@@ -27,6 +27,7 @@ import {DebugOverlay} from "./views/debugoverlay.ts";
 import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
+import {AnnotationService} from "./services/annotationservice.ts";
 
 await loadLegacyPlugins()
 
@@ -56,6 +57,7 @@ if ('serviceWorker' in navigator) {
 // Create services
 const settingsService: SettingsService = new SettingsService(appBus)
 const geoLocationService: GeoLocationService = new GeoLocationService(appBus)
+const annotationService = new AnnotationService(appBus)
 const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)

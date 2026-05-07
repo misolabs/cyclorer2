@@ -1,27 +1,24 @@
-import type {EventBus} from "../eventbus.ts";
+import type { EventBus } from "../eventbus.ts";
 import {
     NavigationMode,
-    type LocationAnnotationCategory,
     type Area, type AreaNode,
-    type BoundingBox, type Edge,
-    type LatLon,
-    type LocationAnnotation,
-    type Route, type EdgeAnnotation, type EdgeAnnotationCreateEvent, type LocationAnnotationRequest, NodeId,
-    TravelDirection, NotificationType
+    type BoundingBox, type Route, NodeId,
+    TravelDirection,
+    type LatLon
 } from "../models/models.ts";
-import {RoutingEngine} from "../routing/routing.ts";
+import { RoutingEngine } from "../routing/routing.ts";
 import type {
     GeoJsonAreaCollection,
     GeoJsonEntrypointCollection,
     GeoJsonRoutingollection,
     RoutingStatsJson
 } from "../models/geo.ts";
-import {mapBBox} from "../models/mapping.ts";
-import {AreaFinder} from "../routing/areafinder.ts";
-import {haversineDistance} from "../crs/latlonmath.ts";
-import {AnnotationRepo} from "./annotationrepo.ts";
-import {computeHeading, type HeadingExp} from "../routing/heading.ts";
-import {SetUtils} from "../setutils.ts";
+import { mapBBox } from "../models/mapping.ts";
+import { AreaFinder } from "../routing/areafinder.ts";
+import { haversineDistance } from "../crs/latlonmath.ts";
+import { AnnotationService } from "./annotationservice.ts";
+import { computeHeading } from "../routing/heading.ts";
+import { SetUtils } from "../setutils.ts";
 
 export class NavigationService{
     bus: EventBus;
@@ -29,7 +26,7 @@ export class NavigationService{
     regionBB: BoundingBox|undefined
     routingEngine: RoutingEngine|undefined = undefined
     areaFinder: AreaFinder|undefined = undefined
-    annotationRepo: AnnotationRepo
+    annotationService: AnnotationService
 
     currentPosition!: LatLon
     lastPosition!: LatLon
@@ -52,42 +49,19 @@ export class NavigationService{
 
     constructor(bus: EventBus) {
         this.bus = bus;
-        this.annotationRepo = new AnnotationRepo(bus)
+        this.annotationService = new AnnotationService(bus);
 
-        bus.onEvent("geolocation:update", this.onGeoPositionChanged.bind(this))
-        bus.onEvent("geolocsim:update", this.onGeoSimPositionChanged.bind(this))
+        bus.onEvent("geolocation:update", this.onGeoPositionChanged.bind(this));
+        bus.onEvent("geolocsim:update", this.onGeoSimPositionChanged.bind(this));
 
-        bus.onEvent("annotation:location:create", this.onAddAnnotationRequest.bind(this))
-        bus.onEvent("annotation:location:delete", this.onDeleteAnnotationRequest.bind(this))
-        bus.onEvent("annotation:location:modify:pos", this.onAnnotationPositionChanged.bind(this))
+        bus.onEvent("rds:stats:loaded", this.onStatsLoaded.bind(this));
+        bus.onEvent("rds:areas:loaded", this.onAreasLoaded.bind(this));
+        bus.onEvent("rds:routing:loaded", this.onRoutingLoaded.bind(this));
 
-        bus.onEvent("annotation:edge:save", this.onSaveEdgeAnnotation.bind(this))
-        bus.onEvent("annotation:edge:delete", this.onDeleteEdgeAnnotation.bind(this))
+        bus.onEvent("navigation:target:area", this.onNavigateArea.bind(this));
+        bus.onEvent("area:dismiss", this.onDismissArea.bind(this));
 
-        bus.onEvent("rds:stats:loaded", this.onStatsLoaded.bind(this))
-        bus.onEvent("rds:areas:loaded", this.onAreasLoaded.bind(this))
-        bus.onEvent("rds:routing:loaded", this.onRoutingLoaded.bind(this))
-
-        bus.onEvent("system:ready", this.onSystemReady.bind(this))
-        bus.onEvent("system:sync:requests", () => {this.annotationRepo.processQueue()})
-        //bus.eventOn("data:sync", this.onDataSync.bind(this))
-
-        bus.onEvent("navigation:target:area", this.onNavigateArea.bind(this))
-        bus.onEvent("area:dismiss", this.onDismissArea.bind(this))
-
-        bus.onRequest("node:adjacency", this.onRequestNodeAdjacency.bind(this))
-    }
-
-    // Called when everything is in place
-    async onSystemReady(){
-        // Fetch annotations from server
-        await this.annotationRepo.fetchFromServer()
-
-        // Add location annotations to the map
-        this.bus.emitEvent("annotation:location:loaded", this.annotationRepo.getAll())
-
-        // Add edge annotations to map
-        this.annotationRepo.getAllEdges().forEach((a: EdgeAnnotation) => {this.bus.emitEvent("annotation:edge:modified", a)})
+        bus.onRequest("node:adjacency", this.onRequestNodeAdjacency.bind(this));
     }
 
     // Position update from simulation mode
@@ -105,49 +79,6 @@ export class NavigationService{
     }
 
 
-    async onAddAnnotationRequest(annotation: LocationAnnotationRequest){
-        // We add the request to the queue, but we don't know when it will be executed
-        this.annotationRepo.add(annotation)
-    }
-/*
-    async onAddTextAnnotationRequest(text: string){
-        const ts = new Date(Date.now()).toJSON()
-        const annotation = await this.annotationRepo.add({location: this.currentPosition, category: "TEXT", timestamp: ts, text: text})
-
-        // Tell everyone about this one
-        this.bus.eventEmit("annotation:location:added", annotation)
-    }
-*/
-    async onDeleteAnnotationRequest(id: string){
-        console.log("Delete annotation request", id)
-        await this.annotationRepo.delete(id)
-    }
-
-    onSaveEdgeAnnotation(annotation: EdgeAnnotationCreateEvent){
-        const result = this.annotationRepo.saveEdge({
-            ...annotation,
-            timestamp: new Date(Date.now()).toJSON()
-        })
-
-        this.bus.emitEvent("annotation:edge:modified", result)
-    }
-
-    onDeleteEdgeAnnotation(edge_id: string){
-        const annotation = this.annotationRepo.findByEdgeId(edge_id)
-        if(annotation){
-            const success = this.annotationRepo.deleteEdge(edge_id)
-            if(success)
-                this.bus.emitEvent("annotation:edge:deleted", annotation)
-        }else console.error("Unable to find edge annotation")
-    }
-
-    async onAnnotationPositionChanged(data: {id: string, pos: LatLon}){
-        const annotation = this.annotationRepo.get(data.id)
-        if(annotation){
-            annotation.location = data.pos
-            this.annotationRepo.update(annotation)
-        }
-    }
 
     onStatsLoaded(stats: RoutingStatsJson){
         this.regionBB = mapBBox(stats.bbox)
@@ -171,20 +102,7 @@ export class NavigationService{
         return this.routingEngine?.nodesAdjacency.get(node)
     }
 
-    onDataSync(){
-        // Collect data from all sources and sync with computer
-        // Currently send an email
-
-        const data = this.annotationRepo.getAll();
-        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-        const file = new File([blob], "annotations.json");
-
-        navigator.share({
-            title: "Cyclorer 2 Backup - Annotations",
-            text: "Cyclorer 2 Backup",
-            files: [file]
-        });
-    }
+    // onDataSync and annotation backup logic should be moved to AnnotationService if needed
 
     onDismissArea(){
         if(this.dismissTimerId != -1) {

@@ -90,14 +90,22 @@ type Events = {
 };
 
 type Requests = {
+    // Request the number of annotation requests pending in the request queue
     "annotations:requests:queuesize": {
         input: void
         output: number | undefined
     }
+    // Request the annotation (if exists) for a given edge
+    "annotations:edge:get":{
+        input: string
+        output: EdgeAnnotation | undefined
+    }
+    // Get the number of GPS sensor readings since the app was started
     "geolocation:updates:count":{
         input: void
         output: number
     }
+    // Get adjacency info for a given Node
     "node:adjacency": {
         input: NodeId
         output: AdjacencyInfo[] | undefined
