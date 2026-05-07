@@ -1,8 +1,10 @@
 import * as L from "leaflet";
 import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
+import 'leaflet-textpath'
+
 import type {EventBus} from "../eventbus.ts";
 import {EdgeAnnotationCategory, type LatLon, type NodeId, NotificationType} from "../models/models.ts";
-import type {GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
+import type {GeoJsonRouting, GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
 import type {Feature, GeometryObject} from "geojson";
 
 const edgeStyles: Map<string, PolylineOptions> = new Map([
@@ -43,7 +45,7 @@ export class JunctionMap {
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         L.geoJSON(routingGeoData.features, {
-            //onEachFeature: this.routingEdgePostprocess.bind(this),
+            onEachFeature: this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
     }
@@ -60,6 +62,10 @@ export class JunctionMap {
 
         // default case
         return edgeStyles.get("DEFAULT")!
+    }
+
+    routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
+        layer.setText("Demo", {center:false})
     }
 
     showJunctionMap(pos: LatLon){
