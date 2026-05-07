@@ -44,10 +44,19 @@ export class PowersaveView {
             let unvisited = false
             for(const node of adj){
                 const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
+                if(annotation){
+                    this.bus.emitEvent("notification:show",{
+                        type: NotificationType.DEBUG,
+                        caption: `Annotation on edge ${node.edge.edge_id}`,
+                        description: `${annotation.category}: ${annotation.comment}`,
+                        autocloseDelay: 3000
+                    })
+                }
+
                 if(annotation)
                     unvisited = true
 
-                if((node.edge.ride_count > 0 || node.edge.deadend) && node.edge.offroad)
+                if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
                     unvisited = true
             }
             if(unvisited){
