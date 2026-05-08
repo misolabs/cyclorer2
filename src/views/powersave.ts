@@ -36,10 +36,10 @@ export class PowersaveView {
         const mapContainerEl = document.getElementById("powersave-junction-container")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
+        mapContainerEl.classList.remove("hide")
         this.previewMap.showJunctionMap(junction.pos)
         this.previewMap.rotateMap(junction.orientation)
 /*
-        //mapContainerEl.classList.remove("hide")
 
 //        mapContainerEl.classList.add("hide")
         console.log("checking junction")

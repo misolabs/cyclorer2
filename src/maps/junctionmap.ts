@@ -1,6 +1,6 @@
 import * as L from "leaflet";
 import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
-import 'leaflet-textpath'
+//import 'leaflet-textpath'
 
 import type {EventBus} from "../eventbus.ts";
 import {EdgeAnnotationCategory, type LatLon, type NodeId, NotificationType} from "../models/models.ts";
@@ -65,7 +65,7 @@ export class JunctionMap {
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
-        layer.setText(">", {center:false, repeat: true, attributes:{fill:"red"}})
+       // layer.setText(">", {center:false, repeat: true, attributes:{fill:"red"}})
     }
 
     showJunctionMap(pos: LatLon){
