@@ -36,10 +36,13 @@ export class PowersaveView {
         const mapContainerEl = document.getElementById("powersave-junction-container")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
-        //this.previewMap.showJunctionMap(junction.pos)
+        this.previewMap.showJunctionMap(junction.pos)
+        this.previewMap.rotateMap(junction.orientation)
+/*
         //mapContainerEl.classList.remove("hide")
 
 //        mapContainerEl.classList.add("hide")
+        console.log("checking junction")
         if(adj && adj.length > 2){
             let unvisited = false
             for(const node of adj){
@@ -62,6 +65,6 @@ export class PowersaveView {
                 this.previewMap.rotateMap(junction.orientation)
                 this.previewMap.map.invalidateSize(true)
             }
-        }
+        }*/
     }
 }
