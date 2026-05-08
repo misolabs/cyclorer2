@@ -52,9 +52,9 @@ export class PowersaveView {
             }
             if(unvisited){
 
-                this.previewMap.showJunctionMap(junction.pos)
-                this.previewMap.rotateMap(junction.orientation)
                 mapContainerEl.classList.remove("hide")
+                this.previewMap.showJunctionMap(junction.pos)
+                //this.previewMap.rotateMap(junction.orientation)
                 this.previewMap.map.invalidateSize(true)
 
                 this.bus.emitEvent("notification:show",{
