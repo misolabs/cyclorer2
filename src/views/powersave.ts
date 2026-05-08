@@ -10,6 +10,7 @@ export class PowersaveView {
 
     constructor(bus: EventBus) {
         this.bus = bus
+        this.previewMap = new JunctionMap("powersave-junction-preview", this.bus)
 
         bus.onEvent("powersave:enable", this.showView.bind(this))
         bus.onEvent("navigation:upcoming:junction", this.onUpcomingJunction.bind(this))
@@ -19,8 +20,6 @@ export class PowersaveView {
             bus.emitEvent("powersave:disable")
             this.hideView()
         })
-
-        this.previewMap = new JunctionMap("powersave-junction-preview", this.bus)
     }
 
     showView(){
@@ -37,6 +36,7 @@ export class PowersaveView {
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
         mapContainerEl.classList.remove("hide")
+        this.previewMap.map.invalidateSize(false)
         this.previewMap.showJunctionMap(junction.pos)
         this.previewMap.rotateMap(junction.orientation)
 
