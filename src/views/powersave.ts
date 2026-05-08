@@ -39,7 +39,7 @@ export class PowersaveView {
         //this.previewMap.showJunctionMap(junction.pos)
         //mapContainerEl.classList.remove("hide")
 
-        mapContainerEl.classList.add("hide")
+//        mapContainerEl.classList.add("hide")
         if(adj && adj.length > 2){
             let unvisited = false
             for(const node of adj){
@@ -51,18 +51,16 @@ export class PowersaveView {
                     unvisited = true
             }
             if(unvisited){
-
-                mapContainerEl.classList.remove("hide")
-                this.previewMap.showJunctionMap(junction.pos)
-                //this.previewMap.rotateMap(junction.orientation)
-                this.previewMap.map.invalidateSize(true)
-
                 this.bus.emitEvent("notification:show",{
                     type: NotificationType.DEBUG,
                     caption: `Showing junction`,
-                    description: `${mapContainerEl.classList.toString()}`,
+                    description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
                     autocloseDelay: 3000
                 })
+//                mapContainerEl.classList.remove("hide")
+                this.previewMap.showJunctionMap(junction.pos)
+                this.previewMap.rotateMap(junction.orientation)
+                this.previewMap.map.invalidateSize(true)
             }
         }
     }
