@@ -32,6 +32,7 @@
 }
 
 #powersave-junction-container{
+    display: flex;
     position: absolute;
 
     top: 60%;
