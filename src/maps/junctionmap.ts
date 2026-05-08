@@ -45,7 +45,7 @@ export class JunctionMap {
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
         L.geoJSON(routingGeoData.features, {
-            onEachFeature: this.routingEdgePostprocess.bind(this),
+            //onEachFeature: this.routingEdgePostprocess.bind(this),
             style: this.styleRoutingEdge.bind(this)
         }).addTo(this.map)
     }

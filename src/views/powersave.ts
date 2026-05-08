@@ -39,32 +39,39 @@ export class PowersaveView {
         mapContainerEl.classList.remove("hide")
         this.previewMap.showJunctionMap(junction.pos)
         this.previewMap.rotateMap(junction.orientation)
-/*
 
-//        mapContainerEl.classList.add("hide")
-        console.log("checking junction")
-        if(adj && adj.length > 2){
-            let unvisited = false
-            for(const node of adj){
-                const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
-                if(annotation)
-                    unvisited = true
+        this.bus.emitEvent("notification:show",{
+            type: NotificationType.DEBUG,
+            caption: `Showing junction`,
+            description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
+            autocloseDelay: 3000
+        })
+        /*
 
-                if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
-                    unvisited = true
-            }
-            if(unvisited){
-                this.bus.emitEvent("notification:show",{
-                    type: NotificationType.DEBUG,
-                    caption: `Showing junction`,
-                    description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
-                    autocloseDelay: 3000
-                })
-//                mapContainerEl.classList.remove("hide")
-                this.previewMap.showJunctionMap(junction.pos)
-                this.previewMap.rotateMap(junction.orientation)
-                this.previewMap.map.invalidateSize(true)
-            }
-        }*/
+        //        mapContainerEl.classList.add("hide")
+                console.log("checking junction")
+                if(adj && adj.length > 2){
+                    let unvisited = false
+                    for(const node of adj){
+                        const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
+                        if(annotation)
+                            unvisited = true
+
+                        if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
+                            unvisited = true
+                    }
+                    if(unvisited){
+                        this.bus.emitEvent("notification:show",{
+                            type: NotificationType.DEBUG,
+                            caption: `Showing junction`,
+                            description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
+                            autocloseDelay: 3000
+                        })
+        //                mapContainerEl.classList.remove("hide")
+                        this.previewMap.showJunctionMap(junction.pos)
+                        this.previewMap.rotateMap(junction.orientation)
+                        this.previewMap.map.invalidateSize(true)
+                    }
+                }*/
     }
 }
