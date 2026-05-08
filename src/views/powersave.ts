@@ -35,43 +35,30 @@ export class PowersaveView {
         const mapContainerEl = document.getElementById("powersave-junction-container")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
+        /*
         mapContainerEl.classList.remove("hide")
         this.previewMap.map.invalidateSize(false)
         this.previewMap.showJunctionMap(junction.pos)
         this.previewMap.rotateMap(junction.orientation)
+*/
+        if(adj && adj.length > 2){
+            let worthShowing = false
+            for(const node of adj){
+                const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
+                if(annotation)
+                    worthShowing = true
 
-        this.bus.emitEvent("notification:show",{
-            type: NotificationType.DEBUG,
-            caption: `Showing junction`,
-            description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
-            autocloseDelay: 3000
-        })
-        /*
-
-        //        mapContainerEl.classList.add("hide")
-                console.log("checking junction")
-                if(adj && adj.length > 2){
-                    let unvisited = false
-                    for(const node of adj){
-                        const annotation = this.bus.request("annotations:edge:get", node.edge.edge_id)
-                        if(annotation)
-                            unvisited = true
-
-                        if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
-                            unvisited = true
-                    }
-                    if(unvisited){
-                        this.bus.emitEvent("notification:show",{
-                            type: NotificationType.DEBUG,
-                            caption: `Showing junction`,
-                            description: `Pos: ${junction.pos.lat} / ${junction.pos.lon} Orientation: ${junction.orientation}`,
-                            autocloseDelay: 3000
-                        })
-        //                mapContainerEl.classList.remove("hide")
-                        this.previewMap.showJunctionMap(junction.pos)
-                        this.previewMap.rotateMap(junction.orientation)
-                        this.previewMap.map.invalidateSize(true)
-                    }
-                }*/
+                if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
+                    worthShowing = true
+            }
+            if(worthShowing){
+                mapContainerEl.classList.remove("hide")
+                this.previewMap.map.invalidateSize(true)
+                this.previewMap.showJunctionMap(junction.pos)
+                this.previewMap.rotateMap(junction.orientation)
+            }
+            else
+                mapContainerEl.classList.add("hide")
+        }
     }
 }
