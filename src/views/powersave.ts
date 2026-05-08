@@ -51,16 +51,18 @@ export class PowersaveView {
                     unvisited = true
             }
             if(unvisited){
-                this.bus.emitEvent("notification:show",{
-                    type: NotificationType.DEBUG,
-                    caption: `Showing junction`,
-                    description: "",
-                    autocloseDelay: 3000
-                })
 
                 this.previewMap.showJunctionMap(junction.pos)
                 this.previewMap.rotateMap(junction.orientation)
                 mapContainerEl.classList.remove("hide")
+                this.previewMap.map.invalidateSize(true)
+
+                this.bus.emitEvent("notification:show",{
+                    type: NotificationType.DEBUG,
+                    caption: `Showing junction`,
+                    description: `${mapContainerEl.classList.toString()}`,
+                    autocloseDelay: 3000
+                })
             }
         }
     }
