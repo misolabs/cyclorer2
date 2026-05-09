@@ -19,6 +19,11 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["NOACCESS", {color: "grey", weight: 7, dashArray:[10, 10]}],
     ["UNVISITED", {color: "red", weight: 11}],
     ["URBAN_UNVISITED", {color: "green", weight: 7}],
+
+    [EdgeAnnotationCategory.EA_FAVORITE, {color: "yellow", weight: 9}],
+    [EdgeAnnotationCategory.EA_KEEPOUT, {color: "black", weight: 9, dashArray:[10, 10]}],
+    [EdgeAnnotationCategory.EA_EXPLORE, {color: "blue", weight: 9}],
+    [EdgeAnnotationCategory.EA_STEEP, {color: "purple", weight: 9}],
 ])
 
 export class JunctionMap {
@@ -43,6 +48,14 @@ export class JunctionMap {
     }
 
     styleRoutingEdge(edge: Edge, annotation?: EdgeAnnotation): PathOptions {
+        // Annotation styles first
+        if(annotation) {
+            const style = edgeStyles.get(annotation.category)
+            if(style)
+                return style
+        }
+
+        // Then edge categories
         if(edge.deadend)
             return edgeStyles.get("DEADEND")!
         else if(edge.access && (edge.access == "no" || edge.access == "private"))
@@ -63,6 +76,7 @@ export class JunctionMap {
             for (const adjEdge of adj) {
                 // Edge points in order starting from center node outward
                 const edge = adjEdge.edge
+                const annotation = this.bus.request("annotations:edge:get", edge.edge_id)
                 const points = edge.u == junction.nodeId ? edge.coordinates : edge.coordinates.toReversed()
 
                 // Reduce to max length
@@ -77,10 +91,15 @@ export class JunctionMap {
                     }
                 }
 
-                L.polyline(
+                const path = L.polyline(
                     cropped.map(p => new LatLng(p.lat, p.lon)),
-                    this.styleRoutingEdge(edge)
+                    this.styleRoutingEdge(edge, annotation)
                 ).addTo(this.map)
+
+                // Show text
+                if(annotation && annotation.comment) {
+                    path.bindTooltip(annotation.comment)
+                }
             }
         }
 
