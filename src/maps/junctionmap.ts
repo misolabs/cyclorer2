@@ -13,6 +13,7 @@ import {
 } from "../models/models.ts";
 import type {GeoJsonRouting, GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
 import type {Feature, GeometryObject} from "geojson";
+import {haversineDistance} from "../crs/latlonmath.ts";
 
 const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["DEFAULT", {color: "white", weight: 9, opacity: 1}],
@@ -85,15 +86,29 @@ export class JunctionMap {
 
         if(adj) {
             for (const adjEdge of adj) {
+                // Edge points in order starting from center node outward
                 const edge = adjEdge.edge
                 const points = edge.u == junction.nodeId ? edge.coordinates : edge.coordinates.toReversed()
-                L.polyline(points.map(p => new LatLng(p.lat, p.lon)), {weight: 7, fillColor: "white"}).addTo(this.map)
+
+                // Reduce to max length
+                let cropped: LatLon[] = []
+                let accLength = 0
+                for(const p of points) {
+                    if(accLength  < 100){
+                        cropped.push(p)
+                        if(cropped.length > 1){
+                            accLength += haversineDistance(p, cropped[cropped.length - 2])
+                        }
+                    }
+                }
+
+                L.polyline(cropped.map(p => new LatLng(p.lat, p.lon)), edgeStyles.get("DEFAULT")!).addTo(this.map)
             }
         }
 
         // Set view center and map rotation
         this.rotateMap(junction.orientation)
-        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 19)
+        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 18)
     }
 
     setPositionMarker(pos: LatLon){
