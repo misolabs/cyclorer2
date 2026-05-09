@@ -4,7 +4,7 @@ import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
 
 import type {EventBus} from "../eventbus.ts";
 import {
-    type AdjacencyInfo,
+    type AdjacencyInfo, type Edge, type EdgeAnnotation,
     EdgeAnnotationCategory,
     type JunctionInfo,
     type LatLon,
@@ -51,34 +51,18 @@ export class JunctionMap {
         //this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
     }
 
-    addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
-        L.geoJSON(routingGeoData.features, {
-            //onEachFeature: this.routingEdgePostprocess.bind(this),
-            style: this.styleRoutingEdge.bind(this)
-        }).addTo(this.map)
-    }
-
-    styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
-        if(feature && feature.properties.deadend)
+    styleRoutingEdge(edge: Edge, annotation?: EdgeAnnotation): PathOptions {
+        if(edge.deadend)
             return edgeStyles.get("DEADEND")!
-        else if(feature && feature.properties.access && (feature.properties.access == "no" || feature.properties.access == "private"))
+        else if(edge.access && (edge.access == "no" || edge.access == "private"))
             return edgeStyles.get("NOACCESS")!
-        else if(feature && feature.properties.ride_count == 0 && this.isOfType(feature.properties.highway, "path", "track"))
+        else if(edge.ride_count == 0 && this.isOfType(edge.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
-        else if(feature && feature.properties.ride_count == 0)
+        else if(edge.ride_count == 0)
             return edgeStyles.get("URBAN_UNVISITED")!
 
         // default case
         return edgeStyles.get("DEFAULT")!
-    }
-
-    routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline){
-       // layer.setText(">", {center:false, repeat: true, attributes:{fill:"red"}})
-    }
-
-    showJunctionMap(pos: LatLon){
-        // Get node neighbours from routing engine
-        this.map.setView(new L.LatLng(pos.lat, pos.lon), 20)
     }
 
     showJunctionExt(junction: JunctionInfo){
@@ -102,13 +86,16 @@ export class JunctionMap {
                     }
                 }
 
-                L.polyline(cropped.map(p => new LatLng(p.lat, p.lon)), edgeStyles.get("DEFAULT")!).addTo(this.map)
+                L.polyline(
+                    cropped.map(p => new LatLng(p.lat, p.lon)),
+                    this.styleRoutingEdge(edge)
+                ).addTo(this.map)
             }
         }
 
         // Set view center and map rotation
         this.rotateMap(junction.orientation)
-        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 18)
+        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 17)
     }
 
     setPositionMarker(pos: LatLon){

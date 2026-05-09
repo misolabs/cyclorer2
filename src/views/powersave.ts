@@ -14,7 +14,7 @@ export class PowersaveView {
 
         bus.onEvent("powersave:enable", this.showView.bind(this))
         bus.onEvent("navigation:upcoming:junction", this.onUpcomingJunction.bind(this))
-        bus.onEvent("geolocation:update", (p: GeolocationPosition) => this.previewMap.setPositionMarker({lat: p.coords.latitude, lon: p.coords.longitude}))
+//        bus.onEvent("geolocation:update", (p: GeolocationPosition) => this.previewMap.setPositionMarker({lat: p.coords.latitude, lon: p.coords.longitude}))
 
         this.view.addEventListener("click", () => {
             bus.emitEvent("powersave:disable")

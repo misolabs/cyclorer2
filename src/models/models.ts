@@ -36,9 +36,10 @@ export interface Edge {
   length: number;
   bbox: BoundingBox
 
-  highway?: string|string[];
-  name?: string|string[];
+  highway?: string|string[]
+  name?: string|string[]
   offroad: boolean
+  access?: string | string[]
 }
 
 export interface Node{
