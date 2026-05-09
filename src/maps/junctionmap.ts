@@ -3,7 +3,14 @@ import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
 //import 'leaflet-textpath'
 
 import type {EventBus} from "../eventbus.ts";
-import {EdgeAnnotationCategory, type LatLon, type NodeId, NotificationType} from "../models/models.ts";
+import {
+    type AdjacencyInfo,
+    EdgeAnnotationCategory,
+    type JunctionInfo,
+    type LatLon,
+    type NodeId,
+    NotificationType
+} from "../models/models.ts";
 import type {GeoJsonRouting, GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
 import type {Feature, GeometryObject} from "geojson";
 
@@ -40,7 +47,7 @@ export class JunctionMap {
             {radius: 11, color: "white", weight: 7, fillColor: "red"}
         ).addTo(this.map)
 
-        this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
+        //this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
     }
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
@@ -71,6 +78,22 @@ export class JunctionMap {
     showJunctionMap(pos: LatLon){
         // Get node neighbours from routing engine
         this.map.setView(new L.LatLng(pos.lat, pos.lon), 20)
+    }
+
+    showJunctionExt(junction: JunctionInfo){
+        const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
+
+        if(adj) {
+            for (const adjEdge of adj) {
+                const edge = adjEdge.edge
+                const points = edge.u == junction.nodeId ? edge.coordinates : edge.coordinates.toReversed()
+                L.polyline(points.map(p => new LatLng(p.lat, p.lon)), {weight: 7, fillColor: "white"}).addTo(this.map)
+            }
+        }
+
+        // Set view center and map rotation
+        this.rotateMap(junction.orientation)
+        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 19)
     }
 
     setPositionMarker(pos: LatLon){

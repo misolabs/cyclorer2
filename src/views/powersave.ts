@@ -54,8 +54,8 @@ export class PowersaveView {
             if(worthShowing){
                 mapContainerEl.classList.remove("hide")
                 this.previewMap.map.invalidateSize(true)
-                this.previewMap.showJunctionMap(junction.pos)
-                this.previewMap.rotateMap(junction.orientation)
+                this.previewMap.showJunctionExt(junction)
+//                this.previewMap.rotateMap(junction.orientation)
             }
             else
                 mapContainerEl.classList.add("hide")
