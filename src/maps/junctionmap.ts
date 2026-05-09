@@ -1,6 +1,5 @@
 import * as L from "leaflet";
 import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
-//import 'leaflet-textpath'
 
 import type {EventBus} from "../eventbus.ts";
 import {
@@ -11,9 +10,8 @@ import {
     type NodeId,
     NotificationType
 } from "../models/models.ts";
-import type {GeoJsonRouting, GeoJsonRoutingollection, RoutingEdgeProperties} from "../models/geo.ts";
-import type {Feature, GeometryObject} from "geojson";
 import {haversineDistance} from "../crs/latlonmath.ts";
+import {isOfHighwayType} from "../helpers.ts";
 
 const edgeStyles: Map<string, PolylineOptions> = new Map([
     ["DEFAULT", {color: "white", weight: 9, opacity: 1}],
@@ -26,7 +24,6 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
 export class JunctionMap {
     bus: EventBus
     map: L.Map
-    positionMarker!: L.CircleMarker
 
     constructor(elName: string, bus: EventBus) {
         this.bus = bus
@@ -43,12 +40,6 @@ export class JunctionMap {
             keyboard: false,
             touchZoom: false
         })
-
-        this.positionMarker = new L.CircleMarker(new LatLng(0,0),
-            {radius: 11, color: "white", weight: 7, fillColor: "red"}
-        ).addTo(this.map)
-
-        //this.bus.onEvent("rds:routing:loaded", this.addRoutingLayer.bind(this))
     }
 
     styleRoutingEdge(edge: Edge, annotation?: EdgeAnnotation): PathOptions {
@@ -56,7 +47,7 @@ export class JunctionMap {
             return edgeStyles.get("DEADEND")!
         else if(edge.access && (edge.access == "no" || edge.access == "private"))
             return edgeStyles.get("NOACCESS")!
-        else if(edge.ride_count == 0 && this.isOfType(edge.highway, "path", "track"))
+        else if(edge.ride_count == 0 && isOfHighwayType(edge.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
         else if(edge.ride_count == 0)
             return edgeStyles.get("URBAN_UNVISITED")!
@@ -98,25 +89,7 @@ export class JunctionMap {
         this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 17)
     }
 
-    setPositionMarker(pos: LatLon){
-        this.positionMarker.setLatLng(new LatLng(pos.lat, pos.lon))
-    }
-
     rotateMap(angle: number){
         this.map.setBearing(360 - angle)
-    }
-
-    // TODO Duplicated code
-    isOfType(
-        highway: string | string[] | undefined,
-        ...types: string[]
-    ): boolean {
-        if (!highway) return false;
-
-        if (Array.isArray(highway)) {
-            return highway.some(h => types.includes(h));
-        }
-
-        return types.includes(highway);
     }
 }

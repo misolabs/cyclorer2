@@ -26,6 +26,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import type {EventBus} from "../eventbus.ts";
 import type {Feature, GeometryObject} from "geojson";
+import {isOfHighwayType} from "../helpers.ts";
 
 // Fix default icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -700,25 +701,12 @@ export class TrackingMap{
         this.edgeNetworkLayers.set(feature.properties.edge_id, layer)
     }
 
-    isOfType(
-        highway: string | string[] | undefined,
-        ...types: string[]
-    ): boolean {
-        if (!highway) return false;
-
-        if (Array.isArray(highway)) {
-            return highway.some(h => types.includes(h));
-        }
-
-        return types.includes(highway);
-    }
-
     styleRoutingEdge(feature?: Feature<GeometryObject, RoutingEdgeProperties>): PathOptions {
         if(feature && feature.properties.deadend)
             return edgeStyles.get("DEADEND")!
         else if(feature && feature.properties.access && (feature.properties.access == "no" || feature.properties.access == "private"))
             return edgeStyles.get("NOACCESS")!
-        else if(feature && feature.properties.ride_count == 0 && this.isOfType(feature.properties.highway, "path", "track"))
+        else if(feature && feature.properties.ride_count == 0 && isOfHighwayType(feature.properties.highway, "path", "track"))
             return edgeStyles.get("UNVISITED")!
         else if(feature && feature.properties.ride_count == 0)
             return edgeStyles.get("URBAN_UNVISITED")!

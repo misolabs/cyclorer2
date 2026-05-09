@@ -1,6 +1,7 @@
 import type {EventBus} from "../eventbus.ts";
 import {JunctionMap} from "../maps/junctionmap.ts";
 import {type AdjacencyInfo, type JunctionInfo, NotificationType} from "../models/models.ts";
+import {isOfHighwayType} from "../helpers.ts";
 
 export class PowersaveView {
     bus: EventBus
@@ -14,7 +15,6 @@ export class PowersaveView {
 
         bus.onEvent("powersave:enable", this.showView.bind(this))
         bus.onEvent("navigation:upcoming:junction", this.onUpcomingJunction.bind(this))
-//        bus.onEvent("geolocation:update", (p: GeolocationPosition) => this.previewMap.setPositionMarker({lat: p.coords.latitude, lon: p.coords.longitude}))
 
         this.view.addEventListener("click", () => {
             bus.emitEvent("powersave:disable")
@@ -35,12 +35,6 @@ export class PowersaveView {
         const mapContainerEl = document.getElementById("powersave-junction-container")!
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
-        /*
-        mapContainerEl.classList.remove("hide")
-        this.previewMap.map.invalidateSize(false)
-        this.previewMap.showJunctionMap(junction.pos)
-        this.previewMap.rotateMap(junction.orientation)
-*/
         if(adj && adj.length > 2){
             let worthShowing = false
             for(const node of adj){
@@ -48,14 +42,13 @@ export class PowersaveView {
                 if(annotation)
                     worthShowing = true
 
-                if((node.edge.ride_count == 0 || node.edge.deadend) && node.edge.offroad)
+                if((node.edge.ride_count == 0 || node.edge.deadend) && isOfHighwayType(node.edge.highway, "path", "track"))
                     worthShowing = true
             }
             if(worthShowing){
                 mapContainerEl.classList.remove("hide")
                 this.previewMap.map.invalidateSize(true)
                 this.previewMap.showJunctionExt(junction)
-//                this.previewMap.rotateMap(junction.orientation)
             }
             else
                 mapContainerEl.classList.add("hide")

@@ -33,3 +33,16 @@ export function logError(e: unknown, ...args:any): string {
 export function jsonTimestamp(){
   return new Date(Date.now()).toJSON()
 }
+
+export function isOfHighwayType(
+    highway: string | string[] | undefined,
+    ...types: string[]
+): boolean {
+  if (!highway) return false;
+
+  if (Array.isArray(highway)) {
+    return highway.some(h => types.includes(h));
+  }
+
+  return types.includes(highway);
+}
