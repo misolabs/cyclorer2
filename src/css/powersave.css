@@ -61,6 +61,8 @@
     color: #fff;
     border: 1px solid #fff;
     box-shadow: none;
+    font-size: larger;
+    padding: 10px;
 }
 
 .leaflet-tooltip.cyc-tooltip--inverted::before {

@@ -19,12 +19,6 @@ import type {
 import {formatDistance, setDescription} from "../dom.ts";
 import {jsonTimestamp} from "../helpers.ts";
 
-/*  TODO
-    - heading
-    - dragging position marker
-    - heading marker?
- */
-
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 const defaultZoomLevel = 17
 
@@ -106,7 +100,6 @@ export class TrackingView {
     onRoutingDataLoaded(routingGeoData: GeoJsonRoutingollection) {
         console.log("Adding network map layers")
         this.trackingMap.addRoutingLayer(routingGeoData)
-        this.trackingMap.addDeadendsLayer(routingGeoData)
         this.trackingMap.addFrequencyHeatmap(routingGeoData, this.maxRideCount)
     }
 
@@ -126,7 +119,6 @@ export class TrackingView {
 
     onSettingsChanged(settings: Settings) {
         this.trackingMap.setBaseLayer(settings.tileService)
-        this.trackingMap.toggleDeadends(settings.showDeadends)
         this.trackingMap.toggleAreaBoundingBoxes(settings.showAreaBBox)
         this.trackingMap.toggleFrequencyHeatmap(settings.showFrequencyHeatmap)
     }

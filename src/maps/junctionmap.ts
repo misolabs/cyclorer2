@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import {LatLng, type PathOptions, type PolylineOptions} from "leaflet";
+import {LatLng, LayerGroup, type PathOptions, type PolylineOptions} from "leaflet";
 
 import type {EventBus} from "../eventbus.ts";
 import {
@@ -29,6 +29,7 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
 export class JunctionMap {
     bus: EventBus
     map: L.Map
+    edges: L.LayerGroup
 
     constructor(elName: string, bus: EventBus) {
         this.bus = bus
@@ -45,6 +46,7 @@ export class JunctionMap {
             keyboard: false,
             touchZoom: false
         })
+        this.edges = L.layerGroup().addTo(this.map)
     }
 
     styleRoutingEdge(edge: Edge, annotation?: EdgeAnnotation): PathOptions {
@@ -70,6 +72,7 @@ export class JunctionMap {
     }
 
     showJunctionExt(junction: JunctionInfo){
+        this.edges.clearLayers()
         const adj: AdjacencyInfo[] | undefined = this.bus.request("node:adjacency", junction.nodeId)
 
         if(adj) {
@@ -94,11 +97,11 @@ export class JunctionMap {
                 const path = L.polyline(
                     cropped.map(p => new LatLng(p.lat, p.lon)),
                     this.styleRoutingEdge(edge, annotation)
-                ).addTo(this.map)
+                ).addTo(this.edges)
 
                 // Show text
                 if(annotation && annotation.comment) {
-                    path.bindTooltip(annotation.comment, {permanent: true, className: "cyc-tooltip--inverted"})
+                    path.bindTooltip(annotation.comment, {permanent: true, className: "cyc-tooltip--inverted", offset: [10, 10]})
                 }
             }
         }

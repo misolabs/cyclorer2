@@ -155,7 +155,6 @@ export class TrackingMap{
     baseLayer: L.TileLayer | null = null
     areasLayerGroup: L.LayerGroup = L.layerGroup()
     areaBBoxLayerGroup: L.LayerGroup = L.layerGroup()
-    deadendsLayerGroup: L.LayerGroup = L.layerGroup()
     freqHeatmapLayerGroup: L.LayerGroup = L.layerGroup()
     areaHighlightLG: L.LayerGroup = L.layerGroup()
     snailTrailLG: L.LayerGroup = L.layerGroup()
@@ -272,14 +271,6 @@ export class TrackingMap{
             }).addTo(this.map)
             currentTileService = ts
         }
-    }
-
-    addDeadendsLayer(routingGeoData: GeoJsonRoutingollection){
-        // Mark deadends with broad black lines
-        L.geoJSON(routingGeoData.features, {
-            filter: (feature) => {return feature.properties.deadend},
-            style: {color: "black", weight: 5}
-        }).addTo(this.deadendsLayerGroup)
     }
 
     addRoutingLayer(routingGeoData: GeoJsonRoutingollection){
@@ -516,11 +507,6 @@ export class TrackingMap{
     toggleAreaBoundingBoxes(show: boolean){
         if(show) this.areaBBoxLayerGroup.addTo(this.map)
         else this.areaBBoxLayerGroup.removeFrom(this.map)
-    }
-
-    toggleDeadends(show: boolean){
-        if(show) this.deadendsLayerGroup.addTo(this.map)
-        else this.deadendsLayerGroup.removeFrom(this.map)
     }
 
     toggleFrequencyHeatmap(show: boolean){
