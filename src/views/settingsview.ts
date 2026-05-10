@@ -109,8 +109,6 @@ export class SettingsView {
         })
     }
 
-    // TODO - Re-Integrate AreaList on click on "Navigate to area" button
-
     // HELPERS
     //--------
 
