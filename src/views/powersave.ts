@@ -16,6 +16,7 @@ export class PowersaveView {
 
         bus.onEvent("powersave:enable", this.showView.bind(this))
         bus.onEvent("navigation:upcoming:junction", this.onUpcomingJunction.bind(this))
+        bus.onEvent("exploration:started", this.onExplorationStarted.bind(this))
 
         this.view.addEventListener("click", () => {
             bus.emitEvent("powersave:disable")
@@ -32,6 +33,10 @@ export class PowersaveView {
     hideView() {
         // Fade-out splash screen
         this.view.classList.add("hidden");
+    }
+
+    isActive(){
+        return !this.view.classList.contains("hidden")
     }
 
     onUpcomingJunction(junction: JunctionInfo){
@@ -54,18 +59,28 @@ export class PowersaveView {
                 this.previewMap.showJunctionExt(junction)
 
                 // Play audio cue
-                this.alertSound.currentTime = 0
-                this.alertSound.play().catch((reason) => {
-                    this.bus.emitEvent("notification:show", {
-                        type: NotificationType.DEBUG,
-                        caption: "Error playing audio",
-                        description: reason,
-                        autocloseDelay: 3000
+                if(this.isActive()) {
+                    this.alertSound.currentTime = 0
+                    this.alertSound.play().catch((reason) => {
+                        this.bus.emitEvent("notification:show", {
+                            type: NotificationType.DEBUG,
+                            caption: "Error playing audio",
+                            description: reason,
+                            autocloseDelay: 3000
+                        })
                     })
-                })
+                }
             }
             else
                 mapContainerEl.classList.add("hide")
+        }
+    }
+
+    // When we enter unknown territory we should see the full map
+    onExplorationStarted(){
+        if(!this.isActive()){
+            this.bus.emitEvent("powersave:disable")
+            this.hideView()
         }
     }
 }

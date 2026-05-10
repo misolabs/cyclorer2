@@ -66,6 +66,7 @@ type Events = {
     "annotation:edge:delete": string
     "annotation:edge:deleted": EdgeAnnotation
 
+    // We are currently riding on an unvisited path
     "exploration:started": Area
     "exploration:ended": void
     "exploration:score:updated": number
