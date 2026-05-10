@@ -14,7 +14,7 @@ export default defineConfig({
             filename: 'sw.ts',
             workbox: {
                 globPatterns: [
-                    '**/*.{js,css,html,ico,png,jpg,svg,woff2}'
+                    '**/*.{js,css,html,ico,png,jpg,svg,woff2,mp3}'
                 ],
             },
 

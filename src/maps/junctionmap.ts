@@ -26,6 +26,9 @@ const edgeStyles: Map<string, PolylineOptions> = new Map([
     [EdgeAnnotationCategory.EA_STEEP, {color: "purple", weight: 9}],
 ])
 
+const startPosGPS = new L.LatLng(49.477015, 5.980889)
+const zoomLevel = 17
+
 export class JunctionMap {
     bus: EventBus
     map: L.Map
@@ -47,6 +50,8 @@ export class JunctionMap {
             touchZoom: false
         })
         this.edges = L.layerGroup().addTo(this.map)
+
+        this.map.setView(startPosGPS, zoomLevel)
     }
 
     styleRoutingEdge(edge: Edge, annotation?: EdgeAnnotation): PathOptions {
@@ -108,7 +113,7 @@ export class JunctionMap {
 
         // Set view center and map rotation
         this.rotateMap(junction.orientation)
-        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), 17)
+        this.map.setView(new L.LatLng(junction.pos.lat, junction.pos.lon), zoomLevel)
     }
 
     rotateMap(angle: number){
