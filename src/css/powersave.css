@@ -54,3 +54,16 @@
     /*border: 1px solid #fff;*/
     /*border-radius: 24px;*/
 }
+
+/* Selectively style tootips on black background */
+.leaflet-tooltip.cyc-tooltip--inverted {
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
+    box-shadow: none;
+}
+
+.leaflet-tooltip.cyc-tooltip--inverted::before {
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}

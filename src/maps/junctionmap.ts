@@ -98,7 +98,7 @@ export class JunctionMap {
 
                 // Show text
                 if(annotation && annotation.comment) {
-                    path.bindTooltip(annotation.comment, {permanent: true})
+                    path.bindTooltip(annotation.comment, {permanent: true, className: "cyc-tooltip--inverted"})
                 }
             }
         }
