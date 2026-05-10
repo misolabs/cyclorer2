@@ -214,7 +214,7 @@ export class TrackingMap{
         this.annotationsLG.addTo(this.map)
 
         // Connect to event bus
-        this.bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
+        //this.bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
 
         // TODO: Move to right location
         this.bus.onEvent("annotation:edge:modified", (a: EdgeAnnotation) => {
@@ -543,17 +543,6 @@ export class TrackingMap{
         }else{
             this.snailTrailLayer!.setLatLngs(this.snailTrailPoly)
         }
-    }
-
-    onToggleMinimize(){
-        const container = document.getElementById("tracking-map")!
-        if(container.classList.contains("minipreview")) {
-            container.classList.remove("minipreview")
-        }
-        else {
-            container.classList.add("minipreview")
-        }
-        this.map.invalidateSize()
     }
 
     zoomFrameArea(bounds: LatLngBounds){

@@ -33,8 +33,6 @@ type Events = {
     "powersave:enable": void
     "powersave:disable": void
     "wakelock:engage": void
-    
-    "preview:minimize": void
 
     // Switch on/off GPS tracking
     "geolocation:enable": void
@@ -74,8 +72,6 @@ type Events = {
 
     "navigation:target:area": Area
     "navigation:stop": void
-    "area:dismiss": void
-    "area:engage": void
 
     "navigation:upcoming:junction": JunctionInfo
 

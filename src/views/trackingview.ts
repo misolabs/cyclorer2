@@ -1,6 +1,5 @@
 import type {EventBus} from "../eventbus.ts";
 import {TrackingMap} from "../maps/trackingmap.ts";
-import {PreviewMap} from "../maps/previewmap.ts";
 
 import L, {LatLng} from "leaflet"
 
@@ -11,12 +10,8 @@ import type {
     RoutingStatsJson
 } from "../models/geo.ts";
 import type {Settings} from "../services/settingsservice.ts";
-import {geoToLatLon} from "../crs/latlonmath.ts";
-import type {GeolocationLight} from "../services/geolocationservice.ts";
 import type {
-    AdjacencyInfo,
     Area,
-    AreaId, JunctionInfo,
     LocationAnnotation,
     LocationAnnotationCategory,
     LocationAnnotationRequest
@@ -30,8 +25,6 @@ import {jsonTimestamp} from "../helpers.ts";
     - heading marker?
  */
 
-var isUIOverlayVisible = true
-
 const ellergronnGPS = new L.LatLng(49.477015, 5.980889)
 const defaultZoomLevel = 17
 
@@ -40,7 +33,6 @@ export class TrackingView {
     mobileMode: boolean;
 
     trackingMap: TrackingMap
-    previewMap: PreviewMap
     viewFollowTracking: boolean
     maxRideCount: number = 0
 
@@ -52,7 +44,6 @@ export class TrackingView {
         this.viewFollowTracking = true
 
         this.trackingMap = new TrackingMap("tracking-map", isMobileLike, bus)
-        this.previewMap = new PreviewMap("preview-map", bus)
 
         this.bus.onEvent("rds:stats:loaded", this.onStatsDataLoaded.bind(this))
         this.bus.onEvent("rds:routing:loaded", this.onRoutingDataLoaded.bind(this))
@@ -68,12 +59,8 @@ export class TrackingView {
         // After location annotations are loaded we add them to the map
         this.bus.onEvent("annotation:location:loaded", this.onLocationAnnotationsLoaded.bind(this))
 
-        this.bus.onEvent("exploration:started", this.onExplorationStarted.bind(this))
-        this.bus.onEvent("exploration:ended", this.onExplorationEnded.bind(this))
         this.bus.onEvent("exploration:score:updated", this.onScoreUpdated.bind(this))
 
-        this.bus.onEvent("area:dismiss", this.onAreaDismiss.bind(this))
-        this.bus.onEvent("area:engage", this.onAreaEngage.bind(this))
         this.bus.onEvent("navigation:target:area", this.onNavigationArea.bind(this))
         this.bus.onEvent("navigation:stop", this.onNavigationStop.bind(this))
 
@@ -85,11 +72,6 @@ export class TrackingView {
         // Hook up buttons
         // TODO Move these to the menu classes
         document.getElementById("settings-open")!.addEventListener("click", () => {this.bus.emitEvent("settings:show", true)})
-
-        // Navigation control buttons
-        document.getElementById("dismiss-area-btn")!.addEventListener("click", () => {this.bus.emitEvent("area:dismiss")})
-        document.getElementById("engage-area-btn")!.addEventListener("click", () => {this.bus.emitEvent("area:engage")})
-        document.getElementById("stop-navigation-btn")!.addEventListener("click", () => {this.bus.emitEvent("navigation:stop")})
 
         // View follow tracking
         // Stop following tracking if we pan the map, show button to re-center
@@ -106,32 +88,12 @@ export class TrackingView {
             this.viewFollowTracking = false
             centerBtnEl?.classList.remove("hide")
         })
-
-        // TODO Experimental - Add text annotation
-        /*
-        document.getElementById("drop-pin-text")!.addEventListener("click", () =>
-        {
-            const text = window.prompt("Annotation:")
-            if(text)
-                this.bus.eventEmit("annotation:location:text:create", text)
-        })*/
-
     }
 
     init() {
         this.trackingMap.map.setView(ellergronnGPS, defaultZoomLevel)
 
         this.trackingMap.addPositionMarker(ellergronnGPS, (this.mobileMode ? null : this.onPositionMarkerDragged.bind(this)))
-
-        // Show buttons overlay on click
-        /*
-        this.trackingMap.map.on("click", (e) => {
-            const root = document.getElementById("buttons-overlay")!
-            if(root.classList.contains("hide")) {
-                root.classList.remove("hide")
-                setTimeout( () => {root.classList.add("hide") }, 20000)
-            }else root.classList.add("hide")
-        })*/
 
         document.getElementById("zoom-toggle-btn")!.addEventListener("click", () => {this.toggleZoomLevel()})
         this.trackingMap.map.on("dblclick", (e) => {this.toggleZoomLevel()})
@@ -197,54 +159,13 @@ export class TrackingView {
         }
     }
 
-    onExplorationStarted(area: Area){
-        if(this.scoreTimerId != -1){
-            clearTimeout(this.scoreTimerId)
-            this.scoreTimerId = -1
-        }
-
-        document.getElementById("score")!.classList.add("counting")
-        this.previewMap.setArea(area)
-    }
-
-    onExplorationEnded(){
-        this.scoreTimerId = setTimeout(() => {
-            document.getElementById("score")!.classList.remove("counting")
-            this.scoreTimerId = -1
-        }, 5000)
-    }
-
     onScoreUpdated(score: number){
         document.getElementById("score")!.textContent = `${score.toFixed(0)}m`
     }
 
-    onAreaDismiss(){
-        this.trackingMap.clearRoute()
-        this.trackingMap.setSnappedEdge([])
-        this.trackingMap.highlightArea(null)
-        this.trackingMap.clearAreaMarker()
-
-        this.previewMap.clearArea()
-        setDescription("")
-
-        this.toggleEngageButton(false)
-        this.toggleDismissButton(false)
-    }
-
-    onAreaEngage(){
-        this.toggleEngageButton(false)
-        this.toggleStopNavigationButton(true)
-        this.toggleDismissButton(false)
-    }
-
     onNavigationArea(area: Area){
-        this.toggleEngageButton(true)
-        this.toggleStopNavigationButton(false)
-        this.toggleDismissButton(true)
-
         this.trackingMap.highlightArea(area)
         this.trackingMap.setAreaMarker(area.nodes)
-        this.previewMap.setArea(area)
         setDescription(`Area size: ${formatDistance(area.totalLength)}`)
     }
 
@@ -252,54 +173,6 @@ export class TrackingView {
         this.trackingMap.clearRoute()
         this.trackingMap.setSnappedEdge([])
         this.trackingMap.highlightArea(null)
-
-        this.toggleStopNavigationButton(false)
-    }
-
-    onZoomFrameRider(){
-        this.trackingMap.zoomFrameRider()
-    }
-
-    toggleDismissButton(show: boolean) {
-        if(show)
-            document.getElementById("dismiss-area-btn")!.classList.remove("hide")
-        else
-            document.getElementById("dismiss-area-btn")!.classList.add("hide")
-    }
-
-    toggleEngageButton(show: boolean) {
-    if(show)
-        document.getElementById("engage-area-btn")!.classList.remove("hide")
-    else
-        document.getElementById("engage-area-btn")!.classList.add("hide")
-    }
-
-    toggleStopNavigationButton(show: boolean) {
-    if(show)
-        document.getElementById("stop-navigation-btn")!.classList.remove("hide")
-    else
-        document.getElementById("stop-navigation-btn")!.classList.add("hide")
-    }
-
-    // Hide UI when we ride
-    // Elements to toggle are marked with a css class
-    toggleUIOverlays(speed: number) {
-        const overlayElements = document.querySelectorAll(".ui-overlay-element")
-        // Slowing down -> show
-        if(speed < 1.0 && !isUIOverlayVisible) {
-            overlayElements.forEach(overlayElement => {
-                overlayElement.classList.remove("hide")
-            })
-            isUIOverlayVisible = true
-            // Speeding up -> hide
-        }else if(speed > 2.0 && isUIOverlayVisible) {
-            for(const el of overlayElements) {
-                if (!el.classList.contains("hide")) {
-                    el.classList.add("hide")
-                }
-            }
-            isUIOverlayVisible = false
-        }
     }
 
     toggleZoomLevel(){

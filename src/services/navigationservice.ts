@@ -59,7 +59,7 @@ export class NavigationService{
         bus.onEvent("rds:routing:loaded", this.onRoutingLoaded.bind(this));
 
         bus.onEvent("navigation:target:area", this.onNavigateArea.bind(this));
-        bus.onEvent("area:dismiss", this.onDismissArea.bind(this));
+        //bus.onEvent("area:dismiss", this.onDismissArea.bind(this));
 
         bus.onRequest("node:adjacency", this.onRequestNodeAdjacency.bind(this));
     }
@@ -224,7 +224,7 @@ export class NavigationService{
             this.bus.emitEvent("navigation:target:area", this.currentArea)
 
             // If we don't lock-onto the target within a certain time, we auto-dismis
-            this.dismissTimerId = setTimeout( () => {this.bus.emitEvent("area:dismiss")}, 60000)
+            //this.dismissTimerId = setTimeout( () => {this.bus.emitEvent("area:dismiss")}, 60000)
         }
     }
 }

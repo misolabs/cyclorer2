@@ -21,60 +21,6 @@
     height: 100%;
 }
 
-#preview-map{
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    height: 300px;
-    z-index: 1000;
-
-    font-size: x-large;
-    font-weight: bold;
-    font-family: sans-serif;
-    color: white;
-    background-color: darkslategrey;
-}
-
-/* Mobile setup */
-@media (max-width: 768px) {
-    #tracking-map {
-        width: 100vw;
-        height: 100vw;
-    }
-
-    #preview-map{
-        position: absolute;
-        top: 100vw;
-        left: 0;
-        width: 100vw;
-        height: calc(100dvh - 100vw);
-
-        border-top: 4px solid darkorange;
-    }
-
-    #tracking-map.minipreview{
-        height: calc(100vh - 100px);
-    }
-
-    #preview-map.minipreview{
-        top: calc(100vh - 100px);
-        height: 100px;
-    }
-}
-
-#preview-minimise{
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    color: darkslategray;
-
-    width: 40px;
-    height: 40px;
-
-    z-index: 1001;
-}
-
 #description{
     position: absolute;
     z-index: 1001;
