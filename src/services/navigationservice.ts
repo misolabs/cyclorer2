@@ -182,7 +182,7 @@ export class NavigationService{
                 }
 
                 // If stable -> send out the info
-                if (this.junctionStableCount > 3) {
+                if (this.junctionStableCount == 4) {
                     const junctionAngle = computeHeading(p1, pos)
                     this.bus.emitEvent("navigation:upcoming:junction", {
                         nodeId,
