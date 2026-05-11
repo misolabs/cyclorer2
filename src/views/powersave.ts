@@ -58,6 +58,9 @@ export class PowersaveView {
                 this.previewMap.map.invalidateSize(true)
                 this.previewMap.showJunctionExt(junction)
 
+                // Update distance to junction
+                document.getElementById("powersave-distance-junction")!.textContent = `${junction.distance.toFixed(0)}m`
+
                 // Play audio cue
                 if(this.isActive()) {
                     this.alertSound.currentTime = 0

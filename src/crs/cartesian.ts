@@ -45,3 +45,9 @@ export function accDistances(p: Cartesian[]): number{
     }
     return accDist
 }
+
+export function cartesianDistance(p1: Cartesian, p2: Cartesian): number{
+    const dx = p2.x - p1.x
+    const dy = p2.y - p1.y
+    return Math.sqrt(dx * dx + dy * dy)
+}

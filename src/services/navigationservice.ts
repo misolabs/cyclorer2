@@ -4,7 +4,7 @@ import {
     type Area, type AreaNode,
     type BoundingBox, type Route, NodeId,
     TravelDirection,
-    type LatLon
+    type LatLon, type EdgeIntersection
 } from "../models/models.ts";
 import { RoutingEngine } from "../routing/routing.ts";
 import type {
@@ -19,6 +19,7 @@ import { haversineDistance } from "../crs/latlonmath.ts";
 import { AnnotationService } from "./annotationservice.ts";
 import { computeHeading } from "../routing/heading.ts";
 import { SetUtils } from "../setutils.ts";
+import {cartesianDistance} from "../crs/cartesian.ts";
 
 export class NavigationService{
     bus: EventBus;
@@ -130,6 +131,31 @@ export class NavigationService{
 
     // =========
 
+    // Calculate the distance from the intersection point to the endpoint <nodeId>
+    computeDistanceToNode(closestEdge: EdgeIntersection, nodeId: NodeId){
+        let totalLength = 0
+
+        // Accumulate segments up to intersected segment
+        for(let i=0; i < closestEdge.segmentIndex; i++){
+            const p1 = closestEdge.edge.cartesian[i]
+            const p2 = closestEdge.edge.cartesian[i + 1]
+            totalLength += cartesianDistance(p1, p2)
+        }
+
+        // Add partial intersected edge length
+        totalLength += cartesianDistance(
+            closestEdge.edge.cartesian[closestEdge.segmentIndex],
+            closestEdge.edge.cartesian[closestEdge.segmentIndex + 1]
+        )
+
+        // Length = u to intersection point
+        // If we need distance to v, edge length - distance to u
+        if(closestEdge.edge.v == nodeId)
+            totalLength = closestEdge.edge.length - totalLength
+
+        return totalLength
+    }
+
     update(){
         if(!this.routingEngine || !this.areaFinder || !this.currentPosition) return
         const closestEdge = this.routingEngine.findClosestEdge(this.currentPosition)
@@ -184,11 +210,13 @@ export class NavigationService{
                 // If stable -> send out the info
                 if (this.junctionStableCount == 4) {
                     const junctionAngle = computeHeading(p1, pos)
+                    const distance = this.computeDistanceToNode(closestEdge, nodeId)
                     this.bus.emitEvent("navigation:upcoming:junction", {
                         nodeId,
                         pos,
                         travelEdge: closestEdge.edge,
-                        orientation: junctionAngle
+                        orientation: junctionAngle,
+                        distance
                     })
                 }
             }

@@ -117,6 +117,7 @@ export interface JunctionInfo{
   travelEdge: Edge
   pos: LatLon
   orientation: number
+  distance: number
 }
 
 export const NotificationType = {
