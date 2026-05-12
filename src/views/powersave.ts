@@ -14,7 +14,8 @@ export class PowersaveView {
         this.previewMap = new JunctionMap("powersave-junction-preview", this.bus)
 
         bus.onEvent("powersave:enable", this.showView.bind(this))
-        bus.onEvent("navigation:upcoming:junction", this.onUpcomingJunction.bind(this))
+        bus.onEvent("navigation:junction:upcoming", this.onUpcomingJunction.bind(this))
+        bus.onEvent("navigation:junction:update", this.onUpdateJunction.bind(this))
         bus.onEvent("exploration:started", this.onExplorationStarted.bind(this))
 
         this.view.addEventListener("click", () => {
@@ -56,7 +57,7 @@ export class PowersaveView {
                 this.previewMap.showJunctionExt(junction)
 
                 // Update distance to junction
-                document.getElementById("powersave-distance-junction")!.textContent = `${junction.distance.toFixed(0)}m`
+                this.displayJunctionDistance(junction.distance)
 
                 // Play audio cue
                 if(this.isActive()) {
@@ -68,11 +69,21 @@ export class PowersaveView {
         }
     }
 
+    onUpdateJunction(junction: JunctionInfo){
+        this.displayJunctionDistance(junction.distance)
+    }
+
     // When we enter unknown territory we should see the full map
     onExplorationStarted(){
         if(!this.isActive()){
             this.bus.emitEvent("powersave:disable")
             this.hideView()
         }
+    }
+
+    // Round distances to 10m for clarity
+    displayJunctionDistance(distance: number){
+        const dispValue = Math.round(distance / 10) * 10
+        document.getElementById("powersave-distance-junction")!.textContent = `${dispValue.toFixed(0)}m`
     }
 }

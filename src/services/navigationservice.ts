@@ -20,6 +20,7 @@ import { AnnotationService } from "./annotationservice.ts";
 import { computeHeading } from "../routing/heading.ts";
 import { SetUtils } from "../setutils.ts";
 import {cartesianDistance} from "../crs/cartesian.ts";
+import type {Events} from "leaflet";
 
 export class NavigationService{
     bus: EventBus;
@@ -208,10 +209,11 @@ export class NavigationService{
                 }
 
                 // If stable -> send out the info
-                if (this.junctionStableCount == 4) {
+                if (this.junctionStableCount > 3) {
                     const junctionAngle = computeHeading(p1, pos)
                     const distance = this.computeDistanceToNode(closestEdge, nodeId)
-                    this.bus.emitEvent("navigation:upcoming:junction", {
+                    const message = this.junctionStableCount == 4 ? "navigation:junction:upcoming" : "navigation:junction:update"
+                    this.bus.emitEvent(message, {
                         nodeId,
                         pos,
                         travelEdge: closestEdge.edge,

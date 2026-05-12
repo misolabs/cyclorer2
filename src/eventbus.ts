@@ -74,7 +74,10 @@ type Events = {
     "navigation:target:area": Area
     "navigation:stop": void
 
-    "navigation:upcoming:junction": JunctionInfo
+    // New junction ahead
+    "navigation:junction:upcoming": JunctionInfo
+    // Updated distance to junction
+    "navigation:junction:update": JunctionInfo
 
     "zoom:framed:area": Area
     "zoom:frame:rider": void
