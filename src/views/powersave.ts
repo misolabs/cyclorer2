@@ -75,7 +75,7 @@ export class PowersaveView {
 
     // When we enter unknown territory we should see the full map
     onExplorationStarted(){
-        if(!this.isActive()){
+        if(this.isActive()){
             this.bus.emitEvent("powersave:disable")
             this.hideView()
         }
