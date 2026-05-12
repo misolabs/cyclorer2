@@ -8,24 +8,33 @@ const soundUrls = new Map<string, string>([
 
 export class AudioPlayer {
     bus: EventBus
-    private context: AudioContext
+    private context: AudioContext | null = null
     private buffers = new Map<string, AudioBuffer>()
     private loading = new Map<string, Promise<AudioBuffer | undefined>>()
     private audioUnlocked = false
 
     constructor(eventBus: EventBus) {
         this.bus = eventBus
-        this.context = new AudioContext()
 
         this.bus.onEvent("audio:play", this.playSound.bind(this))
         this.bus.onEvent("audio:unlock", this.unlockAudio.bind(this))
 
-        for (const name of soundUrls.keys()) {
-            void this.preloadSound(name)
+        const unlockOnFirstGesture = () => {
+            this.unlockAudio()
         }
+
+        window.addEventListener("pointerdown", unlockOnFirstGesture, { once: true, capture: true })
+        window.addEventListener("touchend", unlockOnFirstGesture, { once: true, capture: true })
+        window.addEventListener("keydown", unlockOnFirstGesture, { once: true, capture: true })
+
+        this.bus.onEvent("geolocation:update", () => this.playSound("alert"))
     }
 
     unlockAudio() {
+        if (!this.context) {
+            this.context = new AudioContext()
+        }
+
         this.audioUnlocked = true
 
         if (this.context.state === "suspended") {
@@ -41,6 +50,11 @@ export class AudioPlayer {
     }
 
     private async playBuffer(name: string) {
+        if (!this.context) {
+            if (!this.audioUnlocked) return
+            this.context = new AudioContext()
+        }
+
         const buffer = await this.getBuffer(name)
         if (!buffer) return
 
@@ -87,6 +101,9 @@ export class AudioPlayer {
             if (!response.ok) return undefined
 
             const data = await response.arrayBuffer()
+            if (!this.context) {
+                this.context = new AudioContext()
+            }
             const buffer = await this.context.decodeAudioData(data)
             this.buffers.set(name, buffer)
             return buffer
