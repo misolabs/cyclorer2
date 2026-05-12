@@ -1,60 +1,99 @@
 import {NotificationType} from "../models/models.ts";
 import type {EventBus} from "../eventbus.ts";
 
-const alertSound = new Audio(`${import.meta.env.BASE_URL}assets/alert.mp3`)
-const clickSound = new Audio(`${import.meta.env.BASE_URL}assets/click.mp3`)
-const unlockSound = new Audio(`${import.meta.env.BASE_URL}assets/click.mp3`)
-
-const audioMap: Map<string, HTMLAudioElement> = new Map([
-    ["alert", alertSound],
-    ["click", clickSound]
+const soundUrls = new Map<string, string>([
+    ["alert", `${import.meta.env.BASE_URL}assets/alert.mp3`],
+    ["click", `${import.meta.env.BASE_URL}assets/click.mp3`],
 ])
 
 export class AudioPlayer {
     bus: EventBus
-    audioUnlocked = false
+    private context: AudioContext
+    private buffers = new Map<string, AudioBuffer>()
+    private loading = new Map<string, Promise<AudioBuffer | undefined>>()
+    private audioUnlocked = false
 
     constructor(eventBus: EventBus) {
-        this.bus = eventBus;
+        this.bus = eventBus
+        this.context = new AudioContext()
 
-        this.bus.onEvent("audio:play", this.playSound.bind(this));
-        this.bus.onEvent("audio:unlock", this.unlockAudio.bind(this));
+        this.bus.onEvent("audio:play", this.playSound.bind(this))
+        this.bus.onEvent("audio:unlock", this.unlockAudio.bind(this))
+
+        for (const name of soundUrls.keys()) {
+            void this.preloadSound(name)
+        }
     }
 
     unlockAudio() {
-        if (this.audioUnlocked) return
+        this.audioUnlocked = true
 
-        unlockSound.currentTime = 0
-        unlockSound.muted = true
-        unlockSound.play().then(() => {
-            unlockSound.pause()
-            unlockSound.currentTime = 0
-            unlockSound.muted = false
-            this.audioUnlocked = true
-        }).catch(() => {
-            // iOS can still deny playback until the next user gesture.
-        })
+        if (this.context.state === "suspended") {
+            void this.context.resume().catch(() => {
+                this.audioUnlocked = false
+            })
+        }
     }
 
     playSound(name: string) {
-        const audio = audioMap.get(name)
-        if (audio == undefined) return
+        if (!this.audioUnlocked) return
+        void this.playBuffer(name)
+    }
 
-        audio.currentTime = 0
-        audio.play()
-            .then(() => {
-                this.audioUnlocked = true
+    private async playBuffer(name: string) {
+        const buffer = await this.getBuffer(name)
+        if (!buffer) return
+
+        try {
+            if (this.context.state === "suspended") {
+                await this.context.resume()
+            }
+
+            const source = this.context.createBufferSource()
+            source.buffer = buffer
+            source.connect(this.context.destination)
+            source.start(0)
+        } catch (reason) {
+            this.bus.emitEvent("notification:show", {
+                type: NotificationType.DEBUG,
+                caption: "Error playing audio",
+                description: String(reason),
+                autocloseDelay: 3000
             })
-            .catch((reason) => {
-                if (!this.audioUnlocked) return
+        }
+    }
 
-                this.bus.emitEvent("notification:show", {
-                    type: NotificationType.DEBUG,
-                    caption: "Error playing audio",
-                    description: reason,
-                    autocloseDelay: 3000
-                })
-            })
+    private async getBuffer(name: string) {
+        const cached = this.buffers.get(name)
+        if (cached) return cached
 
+        const pending = this.loading.get(name)
+        if (pending) return pending
+
+        const loaded = this.preloadSound(name)
+        this.loading.set(name, loaded)
+        return loaded
+    }
+
+    private async preloadSound(name: string): Promise<AudioBuffer | undefined> {
+        const cached = this.buffers.get(name)
+        if (cached) return cached
+
+        const url = soundUrls.get(name)
+        if (!url) return undefined
+
+        try {
+            const response = await fetch(url)
+            if (!response.ok) return undefined
+
+            const data = await response.arrayBuffer()
+            const buffer = await this.context.decodeAudioData(data)
+            this.buffers.set(name, buffer)
+            return buffer
+        } catch {
+            return undefined
+        } finally {
+            this.loading.delete(name)
+        }
     }
 }
