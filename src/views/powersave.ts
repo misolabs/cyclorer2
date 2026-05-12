@@ -8,7 +8,6 @@ export class PowersaveView {
 
     view = document.getElementById("powersave-view")!
     previewMap!: JunctionMap
-    alertSound: HTMLAudioElement
 
     constructor(bus: EventBus) {
         this.bus = bus
@@ -22,8 +21,6 @@ export class PowersaveView {
             bus.emitEvent("powersave:disable")
             this.hideView()
         })
-
-        this.alertSound = new Audio(`${import.meta.env.BASE_URL}assets/alert.mp3`)
     }
 
     showView(){
@@ -63,15 +60,7 @@ export class PowersaveView {
 
                 // Play audio cue
                 if(this.isActive()) {
-                    this.alertSound.currentTime = 0
-                    this.alertSound.play().catch((reason) => {
-                        this.bus.emitEvent("notification:show", {
-                            type: NotificationType.DEBUG,
-                            caption: "Error playing audio",
-                            description: reason,
-                            autocloseDelay: 3000
-                        })
-                    })
+                    this.bus.emitEvent("audio:play", "alert")
                 }
             }
             else

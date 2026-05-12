@@ -28,6 +28,7 @@ import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
 import {AnnotationService} from "./services/annotationservice.ts";
+import {AudioPlayer} from "./services/audioplayer.ts";
 
 await loadLegacyPlugins()
 
@@ -62,6 +63,7 @@ const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
 const wakeLockService = new WakeLockService()
+const audioService = new AudioPlayer(appBus)
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus, mobileMode)

@@ -84,6 +84,9 @@ type Events = {
     "cache:stats:request": void
     "cache:stats": TileCacheStats
     "cache:clear": void
+
+    // Play sound (one-off)
+    "audio:play": string
 };
 
 type Requests = {
