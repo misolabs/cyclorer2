@@ -28,7 +28,7 @@ export class InRideMenu{
         })
 
         document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {
-            this.bus.emitEvent("audio:unlock")
+            this.bus.emitEvent("audio:prepare", "alert")
             this.bus.emitEvent("powersave:enable")
         })
 
