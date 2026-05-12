@@ -16,6 +16,7 @@ export class SplashScreen {
         bus.onEvent("rds:stats:loaded", this.stats.bind(this))
 
         this.splash.addEventListener("click", () => {
+            this.bus.emitEvent("audio:unlock")
             this.bus.emitEvent("audio:play", "click")
             this.hideSplash()
             bus.emitEvent("wakelock:engage")
@@ -60,4 +61,3 @@ export class SplashScreen {
         }, 1200);
     }
 }
-

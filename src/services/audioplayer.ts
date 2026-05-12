@@ -3,6 +3,7 @@ import type {EventBus} from "../eventbus.ts";
 
 const alertSound = new Audio(`${import.meta.env.BASE_URL}assets/alert.mp3`)
 const clickSound = new Audio(`${import.meta.env.BASE_URL}assets/click.mp3`)
+const unlockSound = new Audio(`${import.meta.env.BASE_URL}assets/click.mp3`)
 
 const audioMap: Map<string, HTMLAudioElement> = new Map([
     ["alert", alertSound],
@@ -11,11 +12,28 @@ const audioMap: Map<string, HTMLAudioElement> = new Map([
 
 export class AudioPlayer {
     bus: EventBus
+    audioUnlocked = false
 
     constructor(eventBus: EventBus) {
         this.bus = eventBus;
 
         this.bus.onEvent("audio:play", this.playSound.bind(this));
+        this.bus.onEvent("audio:unlock", this.unlockAudio.bind(this));
+    }
+
+    unlockAudio() {
+        if (this.audioUnlocked) return
+
+        unlockSound.currentTime = 0
+        unlockSound.muted = true
+        unlockSound.play().then(() => {
+            unlockSound.pause()
+            unlockSound.currentTime = 0
+            unlockSound.muted = false
+            this.audioUnlocked = true
+        }).catch(() => {
+            // iOS can still deny playback until the next user gesture.
+        })
     }
 
     playSound(name: string) {
@@ -23,14 +41,20 @@ export class AudioPlayer {
         if (audio == undefined) return
 
         audio.currentTime = 0
-        audio.play().catch((reason) => {
-            this.bus.emitEvent("notification:show", {
-                type: NotificationType.DEBUG,
-                caption: "Error playing audio",
-                description: reason,
-                autocloseDelay: 3000
+        audio.play()
+            .then(() => {
+                this.audioUnlocked = true
             })
-        })
+            .catch((reason) => {
+                if (!this.audioUnlocked) return
+
+                this.bus.emitEvent("notification:show", {
+                    type: NotificationType.DEBUG,
+                    caption: "Error playing audio",
+                    description: reason,
+                    autocloseDelay: 3000
+                })
+            })
 
     }
 }

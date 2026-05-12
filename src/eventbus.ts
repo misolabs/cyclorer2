@@ -87,6 +87,8 @@ type Events = {
 
     // Play sound (one-off)
     "audio:play": string
+    // Unlock audio playback after a user gesture
+    "audio:unlock": void
 };
 
 type Requests = {

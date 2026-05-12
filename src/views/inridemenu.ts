@@ -27,7 +27,10 @@ export class InRideMenu{
             }else this.hide()
         })
 
-        document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {this.bus.emitEvent("powersave:enable")})
+        document.getElementById("powersave-enable-btn")!.addEventListener("click", () => {
+            this.bus.emitEvent("audio:unlock")
+            this.bus.emitEvent("powersave:enable")
+        })
 
         // Some buttons are only visible in mobile or desktop mode
 
