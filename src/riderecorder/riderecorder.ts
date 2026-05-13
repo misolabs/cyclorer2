@@ -1,11 +1,52 @@
 // Simple ride recorder that adds all edges that have been matched at least 3 times in a row
 
 import type {EventBus} from "../eventbus.ts";
-import type {Edge, LatLon} from "../models/models.ts";
+import {type Edge, type LatLon, NotificationType} from "../models/models.ts";
+
+// Check if two edges share a node
+function sharedNode(e1: Edge, e2: Edge){
+    if(!e1 || !e2) return undefined
+
+    if(
+        e1.u == e2.u ||
+        e1.u == e2.v
+    ) return e1.u
+
+    else if (
+        e1.v == e2.u ||
+        e1.v == e2.v
+    ) return e1.v
+    return undefined
+}
+
+// Given edges e1, e2, e3 check if e1 is connected to e3
+// through the same node that e1 is connected to e2 and e3 to e2
+// This is very probably only a temporary mismatch around a junction
+//    e2
+//    |
+// e1---e3
+
+function checkAnomalyStump(e1: Edge, e2: Edge, e3: Edge) {
+    const shared = sharedNode(e1, e3)
+    if(shared != undefined) {
+        if(e2.u == shared || e2.v == shared){
+            return true
+        }
+    }
+    return false
+}
+
+// Check if two edges in a sequence are connected through a shared node
+
+function checkForHoles(e1: Edge, e2: Edge){
+    return sharedNode(e1,e2) == undefined
+}
 
 export class RideRecorder {
     bus: EventBus
     rideEdges: Map<string, Edge> = new Map()
+    rideEdgeList: Edge[] = []
+
     lastMatchedEdge: string | undefined
     stableMatchingCounter= 0
 
@@ -25,7 +66,6 @@ export class RideRecorder {
     }
 
     matchPositionToEdge(pos: LatLon){
-        console.log("matching")
         const closestEdge = this.bus.request("routing:closestedge:pos", pos)
 
         if(closestEdge && !this.rideEdges.get(closestEdge.edge.edge_id)){
@@ -34,9 +74,34 @@ export class RideRecorder {
 
                 if(this.stableMatchingCounter > 2){
                     this.rideEdges.set(closestEdge.edge.edge_id, closestEdge.edge)
+                    this.rideEdgeList.push(closestEdge.edge)
 
                     // Send message to draw on map
                     this.bus.emitEvent("map:snailtrail:add:edge", closestEdge.edge)
+
+                    // Check for anomalies
+                    //--------------------
+                    const revEdges = this.rideEdgeList.toReversed()
+
+                    // Stump edges
+                    if(revEdges.length > 2 && checkAnomalyStump(revEdges[0], revEdges[1], revEdges[2])){
+                        this.bus.emitEvent("notification:show",{
+                            type: NotificationType.WARNING,
+                            caption: "Ride Recorder Anomaly",
+                            description: `Stump detected around edge ${revEdges[1]}`,
+                            autocloseDelay: undefined
+                        })
+                    }
+
+                    // Holes
+                    if(revEdges.length > 1 && checkForHoles(revEdges[0], revEdges[1])){
+                        this.bus.emitEvent("notification:show",{
+                            type: NotificationType.WARNING,
+                            caption: "Ride Recorder Anomaly",
+                            description: `Hole detected between edges ${revEdges[0]} and ${revEdges[1]}`,
+                            autocloseDelay: undefined
+                        })
+                    }
                 }
             }else
                 this.stableMatchingCounter = 0
