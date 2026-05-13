@@ -12,7 +12,7 @@ import type {
 } from "../models/geo.ts"
 
 import {
-    type Area, type AreaNode, type EdgeAnnotation,
+    type Area, type AreaNode, type Edge, type EdgeAnnotation,
     EdgeAnnotationCategory, type LatLon, type LocationAnnotation, type Route
 } from "../models/models.ts";
 import {LatLng} from "leaflet";
@@ -162,8 +162,8 @@ export class TrackingMap{
 
     edgeNetworkLayers: Map<string, L.Polyline> = new Map([])
 
-    snailTrailLayer!: L.Polyline
-    snailTrailPoly: LatLng[] = []
+    //snailTrailLayer!: L.Polyline
+    //snailTrailPoly: LatLng[] = []
 
     riderViewCenter: LatLng = new LatLng(0,0)
     riderViewZoom = 17
@@ -258,6 +258,11 @@ export class TrackingMap{
 
         // If we are riding we disbale all map intercation to make hitting buttons easier
         this.bus.onEvent("geolocation:riding", (riding: boolean) =>{this.disableMapInteraction(riding)})
+
+        // Add a segment (edge) to our snailtrail
+        this.bus.onEvent("map:snailtrail:add:edge", this.onAddSnailTrail.bind(this))
+        // Clear all snailtrail segments
+        this.bus.onEvent("map:snailtrail:clear", this.clearSnailTrails.bind(this))
     }
 
     setBaseLayer(id: string){
@@ -518,31 +523,11 @@ export class TrackingMap{
         this.snailTrailLG.clearLayers()
     }
 
-    startSnailTrail(startPos:LatLng){
-        this.snailTrailPoly = [startPos]
-    }
-
-    extendSnailTrail(pos: LatLng){
-        this.snailTrailPoly.push(pos)
-        if(this.snailTrailPoly.length == 2){
-            this.snailTrailLayer = L.polyline(this.snailTrailPoly, {weight: 5, color: "#2FA4D7", opacity: 0.9}).addTo(this.map)
-        }else{
-            this.snailTrailLayer!.setLatLngs(this.snailTrailPoly)
-        }
-    }
-
-    zoomFrameArea(bounds: LatLngBounds){
-        // Calculate bounds of area with current position
-        this.riderViewCenter = this.map.getCenter()
-        this.riderViewZoom = this.map.getZoom()
-
-        // Show preview of the full route
-        const extBounds = bounds.extend(this.positionMarker!.getLatLng())
-        this.map.fitBounds(extBounds, {padding: [50, 50]})
-    }
-
-    zoomFrameRider(){
-        this.map.setView(this.riderViewCenter, this.riderViewZoom)
+    onAddSnailTrail(edge: Edge){
+        const trail = L.polyline(
+            edge.coordinates.map(p => new LatLng(p.lat, p.lon)),
+            {color: "orange", weight: 9}
+        ).addTo(this.snailTrailLG)
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline, annotation: EdgeAnnotation|undefined = undefined){

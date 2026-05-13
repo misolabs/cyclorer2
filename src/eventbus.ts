@@ -9,7 +9,7 @@ import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {
     LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
     EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent,
-    NotificationData, JunctionInfo, NodeId, AdjacencyInfo
+    NotificationData, JunctionInfo, NodeId, AdjacencyInfo, EdgeIntersection, Edge
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
 
@@ -66,6 +66,11 @@ type Events = {
     "annotation:edge:delete": string
     "annotation:edge:deleted": EdgeAnnotation
 
+    // Add a snailtrail segment to maps
+    "map:snailtrail:add:edge": Edge
+    // Clear snailtrail on concerned maps
+    "map:snailtrail:clear": void
+
     // We are currently riding on an unvisited path
     "exploration:started": Area
     "exploration:ended": void
@@ -114,6 +119,11 @@ type Requests = {
     "node:adjacency": {
         input: NodeId
         output: AdjacencyInfo[] | undefined
+    }
+    // Find closest graph edge to a given position
+    "routing:closestedge:pos":{
+        input: LatLon
+        output: EdgeIntersection | undefined
     }
 };
 

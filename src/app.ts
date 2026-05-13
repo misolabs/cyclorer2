@@ -29,6 +29,7 @@ import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
 import {AnnotationService} from "./services/annotationservice.ts";
 import {AudioPlayer} from "./services/audioplayer.ts";
+import {RideRecorder} from "./riderecorder/riderecorder.ts";
 
 await loadLegacyPlugins()
 
@@ -64,6 +65,7 @@ const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
 const wakeLockService = new WakeLockService()
 const audioService = new AudioPlayer(appBus)
+const rideRecorder = new RideRecorder(appBus)
 
 // Create views
 const inrideMenu: InRideMenu = new InRideMenu(appBus, mobileMode)

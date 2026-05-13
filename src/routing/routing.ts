@@ -14,11 +14,13 @@ import {CartesianProjection, logError} from "../helpers.ts";
 import type {GeoJsonRoutingollection} from "../models/geo.ts";
 import {bbCenter} from "../crs/latlonmath.ts";
 import {pointToSegmentDistance} from "../crs/cartesian.ts";
+import type {EventBus} from "../eventbus.ts";
 
 const GRID_RESOLUTION: number = 0.001
 const NEIGHBOURHOOD = 2
 
 export class RoutingEngine{
+    bus: EventBus
     regionBB: BoundingBox
     projection: CartesianProjection
 
@@ -30,7 +32,8 @@ export class RoutingEngine{
     // Initialisation
     //===============
 
-    constructor(regionBB: BoundingBox) {
+    constructor(bus:EventBus, regionBB: BoundingBox) {
+        this.bus = bus;
         this.regionBB = regionBB
         this.projection = new CartesianProjection(bbCenter(regionBB))
     }
@@ -38,6 +41,8 @@ export class RoutingEngine{
     init(data: GeoJsonRoutingollection){
         this.routingGeoData = data
         this.buildDataStructures()
+
+        this.bus.onRequest("routing:closestedge:pos", this.findClosestEdge.bind(this))
     }
 
     addToAdjacency(edge: Edge):void{

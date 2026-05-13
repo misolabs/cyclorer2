@@ -84,7 +84,7 @@ export class NavigationService{
 
     onStatsLoaded(stats: RoutingStatsJson){
         this.regionBB = mapBBox(stats.bbox)
-        this.routingEngine = new RoutingEngine(this.regionBB)
+        this.routingEngine = new RoutingEngine(this.bus, this.regionBB)
     }
 
     onAreasLoaded(areas: [GeoJsonAreaCollection, GeoJsonEntrypointCollection]){
