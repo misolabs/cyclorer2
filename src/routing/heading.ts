@@ -4,6 +4,14 @@ import type {Cartesian, LatLon} from "../models/models.ts";
 const MIN_SPEED = 1.0
 const MAX_HISTORY = 5;
 
+export function bearingToCartesianVector(degrees: number): Cartesian {
+    const radians = degrees * Math.PI / 180
+    return {
+        x: Math.sin(radians),
+        y: Math.cos(radians),
+    }
+}
+
 export function computeHeading(startPos: LatLon, endPos: LatLon): number {
     const toRad = (d: number) => d * Math.PI / 180;
     const toDeg = (r: number) => r * 180 / Math.PI;
@@ -98,11 +106,7 @@ export class Heading {
     getBearing(){return this.stableHeading}
 
     bearingToVector(degrees: number) {
-        const radians = (90 - degrees) * Math.PI / 180
-        return {
-            x: Math.cos(radians),
-            y: Math.sin(radians)
-        }
+        return bearingToCartesianVector(degrees)
     }
 }
 

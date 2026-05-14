@@ -4,7 +4,8 @@ import {
     type Area, type AreaNode,
     type BoundingBox, type Route, NodeId,
     TravelDirection,
-    type LatLon, type EdgeIntersection
+    type LatLon, type EdgeIntersection,
+    type Cartesian
 } from "../models/models.ts";
 import { RoutingEngine } from "../routing/routing.ts";
 import type {
@@ -18,8 +19,9 @@ import { AreaFinder } from "../routing/areafinder.ts";
 import { haversineDistance } from "../crs/latlonmath.ts";
 import { AnnotationService } from "./annotationservice.ts";
 import { computeHeading } from "../routing/heading.ts";
+import { bearingToCartesianVector } from "../routing/heading.ts";
 import { SetUtils } from "../setutils.ts";
-import {cartesianDistance} from "../crs/cartesian.ts";
+import {cartesianDistance, cartesianLength} from "../crs/cartesian.ts";
 import type {Events} from "leaflet";
 
 export class NavigationService{
@@ -32,6 +34,7 @@ export class NavigationService{
 
     currentPosition!: LatLon
     lastPosition!: LatLon
+    lastGeoHeading: number | null = null
 
     exploring = false
     score = 0
@@ -70,6 +73,7 @@ export class NavigationService{
     onGeoSimPositionChanged(p: LatLon){
         this.lastPosition = this.currentPosition
         this.currentPosition = p
+        this.lastGeoHeading = null
         this.update()
     }
 
@@ -77,6 +81,7 @@ export class NavigationService{
     onGeoPositionChanged(geo: GeolocationPosition) {
         this.lastPosition = this.currentPosition
         this.currentPosition = {lat: geo.coords.latitude, lon: geo.coords.longitude}
+        this.lastGeoHeading = geo.coords.heading ?? null
         this.update()
     }
 
@@ -132,6 +137,29 @@ export class NavigationService{
 
     // =========
 
+    private getTravelVector(): Cartesian | undefined {
+        if (!this.routingEngine || !this.lastPosition || !this.currentPosition) {
+            return undefined
+        }
+
+        const currentXY = this.routingEngine.projection.fromLatlon(this.currentPosition)
+        const lastXY = this.routingEngine.projection.fromLatlon(this.lastPosition)
+        const delta = {
+            x: currentXY.x - lastXY.x,
+            y: currentXY.y - lastXY.y,
+        }
+
+        if (cartesianLength(delta) >= 2.0) {
+            return delta
+        }
+
+        if (this.lastGeoHeading !== null) {
+            return bearingToCartesianVector(this.lastGeoHeading)
+        }
+
+        return undefined
+    }
+
     // Calculate the distance from the intersection point to the endpoint <nodeId>
     computeDistanceToNode(closestEdge: EdgeIntersection, nodeId: NodeId){
         let totalLength = 0
@@ -159,7 +187,8 @@ export class NavigationService{
 
     update(){
         if(!this.routingEngine || !this.areaFinder || !this.currentPosition) return
-        const closestEdge = this.routingEngine.findClosestEdge(this.currentPosition)
+        const travelVector = this.getTravelVector()
+        const closestEdge = this.routingEngine.findClosestEdge(this.currentPosition, travelVector)
 
         if(closestEdge){
             // EXPLORATION SCORE

@@ -13,7 +13,7 @@ import {mapGeoJsonRoutingEdge} from "../models/mapping.ts";
 import {CartesianProjection, logError} from "../helpers.ts";
 import type {GeoJsonRoutingollection} from "../models/geo.ts";
 import {bbCenter} from "../crs/latlonmath.ts";
-import {pointToSegmentDistance} from "../crs/cartesian.ts";
+import {cartesianDot, normalizeCartesian, pointToSegmentDistance} from "../crs/cartesian.ts";
 import type {EventBus} from "../eventbus.ts";
 
 const GRID_RESOLUTION: number = 0.001
@@ -93,46 +93,67 @@ export class RoutingEngine{
     // Find closest edge
     //==================
 
-    findClosestEdge(pos: LatLon): EdgeIntersection|undefined{
+    findClosestEdge(pos: LatLon, travelDirection?: Cartesian, minAlignment = 0.35): EdgeIntersection|undefined{
         const pTracking = this.projection.fromLatlon(pos)
+        const direction = normalizeCartesian(travelDirection ?? {x: 0, y: 0})
 
-        let closestEdge:Edge|null = null
-        let minDist:number = Infinity
-        let segmentIndex!:number
-        let segmentT!:number
+        const search = (useDirectionFilter: boolean): EdgeIntersection | undefined => {
+            let closestEdge: Edge | null = null
+            let minDist = Infinity
+            let segmentIndex!: number
+            let segmentT!: number
 
-        const candidates = this.edgeGridIndex.findNeighbours(pos, NEIGHBOURHOOD)
-        for(const e of candidates){
-            //console.log("Candidate", e.osmid)
-            const pointsXY = e.cartesian
+            const candidates = this.edgeGridIndex.findNeighbours(pos, NEIGHBOURHOOD)
+            for(const e of candidates){
+                const pointsXY = e.cartesian
 
-            if(pointsXY) {
-                // geometry is in order lon, lat
-                let pLast = pointsXY[0]
-                //console.log("Edge segments", pointsXY.length - 1)
-                for (let i = 1; i < pointsXY.length; i++) {
-                    const {distance: distanceToSegment, t} = pointToSegmentDistance(pTracking, pointsXY[i], pLast)
-                    if (distanceToSegment < minDist && t >= 0 && t <= 1) {
-                        minDist = distanceToSegment
-                        closestEdge = e
-                        segmentIndex = i - 1
-                        segmentT = t
-                        //console.log("Closest point", minDist)
-                        //console.log("Segment index", segmentIndex)
-                        //console.log("Segement t", segmentT)
+                if(pointsXY) {
+                    let pLast = pointsXY[0]
+                    for (let i = 1; i < pointsXY.length; i++) {
+                        const segmentStart = pLast
+                        const segmentEnd = pointsXY[i]
+
+                        if (useDirectionFilter && direction) {
+                            const segmentVec = {
+                                x: segmentEnd.x - segmentStart.x,
+                                y: segmentEnd.y - segmentStart.y,
+                            }
+                            const segmentLength = Math.hypot(segmentVec.x, segmentVec.y)
+                            if (segmentLength > 0) {
+                                const alignment = Math.abs(cartesianDot(direction, {
+                                    x: segmentVec.x / segmentLength,
+                                    y: segmentVec.y / segmentLength,
+                                }))
+                                if (alignment < minAlignment) {
+                                    pLast = pointsXY[i]
+                                    continue
+                                }
+                            }
+                        }
+
+                        const {distance: distanceToSegment, t} = pointToSegmentDistance(pTracking, segmentEnd, segmentStart)
+                        if (distanceToSegment < minDist && t >= 0 && t <= 1) {
+                            minDist = distanceToSegment
+                            closestEdge = e
+                            segmentIndex = i - 1
+                            segmentT = t
+                        }
+                        pLast = pointsXY[i]
                     }
-                    pLast = pointsXY[i]
                 }
             }
-        }
-        if(!closestEdge) return undefined
 
-        return {
-            edge: closestEdge,
-            segmentIndex: segmentIndex,
-            t: segmentT,
-            distance: minDist,
+            if(!closestEdge) return undefined
+
+            return {
+                edge: closestEdge,
+                segmentIndex: segmentIndex,
+                t: segmentT,
+                distance: minDist,
+            }
         }
+
+        return search(true) ?? search(false)
     }
 
     travelDirection(pos: LatLon, headingPos: LatLon, closestEdge: EdgeIntersection):TravelDirection{

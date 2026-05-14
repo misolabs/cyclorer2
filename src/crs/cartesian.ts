@@ -51,3 +51,21 @@ export function cartesianDistance(p1: Cartesian, p2: Cartesian): number{
     const dy = p2.y - p1.y
     return Math.sqrt(dx * dx + dy * dy)
 }
+
+export function cartesianDot(a: Cartesian, b: Cartesian): number {
+    return a.x * b.x + a.y * b.y
+}
+
+export function cartesianLength(v: Cartesian): number {
+    return Math.sqrt(v.x * v.x + v.y * v.y)
+}
+
+export function normalizeCartesian(v: Cartesian): Cartesian | null {
+    const len = cartesianLength(v)
+    if (len === 0) return null
+
+    return {
+        x: v.x / len,
+        y: v.y / len,
+    }
+}
