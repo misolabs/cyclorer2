@@ -1,7 +1,7 @@
 // Simple ride recorder that adds all edges that have been matched at least 3 times in a row
 
 import type {EventBus} from "../eventbus.ts";
-import {type Edge, type LatLon, NotificationType} from "../models/models.ts";
+import {type AdjacencyInfo, type Edge, type LatLon, NodeId, NotificationType} from "../models/models.ts";
 
 // Check if two edges share a node
 function sharedNode(e1: Edge, e2: Edge){
@@ -85,12 +85,15 @@ export class RideRecorder {
 
                     // Stump edges
                     if(revEdges.length > 2 && checkAnomalyStump(revEdges[0], revEdges[1], revEdges[2])){
+                        this.rideEdgeList.splice(-1, 1)
+                        this.bus.emitEvent("map:snailtrail:set:edges", this.rideEdgeList)
+                        /*
                         this.bus.emitEvent("notification:show",{
                             type: NotificationType.WARNING,
                             caption: "Ride Recorder Anomaly",
                             description: `Stump detected around edge ${revEdges[1]}`,
                             autocloseDelay: undefined
-                        })
+                        })*/
                     }
 
                     // Holes
@@ -101,6 +104,13 @@ export class RideRecorder {
                             description: `Hole detected between edges ${revEdges[0]} and ${revEdges[1]}`,
                             autocloseDelay: undefined
                         })
+                        const plugEdge = this.findPlugEdge(revEdges[0], revEdges[1])
+                        if(plugEdge != undefined){
+                            const last = this.rideEdgeList.pop()!
+                            this.rideEdgeList.push(plugEdge)
+                            this.rideEdgeList.push(last)
+                            this.bus.emitEvent("map:snailtrail:set:edges", this.rideEdgeList)
+                        }
                     }
                 }
             }else
@@ -109,4 +119,21 @@ export class RideRecorder {
             this.lastMatchedEdge = closestEdge.edge.edge_id
         }
     }
+
+    findPlugEdge(e1: Edge, e2: Edge) {
+        const adjU = this.bus.request("node:adjacency", NodeId(e1.u)) ?? []
+        const adjV = this.bus.request("node:adjacency", NodeId(e1.v)) ?? []
+        const allNeighbours = [...adjU, ...adjV].map(adj => adj.edge)
+
+        const f = (node: NodeId, edges: Edge[]) => {
+            for(const e of edges){
+                if(e.u == node || e.v == node)
+                    return e
+            }
+            return undefined
+        }
+
+        return f(NodeId(e2.u), allNeighbours) || f(NodeId(e2.v), allNeighbours)
+    }
+
 }

@@ -68,6 +68,8 @@ type Events = {
 
     // Add a snailtrail segment to maps
     "map:snailtrail:add:edge": Edge
+    // Clear snailtrail and set to list of edges
+    "map:snailtrail:set:edges": Edge[]
     // Clear snailtrail on concerned maps
     "map:snailtrail:clear": void
 

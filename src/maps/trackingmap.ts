@@ -263,6 +263,7 @@ export class TrackingMap{
         this.bus.onEvent("map:snailtrail:add:edge", this.onAddSnailTrail.bind(this))
         // Clear all snailtrail segments
         this.bus.onEvent("map:snailtrail:clear", this.clearSnailTrails.bind(this))
+        this.bus.onEvent("map:snailtrail:set:edges", this.onSetSnailTrail.bind(this))
     }
 
     setBaseLayer(id: string){
@@ -528,6 +529,13 @@ export class TrackingMap{
             edge.coordinates.map(p => new LatLng(p.lat, p.lon)),
             {color: "orange", weight: 9}
         ).addTo(this.snailTrailLG)
+    }
+
+    onSetSnailTrail(edges: Edge[]){
+        this.clearSnailTrails()
+        for(const edge of edges){
+            this.onAddSnailTrail(edge)
+        }
     }
 
     routingEdgePostprocess(feature: GeoJsonRouting, layer: L.Polyline, annotation: EdgeAnnotation|undefined = undefined){
