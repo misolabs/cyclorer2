@@ -85,31 +85,25 @@ export class RideRecorder {
 
                     // Stump edges
                     if(revEdges.length > 2 && checkAnomalyStump(revEdges[0], revEdges[1], revEdges[2])){
-                        this.rideEdgeList.splice(-1, 1)
+                        this.rideEdgeList.splice(-2, 1)
                         this.bus.emitEvent("map:snailtrail:set:edges", this.rideEdgeList)
-                        /*
-                        this.bus.emitEvent("notification:show",{
-                            type: NotificationType.WARNING,
-                            caption: "Ride Recorder Anomaly",
-                            description: `Stump detected around edge ${revEdges[1]}`,
-                            autocloseDelay: undefined
-                        })*/
                     }
 
                     // Holes
                     if(revEdges.length > 1 && checkForHoles(revEdges[0], revEdges[1])){
-                        this.bus.emitEvent("notification:show",{
-                            type: NotificationType.WARNING,
-                            caption: "Ride Recorder Anomaly",
-                            description: `Hole detected between edges ${revEdges[0]} and ${revEdges[1]}`,
-                            autocloseDelay: undefined
-                        })
                         const plugEdge = this.findPlugEdge(revEdges[0], revEdges[1])
                         if(plugEdge != undefined){
                             const last = this.rideEdgeList.pop()!
                             this.rideEdgeList.push(plugEdge)
                             this.rideEdgeList.push(last)
                             this.bus.emitEvent("map:snailtrail:set:edges", this.rideEdgeList)
+                        }else{
+                            this.bus.emitEvent("notification:show",{
+                                type: NotificationType.WARNING,
+                                caption: "Ride Recorder Anomaly",
+                                description: `Could not plug <b>hole</b>`,
+                                autocloseDelay: undefined
+                            })
                         }
                     }
                 }
