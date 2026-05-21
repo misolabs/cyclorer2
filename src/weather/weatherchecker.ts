@@ -32,26 +32,38 @@ console.log("Checking weather...")
                     })
                 }
 
-                if(forecast.hourly && forecast.hourly.length > 0) {
-                    forecast.hourly?.forEach(hour => {
-                        if(hour.rain && hour.rain["1h"] > 0){
-                            const date = new Date(hour.dt * 1000)
-                            this.bus.emitEvent("notification:show", {
-                                type: NotificationType.INFO,
-                                caption: `Rain expected at ${date.getHours()}:00`,
-                                description: `Precipitation: ${hour.rain["1h"]} mm/h`,
-                            })
+                // Check if there is rain coming in the next few hours
+                if(forecast.minutely){
+                    let foundRain = false
+                    let when: number = 0
+                    for(const minutely of forecast.minutely){
+                        if(minutely.precipitation > 0){
+                            foundRain = true
+                            const nowSec = Date.now() / 1000
+                            when = (minutely.dt - nowSec) / 60 // in minutes
+                            break
                         }
+                    }
+                    if(!foundRain && forecast.hourly){
+                        for(const hourly of forecast.hourly){
+                            if(hourly.rain && hourly.rain["1h"] > 0){
+                                foundRain = true
+                                const nowSec = Date.now() / 1000
+                                when = ((hourly.dt - nowSec) / 60) + 30 // in minutes
+                                break
+                            }
+                        }
+                    }
 
-                        if(hour.snow && hour.snow["1h"] > 0) {
-                            const date = new Date(hour.dt * 1000)
-                            this.bus.emitEvent("notification:show", {
-                                type: NotificationType.INFO,
-                                caption: `Snow expected at ${date.getHours()}:00`,
-                                description: `Snowfall: ${hour.snow["1h"]} mm/h`,
-                            })
-                        }
-                    })
+                    // Only show notification if it will rain in the next 6 hours
+                    if(foundRain && when < 360){
+                        const whenStr = when < 60 ? `${Math.round(when)} minutes` : `${Math.round(when / 60)} hours`
+                        this.bus.emitEvent("notification:show", {
+                            type: NotificationType.INFO,
+                            caption: "Rain starting in about...",
+                            description: whenStr
+                        })
+                    }
                 }
             } catch (e) {
                 console.error("Failed to fetch weather data", e)
