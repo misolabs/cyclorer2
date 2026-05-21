@@ -1,4 +1,5 @@
 import type {EventBus} from "../eventbus.ts";
+import type {LatLon} from "../models/models.ts";
 
 export interface GeolocationLight{ coords: {latitude: number, longitude: number }}
 
@@ -7,6 +8,7 @@ export class GeoLocationService{
     watchId: number
     riding: boolean = false
     updateCount: number = 0
+    currentPos?: LatLon
 
     constructor(bus: EventBus) {
         this.bus = bus
@@ -18,6 +20,7 @@ export class GeoLocationService{
         //this.bus.onEvent("powersave:enable", this.disableGeolocation.bind(this))
 
         this.bus.onRequest("geolocation:updates:count", () => this.updateCount)
+        this.bus.onRequest("geolocation:current:position", () => this.currentPos)
     }
 
     enableGeolocation() {
@@ -49,5 +52,7 @@ export class GeoLocationService{
             this.riding = false
             this.bus.emitEvent("geolocation:riding", false)
         }
+
+        this.currentPos = {lat: pos.coords.latitude, lon: pos.coords.longitude}
     }
 }

@@ -117,6 +117,12 @@ type Requests = {
         input: void
         output: number
     }
+    // Get the current GPS position
+    "geolocation:current:position":{
+        input: void
+        output: LatLon | undefined
+    }
+
     // Get adjacency info for a given Node
     "node:adjacency": {
         input: NodeId

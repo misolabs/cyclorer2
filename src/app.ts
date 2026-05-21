@@ -28,6 +28,7 @@ import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
 import {AnnotationService} from "./services/annotationservice.ts";
+import {WeatherTracker} from "./weather/weatherchecker.ts";
 import {AudioPlayer} from "./services/audioplayer.ts";
 import {RideRecorder} from "./riderecorder/riderecorder.ts";
 
@@ -64,6 +65,7 @@ const routingDataService: RoutingDataService = new RoutingDataService(appBus)
 const navigationService: NavigationService = new NavigationService(appBus)
 const swMessaging: ServiceWorkerMessaging = new ServiceWorkerMessaging(appBus)
 const wakeLockService = new WakeLockService()
+const weatherTracker = new WeatherTracker(appBus)
 const audioService = new AudioPlayer(appBus)
 const rideRecorder = new RideRecorder(appBus)
 
@@ -108,7 +110,12 @@ await routingDataService.loadRegionData("ellergronn")
 
 // All ready
 appBus.emitEvent("system:ready")
-appBus.emitEvent("notification:show", {type: "DEBUG", caption: "System ready", description:"All systems are intialised", autocloseDelay: 5000})
+
+// Test for weather check
+// TODO Make it recurrent every 15m
+setTimeout(() => {
+    void weatherTracker.checkWeather()
+}, 10000)
 
 // Sync pending server requests
 appBus.emitEvent("system:sync:requests")
