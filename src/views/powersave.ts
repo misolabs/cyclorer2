@@ -25,6 +25,7 @@ export class PowersaveView {
         })
 
         bus.onEvent("weather:event", this.onWeatherEvent.bind(this))
+        bus.onEvent("weather:event:clear", this.onClearWeatherEvent.bind(this))
     }
 
     showView(){
@@ -96,8 +97,6 @@ export class PowersaveView {
         const iconEl = document.querySelector("#weather-alert-container .wi")
         const textEl = document.querySelector("#weather-alert-container .alert-text")
 
-        containerEl.classList.remove("hide")
-
         if(iconEl){
             iconEl.classList.remove(iconEl.classList.item(iconEl.classList.length - 1)!)
             iconEl.classList.add("wi-owm-" + event.code)
@@ -108,5 +107,12 @@ export class PowersaveView {
             const dtMinutes = Math.floor((event.whenSec - nowSec) / 60)
             textEl.innerHTML = `${event.description} in about ${dtMinutes}min`
         }
+
+        containerEl.classList.remove("hide")
+    }
+
+    onClearWeatherEvent(){
+        const containerEl = document.getElementById("weather-alert-container")!
+        containerEl.classList.add("hide")
     }
 }

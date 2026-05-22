@@ -26,7 +26,7 @@ export class WeatherTracker{
 
     async checkWeather(){
         const pos: LatLon|undefined = this.bus.request("geolocation:current:position")
-console.log("Checking weather...")
+
         if(pos){
             try {
                 const forecast = await this.api.fetchOneCallForecast(
@@ -45,8 +45,6 @@ console.log("Checking weather...")
                         })
                     })
                 }
-
-                // Alternative logic
 
                 // First check hourly forecast if there will be any developments that warrant
                 // a warning
@@ -71,7 +69,7 @@ console.log("Checking weather...")
                             alertCondition?.icon ?? "",
                             alertCondition?.main ?? "Unknown alert",
                             when))
-                    }
+                    }else this.bus.emitEvent("weather:event:clear")
                 }
             } catch (e) {
                 console.error("Failed to fetch weather data", e)

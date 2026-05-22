@@ -17,7 +17,10 @@ import type {WeatherEvent} from "./weather/weatherchecker.ts";
 type RequestHandler<I, O> = (input: I) => O | undefined;
 
 type WeatherEvents={
+    // New weather event detected
     "weather:event": WeatherEvent,
+    // No notable weather event
+    "weather:event:clear": void
 }
 
 type SettingsEvents = {
