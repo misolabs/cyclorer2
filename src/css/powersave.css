@@ -64,6 +64,17 @@
     font-size: x-large;
 }
 
+#weather-icon-test{
+    position: absolute;
+    top: 25px;
+    left: 5px;
+
+    font-size:x-large;
+    color: white;
+
+    z-index: 10000;
+}
+
 /* Selectively style tootips on black background */
 .leaflet-tooltip.cyc-tooltip--inverted {
     background: #000;

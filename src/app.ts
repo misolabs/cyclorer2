@@ -7,6 +7,7 @@ import './css/powersave.css'
 import './css/inride_menu.css'
 import './css/notifications.css'
 import './css/leaflet-custom.css'
+import './css/weather-icons-lite.css'
 
 import {EventBus} from "./eventbus.ts";
 
