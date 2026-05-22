@@ -122,6 +122,8 @@ setTimeout(() => {
 appBus.emitEvent("system:sync:requests")
 
 // Testing
+/*
 setTimeout(() => {
     appBus.emitEvent("weather:event", new WeatherEvent("04n", "Rainy puddles", (Date.now() / 1000) + 2000))
 }, 5000)
+ */
