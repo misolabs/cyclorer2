@@ -12,28 +12,45 @@ import type {
     NotificationData, JunctionInfo, NodeId, AdjacencyInfo, EdgeIntersection, Edge
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
+import type {WeatherEvent} from "./weather/weatherchecker.ts";
 
 type RequestHandler<I, O> = (input: I) => O | undefined;
 
-type Events = {
+type WeatherEvents={
+    "weather:event": WeatherEvent,
+}
+
+type SettingsEvents = {
     "settings:init": void
     "settings:save": Settings
     "settings:loaded": Settings
     "settings:updated": Settings
     "settings:show": boolean
+}
 
+type SystemEvents = {
     "data:sync": void
     "system:sync:requests": void
+    "system:ready": void
 
+    "debug:log": string
+    "debug:clear": void
+}
+
+type SplashEvents = {
     "splash:show": void
     "splash:stats": {totalLength: number, areaCount: number}
     "splash:hiding": void
+}
 
+type PowerSaveEvents = {
     // Enable powersaving mode
     "powersave:enable": void
     "powersave:disable": void
     "wakelock:engage": void
+}
 
+type GeolocationEvents = {
     // Switch on/off GPS tracking
     "geolocation:enable": void
     // Get notified on new tracking position
@@ -43,17 +60,21 @@ type Events = {
 
     // New simulation mode position available
     "geolocsim:update": LatLon
+}
 
-    "debug:log": string
-    "debug:clear": void
+type NotificationEvents = {
     "notification:show": NotificationData
+}
 
+type RoutingDataEvents = {
     "rds:stats:loaded": RoutingStatsJson
     "rds:loaderror": string
     "rds:routing:loaded": GeoJsonRoutingollection
     "rds:areas:loaded": [GeoJsonAreaCollection, GeoJsonEntrypointCollection]
     "rds:annotations:loaded": LocationAnnotation[]
+}
 
+type AnnotationEvents = {
     "annotation:location:drophere": LocationAnnotationCategory // UI button to mapview
     "annotation:location:create": LocationAnnotationRequest // UI to service
     "annotation:location:delete": LocationAnnotationId
@@ -65,19 +86,25 @@ type Events = {
     "annotation:edge:save": EdgeAnnotationCreateEvent
     "annotation:edge:delete": string
     "annotation:edge:deleted": EdgeAnnotation
+}
 
+type MapEvents = {
     // Add a snailtrail segment to maps
     "map:snailtrail:add:edge": Edge
     // Clear snailtrail and set to list of edges
     "map:snailtrail:set:edges": Edge[]
     // Clear snailtrail on concerned maps
     "map:snailtrail:clear": void
+}
 
+type ExplorationEvents = {
     // We are currently riding on an unvisited path
     "exploration:started": Area
     "exploration:ended": void
     "exploration:score:updated": number
+}
 
+type NavigationEvents = {
     "navigation:target:area": Area
     "navigation:stop": void
 
@@ -85,21 +112,42 @@ type Events = {
     "navigation:junction:upcoming": JunctionInfo
     // Updated distance to junction
     "navigation:junction:update": JunctionInfo
+}
 
+type ViewEvents = {
     "zoom:framed:area": Area
     "zoom:frame:rider": void
+}
 
-    "system:ready": void
-
+type CacheEvents = {
     "cache:stats:request": void
     "cache:stats": TileCacheStats
     "cache:clear": void
+}
 
+type AudioEvents = {
     // Play sound (one-off)
     "audio:play": string
     // Prepare a specific sound for later playback
     "audio:prepare": string
-};
+}
+
+type Events =
+    SettingsEvents &
+    SystemEvents &
+    SplashEvents &
+    PowerSaveEvents &
+    GeolocationEvents &
+    NotificationEvents &
+    RoutingDataEvents &
+    AnnotationEvents &
+    MapEvents &
+    ExplorationEvents &
+    NavigationEvents &
+    ViewEvents &
+    CacheEvents &
+    AudioEvents &
+    WeatherEvents
 
 type Requests = {
     // Request the number of annotation requests pending in the request queue

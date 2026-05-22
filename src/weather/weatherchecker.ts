@@ -2,6 +2,18 @@ import type {EventBus} from "../eventbus.ts";
 import {type LatLon, NotificationType} from "../models/models.ts";
 import {OpenWeather} from "./openweather.ts";
 
+export class WeatherEvent{
+    code: string
+    description: string
+    whenMinutes: number
+
+    constructor(code: string, description: string, whenMinutes: number) {
+        this.code = code;
+        this.description = description;
+        this.whenMinutes = whenMinutes;
+    }
+}
+
 export class WeatherTracker{
     bus: EventBus;
     api: OpenWeather;
@@ -16,7 +28,8 @@ export class WeatherTracker{
 console.log("Checking weather...")
         if(pos){
             try {
-                const forecast = await this.api.fetchOneCallForecast(pos.lat, pos.lon, {
+                const forecast = await this.api.fetchOneCallForecast(
+                    pos.lat, pos.lon, {
                     exclude: "daily",
                     units: "metric"
                 })
@@ -36,6 +49,7 @@ console.log("Checking weather...")
                 if(forecast.minutely){
                     let foundRain = false
                     let when: number = 0
+                    let code = "10d"
                     for(const minutely of forecast.minutely){
                         if(minutely.precipitation > 0){
                             foundRain = true
@@ -63,6 +77,7 @@ console.log("Checking weather...")
                             caption: "Rain starting in about...",
                             description: whenStr
                         })
+                        this.bus.emitEvent("weather:event", new WeatherEvent("", "Rain starting in", when))
                     }
                 }
             } catch (e) {
