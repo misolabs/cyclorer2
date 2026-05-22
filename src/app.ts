@@ -29,7 +29,7 @@ import {ServiceWorkerMessaging} from "./sw-messaging.ts";
 import {WakeLockService} from "./services/wakelock.ts";
 import {PowersaveView} from "./views/powersave.ts";
 import {AnnotationService} from "./services/annotationservice.ts";
-import {WeatherTracker} from "./weather/weatherchecker.ts";
+import {WeatherEvent, WeatherTracker} from "./weather/weatherchecker.ts";
 import {AudioPlayer} from "./services/audioplayer.ts";
 import {RideRecorder} from "./riderecorder/riderecorder.ts";
 
@@ -120,3 +120,8 @@ setTimeout(() => {
 
 // Sync pending server requests
 appBus.emitEvent("system:sync:requests")
+
+// Testing
+setTimeout(() => {
+    appBus.emitEvent("weather:event", new WeatherEvent("04n", "Rainy puddles", (Date.now() / 1000) + 2000))
+}, 5000)

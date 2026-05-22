@@ -1,16 +1,17 @@
 import type {EventBus} from "../eventbus.ts";
 import {type LatLon, NotificationType} from "../models/models.ts";
-import {OpenWeather} from "./openweather.ts";
+import {OpenWeather, Weather} from "./openweather.ts";
+import {isOwmWeatherConditionWorthAlert} from "./owm_conditions.ts";
 
 export class WeatherEvent{
     code: string
     description: string
-    whenMinutes: number
+    whenSec: number
 
     constructor(code: string, description: string, whenMinutes: number) {
         this.code = code;
         this.description = description;
-        this.whenMinutes = whenMinutes;
+        this.whenSec = whenMinutes;
     }
 }
 
@@ -45,39 +46,31 @@ console.log("Checking weather...")
                     })
                 }
 
-                // Check if there is rain coming in the next few hours
-                if(forecast.minutely){
-                    let foundRain = false
-                    let when: number = 0
-                    let code = "10d"
-                    for(const minutely of forecast.minutely){
-                        if(minutely.precipitation > 0){
-                            foundRain = true
-                            const nowSec = Date.now() / 1000
-                            when = (minutely.dt - nowSec) / 60 // in minutes
-                            break
-                        }
-                    }
-                    if(!foundRain && forecast.hourly){
-                        for(const hourly of forecast.hourly){
-                            if(hourly.rain && hourly.rain["1h"] > 0){
-                                foundRain = true
-                                const nowSec = Date.now() / 1000
-                                when = ((hourly.dt - nowSec) / 60) + 30 // in minutes
+                // Alternative logic
+
+                // First check hourly forecast if there will be any developments that warrant
+                // a warning
+                let foundAlert = false
+                let alertCondition: Weather|undefined = undefined
+                let when: number = Date.now()
+
+                if(forecast.hourly){
+                    // Only check 4 hours
+                    for(const hourly of forecast.hourly.slice(0, 4)){
+                        for(const condition of hourly.weather) {
+                            if (isOwmWeatherConditionWorthAlert(condition.id)) {
+                                foundAlert = true
+                                alertCondition = condition
+                                when = hourly.dt
                                 break
                             }
                         }
                     }
-
-                    // Only show notification if it will rain in the next 6 hours
-                    if(foundRain && when < 360){
-                        const whenStr = when < 60 ? `${Math.round(when)} minutes` : `${Math.round(when / 60)} hours`
-                        this.bus.emitEvent("notification:show", {
-                            type: NotificationType.INFO,
-                            caption: "Rain starting in about...",
-                            description: whenStr
-                        })
-                        this.bus.emitEvent("weather:event", new WeatherEvent("", "Rain starting in", when))
+                    if(foundAlert){
+                        this.bus.emitEvent("weather:event", new WeatherEvent(
+                            alertCondition?.icon ?? "",
+                            alertCondition?.main ?? "Unknown alert",
+                            when))
                     }
                 }
             } catch (e) {

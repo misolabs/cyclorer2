@@ -64,10 +64,12 @@
     font-size: x-large;
 }
 
-#weather-icon-test{
+#weather-alert-container{
+    display: flex;
+
     position: absolute;
     top: 25px;
-    left: 5px;
+    left: 10px;
 
     font-size:x-large;
     color: white;

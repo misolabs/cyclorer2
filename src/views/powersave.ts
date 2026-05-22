@@ -2,6 +2,7 @@ import type {EventBus} from "../eventbus.ts";
 import {JunctionMap} from "../maps/junctionmap.ts";
 import {type AdjacencyInfo, type JunctionInfo, NotificationType} from "../models/models.ts";
 import {isOfHighwayType} from "../helpers.ts";
+import type {WeatherEvent} from "../weather/weatherchecker.ts";
 
 export class PowersaveView {
     bus: EventBus
@@ -22,6 +23,8 @@ export class PowersaveView {
             bus.emitEvent("powersave:disable")
             this.hideView()
         })
+
+        bus.onEvent("weather:event", this.onWeatherEvent.bind(this))
     }
 
     showView(){
@@ -85,5 +88,25 @@ export class PowersaveView {
     displayJunctionDistance(distance: number){
         const dispValue = Math.round(distance / 10) * 10
         document.getElementById("powersave-distance-junction")!.textContent = `${dispValue.toFixed(0)}m`
+    }
+
+    // Show waeather alerts
+    onWeatherEvent(event: WeatherEvent){
+        const containerEl = document.getElementById("weather-alert-container")!
+        const iconEl = document.querySelector("#weather-alert-container .wi")
+        const textEl = document.querySelector("#weather-alert-container .alert-text")
+
+        containerEl.classList.remove("hide")
+
+        if(iconEl){
+            iconEl.classList.remove(iconEl.classList.item(iconEl.classList.length - 1)!)
+            iconEl.classList.add("wi-owm-" + event.code)
+        }
+
+        if(textEl){
+            const nowSec = Date.now() / 1000
+            const dtMinutes = Math.floor((event.whenSec - nowSec) / 60)
+            textEl.innerHTML = `${event.description} in about ${dtMinutes}min`
+        }
     }
 }
