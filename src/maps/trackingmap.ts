@@ -25,7 +25,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import type {EventBus} from "../eventbus.ts";
-import type {Feature, GeometryObject} from "geojson";
+import type {Feature, GeometryObject, Point} from "geojson";
 import {isOfHighwayType} from "../helpers.ts";
 
 // Fix default icon paths
@@ -76,6 +76,11 @@ const tileServices:Map<string, TileService> = new Map([
 let currentTileService: TileService | null = null
 
 type AnnotationMarkerOptions = NonNullable<ConstructorParameters<typeof ExtraMarkersIcon>[0]>
+
+type TileLoadingState =
+    | { status: "pending" }
+    | { status: "failed"; error: Error }
+    | { status: "loaded"; tile: L.Layer };
 
 const annotationMarkerBaseOptions = {
     svg: PinCircleBorder,
@@ -172,6 +177,9 @@ export class TrackingMap{
     heading: number = 0
     resetHeading = true
 
+    lasttile: L.Point|undefined = undefined
+    osmTiles: Map<string, TileLoadingState> = new Map()
+
     constructor(elName: string, mobileMode: boolean, bus:EventBus){
         this.bus = bus
         this.mobileMode = mobileMode
@@ -214,6 +222,47 @@ export class TrackingMap{
 
         // Connect to event bus
         //this.bus.onEvent("preview:minimize", this.onToggleMinimize.bind(this))
+
+        // Testing projection
+        this.map.on("moveend", () => {
+            // Get view center
+            const center = this.map.getCenter()
+            // Convert to web mercator (in meters)
+            const webmercator = L.Projection.SphericalMercator.project(center)
+            // Calculate tile index
+            const tileIndex = L.point(Math.floor(webmercator.x / 5000), Math.floor(webmercator.y / 5000))
+            // Key for map lookup
+            const tileKey = `${tileIndex.x}:${tileIndex.y}`
+            // Request from server if the tile has never been requested or failed previously
+            if(!this.osmTiles.has(tileKey) || this.osmTiles.get(tileKey)?.status == "failed") {
+                this.osmTiles.set(tileKey, {"status":"pending"})
+                console.log("New Tile index", tileIndex)
+
+                fetch("http://127.0.0.1:3000/tiles/highways/"+tileIndex.x+"/"+tileIndex.y+"/5000")
+                    // Check server response
+                    .then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+                        return res.json();
+                    })
+                    // Create geojson layer and mark tile as loaded
+                    .then(json => {
+                        const layer = L.geoJSON(json.data, {style: (feature)=>{
+                            let color = "grey"
+                            if(feature!.properties?.deadend === true)
+                                color = "green"
+                            return {weight: 5, color: color}
+                            }}).addTo(this.map)
+                        this.osmTiles.set(tileKey, {"status":"loaded", tile:layer})
+                    })
+                    // Catch any errors during loading or conversion to leaflet layer
+                    .catch(error => {
+                        console.log(error);
+                        this.osmTiles.set(tileKey, {"status": "failed", error: error as Error})
+                    }
+                )
+
+            }
+        })
 
         // TODO: Move to right location
         this.bus.onEvent("annotation:edge:modified", (a: EdgeAnnotation) => {
