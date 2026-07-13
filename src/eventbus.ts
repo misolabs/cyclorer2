@@ -5,10 +5,9 @@ import type {
     GeoJsonRoutingollection,
     RoutingStatsJson
 } from "./models/geo.ts";
-import type {GeolocationLight} from "./services/geolocationservice.ts";
 import type {
-    LocationAnnotationCategory, Area, AreaId, EdgeAnnotation, LatLon, LocationAnnotation,
-    EdgeAnnotationRequest, LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent,
+    LocationAnnotationCategory, Area, EdgeAnnotation, LatLon, LocationAnnotation,
+    LocationAnnotationRequest, LocationAnnotationId, EdgeAnnotationCreateEvent,
     NotificationData, JunctionInfo, NodeId, AdjacencyInfo, EdgeIntersection, Edge
 } from "./models/models.ts";
 import type {TileCacheStats} from "./sw.ts";
@@ -192,6 +191,10 @@ export class EventBus {
         [K in keyof Requests]: RequestHandler<Requests[K]["input"], Requests[K]["output"]>[]
     }> = {};
 
+    private logDispatchError(kind: "event" | "request", name: string, handlerIndex: number, error: unknown) {
+        console.error(`EventBus ${kind} handler failed: ${name} (#${handlerIndex})`, error)
+    }
+
     onEvent<K extends keyof Events>(
         event: K,
         handler: (payload: Events[K]) => void
@@ -212,13 +215,15 @@ export class EventBus {
 
         if (!handlers) return;
 
-        // ✅ key fix: narrow payload before use
-        if (payload.length === 0) {
-            handlers.forEach(handler => handler(undefined as Events[K]));
-        } else {
-            const value = payload[0]; // now correctly inferred
-            handlers.forEach(handler => handler(value));
-        }
+        const value = (payload.length === 0 ? undefined : payload[0]) as Events[K]
+
+        handlers.forEach((handler, index) => {
+            try {
+                handler(value)
+            } catch (error) {
+                this.logDispatchError("event", String(event), index, error)
+            }
+        })
     }
 
     onRequest<K extends keyof Requests>(
@@ -243,10 +248,14 @@ export class EventBus {
 
         const input = (payload.length === 0 ? undefined : payload[0]) as Requests[K]["input"];
 
-        for (const handler of handlers) {
-            const result = handler(input);
-            if (typeof result !== "undefined") {
-                return result;
+        for (const [index, handler] of handlers.entries()) {
+            try {
+                const result = handler(input);
+                if (typeof result !== "undefined") {
+                    return result;
+                }
+            } catch (error) {
+                this.logDispatchError("request", String(request), index, error)
             }
         }
 

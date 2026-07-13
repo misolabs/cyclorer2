@@ -3,6 +3,7 @@
 
 // Weather condition
 import type {EventBus} from "../eventbus.ts";
+import { OpenWeatherConditionCode } from "./weatherconditions";
 
 export class Weather {
     id!: number;
