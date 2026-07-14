@@ -26,7 +26,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import type {EventBus} from "../eventbus.ts";
-import type {Feature, GeometryObject, Point} from "geojson";
+import type {Feature, GeoJsonProperties, Geometry, GeometryObject, Point} from "geojson";
 import {isOfHighwayType} from "../helpers.ts";
 
 // Fix default icon paths
@@ -77,6 +77,35 @@ const tileServices:Map<string, TileService> = new Map([
 let currentTileService: TileService | null = null
 
 type AnnotationMarkerOptions = NonNullable<ConstructorParameters<typeof ExtraMarkersIcon>[0]>
+
+type FacycleClassification =
+    | "designated"
+    | "low_risk"
+    | "acceptable"
+    | "adult_only"
+    | "not_suitable"
+
+const facycleClassificationColors = {
+    designated: "lightgreen",
+    low_risk: "green",
+    acceptable: "yellow",
+    adult_only: "orange",
+    not_suitable: "red",
+} satisfies Record<FacycleClassification, string>
+
+function osmTileColor(feature?: Feature<GeometryObject, import("geojson").GeoJsonProperties>): string {
+    const properties = feature?.properties
+    if(properties && typeof properties === "object" && properties.deadend) return "black"
+
+    const classification = properties && typeof properties === "object"
+        ? properties["facycle:classification"]
+        : undefined
+    if(typeof classification === "string" && classification in facycleClassificationColors) {
+        return facycleClassificationColors[classification as FacycleClassification]
+    }
+
+    return "grey"
+}
 
 const annotationMarkerBaseOptions = {
     svg: PinCircleBorder,
@@ -224,7 +253,7 @@ export class TrackingMap{
             urlForTile: (x, y) => `http://127.0.0.1:3000/tiles/highways/${x}/${y}/5000`,
             style: (feature) => ({
                 weight: 5,
-                color: feature?.properties?.deadend === true ? "green" : "grey",
+                color: osmTileColor(feature),
             }),
         }).addTo(this.map)
 
