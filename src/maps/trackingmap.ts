@@ -250,7 +250,8 @@ export class TrackingMap{
 
         this.osmTilesLayer = new RemoteGeoJsonTileLayer({
             tileSize: 5000,
-            urlForTile: (x, y) => `http://127.0.0.1:3000/tiles/highways/${x}/${y}/5000`,
+//            urlForTile: (x, y) => `http://127.0.0.1:3000/tiles/highways/${x}/${y}/5000`,
+            urlForTile: (x, y) => `https://cyclorer-osm.fly.dev/tiles/highways/${x}/${y}/5000`,
             style: (feature) => ({
                 weight: 5,
                 color: osmTileColor(feature),
