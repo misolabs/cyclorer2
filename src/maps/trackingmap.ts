@@ -86,8 +86,8 @@ type FacycleClassification =
     | "not_suitable"
 
 const facycleClassificationColors = {
-    designated: "lightgreen",
-    low_risk: "green",
+    designated: "blue",
+    low_risk: "purple",
     acceptable: "yellow",
     adult_only: "orange",
     not_suitable: "red",
@@ -104,7 +104,7 @@ function osmTileColor(feature?: Feature<GeometryObject, import("geojson").GeoJso
         return facycleClassificationColors[classification as FacycleClassification]
     }
 
-    return "grey"
+    return "lightgrey"
 }
 
 function escapeHtml(value: string): string {
