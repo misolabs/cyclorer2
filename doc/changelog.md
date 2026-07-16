@@ -1,5 +1,7 @@
 # Build Timestamp Integration
 
+- 2026-07-16 09:40:39 CEST — Added OSM way popups for `RemoteGeoJsonTileLayer` in `src/maps/trackingmap.ts` and extended `src/maps/remotegeotilelayer.ts` with an optional `onEachFeature` callback to bind popups per feature.
+
 - 2026-07-13 08:54:29 CEST — Hardened `EventBus` dispatch so a failing event or request handler is logged and no longer prevents later handlers from running.
 
 - 2026-07-13 08:51:22 CEST — Converted `OpenWeatherConditionCode` in `src/weather/weatherconditions.ts` from enum syntax to an `as const` object plus value type so it is compatible with `erasableSyntaxOnly`.

@@ -107,6 +107,43 @@ function osmTileColor(feature?: Feature<GeometryObject, import("geojson").GeoJso
     return "grey"
 }
 
+function escapeHtml(value: string): string {
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+}
+
+function formatWayPropertyValue(value: unknown): string {
+    if(value == null) return ""
+    if(typeof value === "string") return escapeHtml(value)
+    if(typeof value === "number" || typeof value === "boolean") return String(value)
+    return escapeHtml(JSON.stringify(value))
+}
+
+function wayPropertiesPopup(feature: Feature<GeometryObject, GeoJsonProperties>): string {
+    const properties = feature.properties
+    if(!properties || typeof properties !== "object") {
+        return `<div class="roboto-font">No properties available.</div>`
+    }
+
+    const rows = Object.entries(properties)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) =>
+            `<tr><td><b>${escapeHtml(key)}</b></td><td>${formatWayPropertyValue(value)}</td></tr>`
+        )
+        .join("")
+
+    return `<div class="card">
+        <div class="card-header">Way Properties</div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">${rows}</table>
+        </div>
+    </div>`
+}
+
 const annotationMarkerBaseOptions = {
     svg: PinCircleBorder,
     scale: 1.2,
@@ -250,12 +287,15 @@ export class TrackingMap{
 
         this.osmTilesLayer = new RemoteGeoJsonTileLayer({
             tileSize: 5000,
-//            urlForTile: (x, y) => `http://127.0.0.1:3000/tiles/highways/${x}/${y}/5000`,
-            urlForTile: (x, y) => `https://cyclorer-osm.fly.dev/tiles/highways/${x}/${y}/5000`,
+            urlForTile: (x, y) => `http://127.0.0.1:3000/tiles/highways/${x}/${y}/5000`,
+//            urlForTile: (x, y) => `https://cyclorer-osm.fly.dev/tiles/highways/${x}/${y}/5000`,
             style: (feature) => ({
                 weight: 5,
                 color: osmTileColor(feature),
             }),
+            onEachFeature: (feature, layer) => {
+                layer.bindPopup(wayPropertiesPopup(feature as Feature<GeometryObject, GeoJsonProperties>))
+            },
         }).addTo(this.map)
 
         // TODO: Move to right location

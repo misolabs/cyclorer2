@@ -10,6 +10,7 @@ interface RemoteGeoJsonTileLayerOptions {
     tileSize: number
     urlForTile: (x: number, y: number) => string
     style: (feature?: Feature<Geometry, GeoJsonProperties>) => L.PathOptions
+    onEachFeature?: (feature: Feature<Geometry, GeoJsonProperties>, layer: L.Layer) => void
 }
 
 interface TilePayload {
@@ -29,6 +30,7 @@ export class RemoteGeoJsonTileLayer extends L.LayerGroup {
     private readonly tileSize: number
     private readonly urlForTile: (x: number, y: number) => string
     private readonly style: (feature?: Feature<Geometry, GeoJsonProperties>) => L.PathOptions
+    private readonly onEachFeature?: (feature: Feature<Geometry, GeoJsonProperties>, layer: L.Layer) => void
     private readonly tiles = new Map<string, TileLoadingState>()
 
     private map: L.Map | null = null
@@ -38,6 +40,7 @@ export class RemoteGeoJsonTileLayer extends L.LayerGroup {
         this.tileSize = options.tileSize
         this.urlForTile = options.urlForTile
         this.style = options.style
+        this.onEachFeature = options.onEachFeature
     }
 
     override onAdd(map: L.Map): this {
@@ -90,6 +93,7 @@ export class RemoteGeoJsonTileLayer extends L.LayerGroup {
             const payload = await response.json() as TilePayload
             const layer = L.geoJSON(payload.data, {
                 style: this.style,
+                onEachFeature: this.onEachFeature,
             })
 
             this.addLayer(layer)
