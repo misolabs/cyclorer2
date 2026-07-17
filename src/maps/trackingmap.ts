@@ -84,6 +84,7 @@ type FacycleClassification =
     | "acceptable"
     | "adult_only"
     | "not_suitable"
+    | "unclassified"
 
 const facycleClassificationColors = {
     designated: "blue",
@@ -91,6 +92,7 @@ const facycleClassificationColors = {
     acceptable: "yellow",
     adult_only: "orange",
     not_suitable: "red",
+    unclassified: "grey"
 } satisfies Record<FacycleClassification, string>
 
 function osmTileColor(feature?: Feature<GeometryObject, import("geojson").GeoJsonProperties>): string {
